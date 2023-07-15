@@ -1,0 +1,46 @@
+###
+POST http://localhost:3000/v1/users/signup
+Content-Type: application/json
+
+{
+    "name":"Long",
+    "phone":"0111111",
+    "password":"123",
+    "gender":"Male",
+    "avatar":null
+}
+
+###
+POST http://localhost:3000/v1/users/login
+Content-Type: application/json
+
+{
+    "phone":"0222222",
+    "password":"123"
+}
+
+###
+POST http://localhost:3000/v1/booking/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicGhvbmUiOiIwNDQ0NDQ0IiwidHlwZSI6IlVzZXIiLCJpYXQiOjE2ODkyOTkxNzcsImV4cCI6MTY5MDM3OTE3N30.PgFK1oAvh8nasfb0FNeaAQbNhiJV-M8jdnt99YjlKiE
+Content-Type: application/json
+
+{
+    "start":{
+        "lat":10.1,
+        "lng":10.2,
+        "place":"random places"
+    },
+    "end":{
+        "lat":10.3,
+        "lng":10.4,
+        "place":"2nd random places"
+    },
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+
+###
+GET http://localhost:3000/v1/drivers/trips
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwicGhvbmUiOiIwMjIyMjIyIiwidHlwZSI6IkRyaXZlciIsImlhdCI6MTY4OTI5OTE1OCwiZXhwIjoxNjkwMzc5MTU4fQ.bZ1yj4W0dqepaAMYZ493qfw0Q3PSioWQzICTfaVwUHg
