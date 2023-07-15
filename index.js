@@ -8,11 +8,7 @@ const app = express()
 const server = http.createServer(app)
 
 const io = new socketio.Server(server)
-// io.on('connection',(socket)=>{
-//     socket.on('user_info',(data)=>{
-//         console.log(data)
-//     })    
-// })
+
 socketService.socketConnection(io)
 require("dotenv").config();
 
@@ -24,15 +20,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/",(req,res)=>{
-    res.send("oh hi yo")
+app.get("/", (req, res) => {
+  res.send("oh hi yo")
 })
 
 initServerRoutes(app)
 connectDB();
 
 
-server.listen(process.env.PORT||3000,()=>{
-    console.log("server listening on 3000")
+server.listen(process.env.PORT || 3000, () => {
+  console.log("server listening on 3000")
 })
 
