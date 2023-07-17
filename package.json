@@ -1,5 +1,5 @@
 {
-  "main": "./workspace/index.js",
+  "main": "workspace/index.js",
   "devDependencies": {
     "@babel/cli": "^7.22.5",
     "@babel/core": "^7.22.5",
@@ -8,7 +8,7 @@
     "babel-cli": "^6.26.0"
   },
   "scripts": {
-    "start": "node ./workspace/index.js",
+    "start": "node workspace/index.js",
     "build": "babel src -d workspace",
     "postbuild": "cp src/config/config.json workspace/config/",
     "dev": "nodemon --exec babel-node src/index.js --ext *"
@@ -26,6 +26,11 @@
     "nodemon": "^2.0.22",
     "sequelize": "^6.32.1",
     "socket.io": "^4.7.1",
-    "ws": "^8.13.0"
+    "ws": "^8.13.0",
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "babel-cli": "^6.26.0"
   }
 }
