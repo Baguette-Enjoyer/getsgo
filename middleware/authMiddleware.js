@@ -1,19 +1,20 @@
 import jwtService from "../services/jwtService"
+import firebaseService from "../services/firebaseService"
 
-let AuthMiddleware = async (req,res,next) =>{
+let AuthMiddleware = async (req, res, next) => {
     let authHeader = req.headers['authorization']
     let tk = authHeader && authHeader.split(' ')[1]
-    if (!tk){
+    if (!tk) {
         return res.status(402).json({
             statusCode: 402,
-            message:"token missing or something went wrong"
+            message: "token missing or something went wrong"
         })
     }
     let result = await jwtService.VerifyToken(tk)
-    if (result.result == false){
+    if (result.result == false) {
         return res.status(502).json({
-            statusCode:502,
-            message:result.message,
+            statusCode: 502,
+            message: result.message,
 
         })
     }
@@ -22,30 +23,41 @@ let AuthMiddleware = async (req,res,next) =>{
     next();
 }
 
-let AdminAuthMiddleware = async (req,res,next) =>{
+let AdminAuthMiddleware = async (req, res, next) => {
     let authHeader = req.headers['authorization']
     let tk = authHeader && authHeader.split(' ')[1]
-    if (!tk){
+    if (!tk) {
         return res.status(402).json({
             statusCode: 402,
-            message:"token missing or something went wrong"
+            message: "token missing or something went wrong"
         })
     }
     let result = await jwtService.VerifyToken(tk)
-    if (result.result == false){
+    if (result.result == false) {
         return res.status(502).json({
-            statusCode:502,
-            message:result.message,
+            statusCode: 502,
+            message: result.message,
         })
     }
-    if (result.decoded.type != "Admin"){
+    if (result.decoded.type != "Admin") {
         return res.status(502).json({
-            statusCode:502,
-            message:"user not authenticated",
+            statusCode: 502,
+            message: "user not authenticated",
         })
     }
     req.decodedToken = result.decoded
     next();
+
+}
+
+
+
+let UserCredentialMiddleware = (req, res, next) => {
+    let authHeader = req.headers['authorization']
+    let token = authHeader && authHeader.split(' ')[1]
+    let credential = firebaseService.decodeFirebaseToken(token)
+    let user_id = credential.phone_number
+
 
 }
 
