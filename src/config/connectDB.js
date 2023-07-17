@@ -5,8 +5,16 @@ const DB_USN = process.env.DB_USN
 const DB_PWD = process.env.DB_PWD
 
 let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
-  host: "db-mysql-sgp1-79566-do-user-14291271-0.b.db.ondigitalocean.com",
-  dialect: "mysql"
+  host: process.env.HOST,
+  dialect: "mysql",
+  "port": process.env.DB_PORT,
+  "dialectOptions": {
+    "ssl": {
+      "required": true,
+      "rejectUnauthorized": false
+    }
+  },
+
 });
 
 const connectDB = async () => {

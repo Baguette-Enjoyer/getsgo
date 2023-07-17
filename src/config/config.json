@@ -1,9 +1,16 @@
 {
   "development": {
-    "username": "long3112",
-    "password": "3112",
-    "database": "getsgo",
-    "host": "db-mysql-sgp1-79566-do-user-14291271-0.b.db.ondigitalocean.com",
+    "username": "xxdd",
+    "password": "xxdd",
+    "database": "xxdd",
+    "host": "xxdd",
+    "port": 3306,
+    "dialectOptions": {
+      "ssl": {
+        "required": true,
+        "rejectUnauthorized": false
+      }
+    },
     "dialect": "mysql"
   },
   "test": {
