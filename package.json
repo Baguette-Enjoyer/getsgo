@@ -7,7 +7,7 @@
     "babel-cli": "^6.26.0"
   },
   "scripts": {
-    "build": "babel src -d lib",
+    "build": "babel src -d dist",
     "dev": "nodemon --exec babel-node src/index.js --ext *"
   },
   "dependencies": {
