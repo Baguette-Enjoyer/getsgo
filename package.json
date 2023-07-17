@@ -7,6 +7,7 @@
     "babel-cli": "^6.26.0"
   },
   "scripts": {
+    "start": "node workspace/index.js",
     "build": "babel src -d workspace",
     "postbuild": "cp src/config/config.json workspace/config/",
     "dev": "nodemon --exec babel-node src/index.js --ext *"
