@@ -52,14 +52,14 @@ let AdminAuthMiddleware = async (req, res, next) => {
 
 
 
-let UserCredentialMiddleware = (req, res, next) => {
-    let authHeader = req.headers['authorization']
-    let token = authHeader && authHeader.split(' ')[1]
-    let credential = firebaseService.decodeFirebaseToken(token)
-    let user_id = credential.phone_number
+// let UserCredentialMiddleware = (req, res, next) => {
+//     let authHeader = req.headers['authorization']
+//     let token = authHeader && authHeader.split(' ')[1]
+//     let credential = firebaseService.decodeFirebaseToken(token)
+//     let user_id = credential.phone_number
 
 
-}
+// }
 
 export default {
     AuthMiddleware,
