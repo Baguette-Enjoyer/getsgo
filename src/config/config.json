@@ -2,8 +2,8 @@
   "development": {
     "username": "long3112",
     "password": "3112",
-    "database": "getgo_test",
-    "host": "localhost",
+    "database": "getsgo",
+    "host": "db-mysql-sgp1-79566-do-user-14291271-0.b.db.ondigitalocean.com",
     "dialect": "mysql"
   },
   "test": {

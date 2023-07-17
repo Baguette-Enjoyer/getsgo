@@ -5,18 +5,18 @@ const DB_USN = process.env.DB_USN
 const DB_PWD = process.env.DB_PWD
 
 let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
-  host: "127.0.0.1",
+  host: "db-mysql-sgp1-79566-do-user-14291271-0.b.db.ondigitalocean.com",
   dialect: "mysql"
 });
 
-const connectDB = async () =>{
+const connectDB = async () => {
   try {
     await sequelize.authenticate()
     console.log("Connected to db")
   } catch (error) {
     console.log("Failed to connect")
   }
-  
+
 }
 export default connectDB;
 
