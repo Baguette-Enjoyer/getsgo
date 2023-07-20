@@ -16,6 +16,10 @@ let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
   },
 
 });
+// let sequelize_dev = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
+//   host: process.env.HOST,
+//   dialect: "mysql",
+// });
 
 const connectDB = async () => {
   try {

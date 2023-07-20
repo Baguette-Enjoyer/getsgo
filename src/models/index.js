@@ -25,6 +25,18 @@ if (config.use_env_variable) {
     dialect: 'mysql'
   }
   sequelize = new Sequelize(config2.database, config2.username, config2.password, config2);
+  // let config_dev = {
+  //   username: process.env.DB_USN,
+  //   password: process.env.DB_PWD,
+  //   database: process.env.DB_NAME,
+  //   host: process.env.HOST,
+  //   dialect: 'mysql',
+  //   port: process.env.PORT,
+  // }
+  // sequelize = new Sequelize("getgo_test", "long3112", "3112", {
+  //   host: process.env.HOST,
+  //   dialect: "mysql",
+  // })
 }
 
 fs

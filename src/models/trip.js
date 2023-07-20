@@ -11,8 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Trip.hasOne(models.Rate,{
-        foreignKey:"trip_id"
+      Trip.hasOne(models.Rate, {
+        foreignKey: "trip_id"
+      })
+      Trip.belongsTo(models.User, {
+        as: "user",
+        foreignKey: "user_id"
+      })
+      Trip.belongsTo(models.User, {
+        as: "driver",
+        foreignKey: "driver_id"
       })
     }
   }

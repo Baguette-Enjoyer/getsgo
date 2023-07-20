@@ -13,13 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Trip,
         {
-          foreignKey:"user_id"
-        }  
+          as: "user_trip",
+          foreignKey: "user_id"
+        }
       )
       User.hasMany(models.Trip,
         {
-          foreignKey:"driver_id"
-        }  
+          as: "driver_trip",
+          foreignKey: "driver_id"
+        }
       )
 
     }

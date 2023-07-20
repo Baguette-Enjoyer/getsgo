@@ -1,16 +1,9 @@
 {
   "development": {
-    "username": "xxdd",
-    "password": "xxdd",
-    "database": "xxdd",
-    "host": "xxdd",
-    "port": 3306,
-    "dialectOptions": {
-      "ssl": {
-        "required": true,
-        "rejectUnauthorized": false
-      }
-    },
+    "username": "long3112",
+    "password": "3112",
+    "database": "getgo_test",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "test": {

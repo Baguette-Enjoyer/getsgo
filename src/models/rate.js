@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Rate.belongsTo(models.Trip, {
+        foreignKey: "trip_id"
+      })
     }
   }
   Rate.init({

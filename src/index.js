@@ -1,15 +1,20 @@
 import express from "express";
 import http from "http";
-import socketio from "socket.io";
+import { Server } from "socket.io";
+import listEndpoints from "express-list-endpoints";
 import initServerRoutes from "./routes/serverRoutes";
 import connectDB from "./config/connectDB";
-import socketService from './socket/index'
+import initSocket from './services/socketService';
 const app = express()
 const server = http.createServer(app)
 
-const io = new socketio.Server(server)
+let io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  }
+})
 
-socketService.socketConnection(io)
 require("dotenv").config();
 
 app.use(express.json())
@@ -20,6 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
+initSocket(io)
+
 app.get("/", (req, res) => {
   res.send("oh hi yo")
 })
@@ -27,7 +34,7 @@ app.get("/", (req, res) => {
 initServerRoutes(app)
 connectDB();
 
-
+console.log(listEndpoints(app))
 server.listen(process.env.PORT || 3000, () => {
   console.log("server listening on 3000")
 })

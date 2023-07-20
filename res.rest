@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
     "name":"Long",
-    "phone":"+84974649123",
-    "password":"123456",
+    "phone":"+84555555555",
+    "password":"123",
     "gender":"Male",
     "avatar":null
 }
@@ -15,13 +15,13 @@ POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"0222222",
+    "phone":"+84222222222",
     "password":"123"
 }
 
 ###
 POST http://localhost:3000/v1/booking/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicGhvbmUiOiIwNDQ0NDQ0IiwidHlwZSI6IlVzZXIiLCJpYXQiOjE2ODkyOTkxNzcsImV4cCI6MTY5MDM3OTE3N30.PgFK1oAvh8nasfb0FNeaAQbNhiJV-M8jdnt99YjlKiE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwicGhvbmUiOiIrODQ1NTU1NTU1NTUiLCJ0eXBlIjoiVXNlciIsImlhdCI6MTY4OTczNTkzOCwiZXhwIjoxNjkwODE1OTM4fQ.MHfErOG2zKjcLedIFxaLEfkzeFedlhiMEzkAcQl20fU
 Content-Type: application/json
 
 {
@@ -43,4 +43,15 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/v1/drivers/trips
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwicGhvbmUiOiIwMjIyMjIyIiwidHlwZSI6IkRyaXZlciIsImlhdCI6MTY4OTI5OTE1OCwiZXhwIjoxNjkwMzc5MTU4fQ.bZ1yj4W0dqepaAMYZ493qfw0Q3PSioWQzICTfaVwUHg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
+
+###
+GET http://localhost:3000/v1/trips/1
+
+###
+PUT http://localhost:3000/v1/trips/1
+Content-Type: application/json
+
+{
+    "status":"Confirmed"
+}
