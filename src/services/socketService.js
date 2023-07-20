@@ -6,7 +6,7 @@ let trips = new Map()
 let current_intervals = new Map()
 
 let initSocket = (io) => {
-    io.of('getsgosocket').on('connection', (socket) => {
+    io.on('connection', (socket) => {
         console.log("socket " + socket.id + " connected")
         handleUserLogin(socket)
         handleDriverLogin(socket)
