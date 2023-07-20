@@ -26,7 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-initSocket(io)
+// initSocket(io)
 
 app.get("/", (req, res) => {
   res.send("oh hi yo")
