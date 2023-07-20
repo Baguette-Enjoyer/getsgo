@@ -13,7 +13,6 @@ let io = new Server(server, {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
-  path: '/getsgosocket'
 })
 
 require("dotenv").config();
