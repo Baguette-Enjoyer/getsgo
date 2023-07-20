@@ -12,7 +12,8 @@ let io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  }
+  },
+  path: '/getsgosocket'
 })
 
 require("dotenv").config();
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// initSocket(io)
+initSocket(io)
 
 app.get("/", (req, res) => {
   res.send("oh hi yo")
