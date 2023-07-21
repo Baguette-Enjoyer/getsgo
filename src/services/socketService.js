@@ -1,11 +1,13 @@
 import locationServices from "./locationService"
+import initServer from "./initServer"
 
+let io = initServer.io
 let users = new Map()
 let drivers = new Map()
 let trips = new Map()
 let current_intervals = new Map()
 
-let initSocket = (io) => {
+let initSocket = () => {
     io.on('connection', (socket) => {
         console.log("socket " + socket.id + " connected")
         handleUserLogin(socket)

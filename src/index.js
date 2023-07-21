@@ -1,42 +1,47 @@
-import express from "express";
-import http from "http";
-import { Server } from "socket.io";
-import listEndpoints from "express-list-endpoints";
-import initServerRoutes from "./routes/serverRoutes";
+// import express from "express";
+// import http from "http";
+// import { Server } from "socket.io";
+// // import listEndpoints from "express-list-endpoints";
+// import initServerRoutes from "./routes/serverRoutes";
+import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
 import initSocket from './services/socketService';
-const app = express()
-const server = http.createServer(app)
+// const app = express()
+// const server = http.createServer(app)
 
-let io = new Server(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  },
-})
+// let io = new Server(server, {
+//   cors: {
+//     origin: '*',
+//     // methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   },
+// })
 
 require("dotenv").config();
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// app.use(express.json())
+// app.use(express.urlencoded({ extended: true }))
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url} ${res.statusCode}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`${req.method} ${req.url} ${res.statusCode}`);
+//   next();
+// });
 
-initSocket(io)
-
-app.get("/", (req, res) => {
-  res.send("oh hi yo")
-})
-
-initServerRoutes(app)
 connectDB();
+initSocket();
 
-console.log(listEndpoints(app))
-server.listen(process.env.PORT || 3000, () => {
+initServer.server.listen(process.env.PORT || 3000, () => {
   console.log("server listening on 3000")
 })
+// app.get("/", (req, res) => {
+//   res.send("oh hi yo")
+// })
+
+// initServerRoutes(app)
+
+
+// console.log(listEndpoints(app))
+// server.listen(process.env.PORT || 3000, () => {
+//   console.log("server listening on 3000")
+// })
 
 // "postbuild": "copy src\\config\\config.json workspace\\config\\",
