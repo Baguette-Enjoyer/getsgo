@@ -156,9 +156,15 @@ let initSeed = async (req, res) => {
         item.createdAt = Sequelize.literal("NOW()")
         item.updatedAt = Sequelize.literal("NOW()")
     })
-    await db.User.bulkCreate(users)
-    await db.Trip.bulkCreate(trips)
-    await db.Rate.bulkCreate(rates)
+    await db.User.bulkCreate(users).then(() => {
+        console.log("seeded users")
+    })
+    await db.Trip.bulkCreate(trips).then(() => {
+        console.log("seeded trips")
+    })
+    await db.Rate.bulkCreate(rates).then(() => {
+        console.log("seeded rates")
+    })
 }
 
 export default {
