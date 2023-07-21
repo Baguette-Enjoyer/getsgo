@@ -43,29 +43,122 @@ let initSeed = async (req, res) => {
             type: "User",
         },
     ]
+    let start = {
+        "lat": 10.1,
+        "lng": 10.2,
+        "place": "random places"
+    }
+    let end = {
+        "lat": 10.3,
+        "lng": 10.4,
+        "place": "2nd random places"
+    }
+    let startJSON = JSON.stringify(start)
+    let endJSON = JSON.stringify(end)
     let trips = [
         {
-            "start": {
-                "lat": 10.1,
-                "lng": 10.2,
-                "place": "random places"
-            },
-            "end": {
-                "lat": 10.3,
-                "lng": 10.4,
-                "place": "2nd random places"
-            },
+            "user_id": 4,
+            "driver_id": 2,
+            "start": startJSON,
+            "end": endJSON,
             "is_scheduled": false,
             "price": 50000,
             "is_paid": false,
-            "payment_method": "Cash"
-        }
+            "paymentMethod": "Cash"
+        },
+        {
+            "user_id": 4,
+            "driver_id": 2,
+            "start": startJSON,
+            "end": endJSON,
+            "is_scheduled": false,
+            "price": 50000,
+            "is_paid": false,
+            "paymentMethod": "Cash"
+        },
+        {
+            "user_id": 5,
+            "driver_id": 2,
+            "start": startJSON,
+            "end": endJSON,
+            "is_scheduled": false,
+            "price": 50000,
+            "is_paid": false,
+            "paymentMethod": "Cash"
+        },
+        {
+            "user_id": 4,
+            "driver_id": 3,
+            "start": startJSON,
+            "end": endJSON,
+            "is_scheduled": false,
+            "price": 50000,
+            "is_paid": false,
+            "paymentMethod": "Cash"
+        },
+        {
+            "user_id": 4,
+            "driver_id": 3,
+            "start": startJSON,
+            "end": endJSON,
+            "is_scheduled": false,
+            "price": 50000,
+            "is_paid": false,
+            "paymentMethod": "Cash"
+        },
+        {
+            "user_id": 5,
+            "driver_id": 3,
+            "start": startJSON,
+            "end": endJSON,
+            "is_scheduled": false,
+            "price": 50000,
+            "is_paid": false,
+            "paymentMethod": "Cash"
+        },
     ]
+    let rates = [
+        {
+            star: 4,
+            trip_id: 1,
+        },
+        {
+            star: 5,
+            trip_id: 2,
+        },
+        {
+            star: 2,
+            trip_id: 3,
+        },
+        {
+            star: 5,
+            trip_id: 4,
+        },
+        {
+            star: 1,
+            trip_id: 5,
+        },
+        {
+            star: 4,
+            trip_id: 6,
+        },
+    ]
+
     users.forEach(item => {
         item.createdAt = Sequelize.literal("NOW()")
         item.updatedAt = Sequelize.literal("NOW()")
     })
+    trips.forEach(item => {
+        item.createdAt = Sequelize.literal("NOW()")
+        item.updatedAt = Sequelize.literal("NOW()")
+    })
+    rates.forEach(item => {
+        item.createdAt = Sequelize.literal("NOW()")
+        item.updatedAt = Sequelize.literal("NOW()")
+    })
     await db.User.bulkCreate(users)
+    await db.Trip.bulkCreate(trips)
+    await db.Rate.bulkCreate(rates)
 }
 
 export default {
