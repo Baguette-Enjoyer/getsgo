@@ -1,7 +1,7 @@
 // import express from "express";
 // import http from "http";
 // import { Server } from "socket.io";
-// // import listEndpoints from "express-list-endpoints";
+import listEndpoints from "express-list-endpoints";
 // import initServerRoutes from "./routes/serverRoutes";
 import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
@@ -29,6 +29,8 @@ require("dotenv").config();
 connectDB();
 initSocket();
 
+console.log(listEndpoints(initServer.app))
+
 initServer.server.listen(process.env.PORT || 3000, () => {
   console.log("server listening on 3000")
 })
@@ -39,7 +41,6 @@ initServer.server.listen(process.env.PORT || 3000, () => {
 // initServerRoutes(app)
 
 
-// console.log(listEndpoints(app))
 // server.listen(process.env.PORT || 3000, () => {
 //   console.log("server listening on 3000")
 // })

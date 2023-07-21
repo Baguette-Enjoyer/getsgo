@@ -5,7 +5,9 @@ import jwtService from './jwtService';
 
 const salt = bcrypt.genSaltSync(10);
 
-
+let Checkuser = async (data) => {
+  return new Promise((resolve, reject) => { first })
+}
 
 let RegisterUser = async (data) => {
   return new Promise(async (resolve, reject) => {
