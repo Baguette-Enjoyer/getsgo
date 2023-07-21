@@ -1,5 +1,5 @@
 import db from '../models/index'
-
+import { Sequelize } from 'sequelize'
 let initTable = async (req, res) => {
     // console.log(db.sequelize)
     await db.sequelize.sync({
@@ -167,9 +167,15 @@ let initSeed = async (req, res) => {
         await db.Rate.bulkCreate(rates).then(() => {
             console.log("seeded rates")
         })
-        res.send("ok seeded")
+        res.status(200).json({
+            statusCode: 200,
+            message: "ok"
+        })
     } catch (error) {
-        res.send(error)
+        res.status(500).json({
+            statusCode: 500,
+            error: error.message,
+        })
     }
 }
 
