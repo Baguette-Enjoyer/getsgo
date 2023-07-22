@@ -43,7 +43,7 @@ Content-Type: application/json
 
 {
     "start":"random places 1",
-    "end": "random places 2",
+    "end": "random places 2",  
     "phone": "+84123456789",
     "is_scheduled":false,
     "price":50000,

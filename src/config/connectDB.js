@@ -4,26 +4,26 @@ const DB_NAME = process.env.DB_NAME
 const DB_USN = process.env.DB_USN
 const DB_PWD = process.env.DB_PWD
 
-// let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
-//   host: process.env.HOST,
-//   dialect: "mysql",
-//   "port": process.env.DB_PORT,
-//   "dialectOptions": {
-//     "ssl": {
-//       "required": true,
-//       "rejectUnauthorized": false
-//     }
-//   },
-
-// });
-let sequelize_dev = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
+let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
   host: process.env.HOST,
   dialect: "mysql",
+  "port": process.env.DB_PORT,
+  "dialectOptions": {
+    "ssl": {
+      "required": true,
+      "rejectUnauthorized": false
+    }
+  },
+
 });
+// let sequelize_dev = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
+//   host: process.env.HOST,
+//   dialect: "mysql",
+// });
 
 const connectDB = async () => {
   try {
-    await sequelize_dev.authenticate()
+    await sequelize.authenticate()
     console.log("Connected to db")
   } catch (error) {
     console.log("Failed to connect")
