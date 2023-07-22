@@ -9,22 +9,40 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
+require('dotenv').config()
 let sequelize;
+
+const DB_NAME = process.env.DB_NAME
+const DB_USN = process.env.DB_USN
+const DB_PWD = process.env.DB_PWD
+
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
   // sequelize = new Sequelize(config.database, config.username, config.password, config);
   // console.log(config)
-  let config2 = {
-    username: process.env.DB_USN,
-    password: process.env.DB_PWD,
-    database: process.env.DB_NAME,
+  // let config2 = {
+  //   username: process.env.DB_USN,
+  //   password: process.env.DB_PWD,
+  //   database: process.env.DB_NAME,
+  //   host: process.env.HOST,
+  //   port: process.env.DB_PORT,
+  //   dialectOptions: { ssl: { required: true, rejectUnauthorized: false } },
+  //   dialect: 'mysql'
+  // }
+  // sequelize = new Sequelize(config2.database, config2.username, config2.password, config2);
+  sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
     host: process.env.HOST,
-    port: process.env.DB_PORT,
-    dialectOptions: { ssl: { required: true, rejectUnauthorized: false } },
-    dialect: 'mysql'
-  }
-  sequelize = new Sequelize(config2.database, config2.username, config2.password, config2);
+    dialect: "mysql",
+    "port": process.env.DB_PORT,
+    "dialectOptions": {
+      "ssl": {
+        "required": true,
+        "rejectUnauthorized": false
+      }
+    },
+
+  });
   // let config_dev = {
   //   username: process.env.DB_USN,
   //   password: process.env.DB_PWD,

@@ -85,4 +85,4 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/v1/phone?phone=+84111111111
+GET http://localhost:3000/v1/phone?phone=8411111111
