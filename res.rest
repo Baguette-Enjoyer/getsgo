@@ -3,11 +3,8 @@ POST http://localhost:3000/v1/users/signup
 Content-Type: application/json
 
 {
-    "name":"Long",
     "phone":"+84555555555",
-    "password":"123",
-    "gender":"Male",
-    "avatar":null
+    "password":"123"
 }
 
 ###
@@ -15,8 +12,8 @@ POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"+84222222222",
-    "password":"123"
+    "phone":"+84666666666",
+    "password":"000000"
 }
 
 ###
@@ -40,6 +37,19 @@ Content-Type: application/json
     "is_paid":false,
     "payment_method":"Cash"
 }
+###
+POST http://localhost:3000/v1/booking/callcenter
+Content-Type: application/json
+
+{
+    "start":"random places 1",
+    "end": "random places 2",
+    "phone": "+84123456789",
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
 
 ###
 GET http://localhost:3000/v1/drivers/trips
@@ -55,3 +65,24 @@ Content-Type: application/json
 {
     "status":"Confirmed"
 }
+
+###
+POST https://gets-go-sv-zfnlw.ondigitalocean.app/v1/users/signup
+Content-Type: application/json
+
+{
+    "phone":"+8466666666",
+    "password":"123456"
+}
+
+###
+POST https://gets-go-sv-zfnlw.ondigitalocean.app/v1/users/login
+Content-Type: application/json
+
+{
+    "phone":"+84555555555",
+    "password":"123"
+}
+
+###
+GET http://localhost:3000/v1/phone?phone=+84111111111

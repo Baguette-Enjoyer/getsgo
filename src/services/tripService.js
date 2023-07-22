@@ -1,4 +1,5 @@
 import db from '../models/index'
+import userService from './userService'
 
 let CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -30,6 +31,63 @@ let CreateTrip = async (data) => {
                 name: place2,
                 lat: lat2,
                 lng: lng2
+            },
+            user_id: user_id,
+            is_scheduled: is_scheduled,
+            scheduled_time: scheduled_time,
+            status: status,
+            paymentMethod: paymentMethod,
+            is_paid: is_paid,
+            price: price,
+        }
+        // console.log(trip)
+        let newTrip = await db.Trip.create(
+            trip
+        )
+        trip.trip_id = newTrip.id
+        console.log(trip)
+        if (newTrip.id == null) {
+            return resolve({
+                statusCode: 500,
+                error: new Error('error creating trip')
+            })
+        }
+        return resolve({
+            statusCode: 200,
+            trip_info: trip,
+        })
+    })
+}
+
+let CreateTripForCallCenter = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        // let lat1 = data.start.lat
+        // let lng1 = data.start.lng
+        let place1 = data.start
+        // let lat2 = data.end.lat
+        // let lng2 = data.end.lng
+        let place2 = data.end
+        let now = new Date()
+        let phone = data.phone
+
+        let is_scheduled = data.is_scheduled
+        let scheduled_time = is_scheduled ? data.schedule_time : now
+        let status = "Waiting"
+        let paymentMethod = data.paymentMethod
+        let is_paid = false
+        let price = data.price
+
+        let user = await userService.CreateUserIfNotExist(phone);
+        let user_id = user.id;
+
+        console.log(user_id)
+
+        let trip = {
+            start: {
+                name: place1
+            },
+            end: {
+                name: place2
             },
             user_id: user_id,
             is_scheduled: is_scheduled,
@@ -162,6 +220,7 @@ let GetAppointmentTrip = async () => {
 
 export default {
     CreateTrip,
+    CreateTripForCallCenter,
     GetAvailableTrip,
     GetTripById,
     UpdateTrip

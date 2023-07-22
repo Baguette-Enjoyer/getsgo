@@ -8,15 +8,18 @@ let BookTrip = async (req, res) => {
     data.user_id = user_id
     let result = await tripService.CreateTrip(data)
     if (result.statusCode == 500) {
-        return res.status(500).json({
-            statusCode: 500,
-            error: result.error,
-        })
+        return res.status(500).json(result)
     }
-    return res.status(200).json({
-        statusCode: 200,
-        trip_info: result,
-    })
+    return res.status(200).json(result)
+}
+
+let CallCenterBookTrip = async (req, res) => {
+    let data = req.body
+    let result = await tripService.CreateTripForCallCenter(data)
+    if (result.statusCode == 500) {
+        return res.status(500).json(result)
+    }
+    return res.status(200).json(result)
 }
 
 let GetTrips = async (req, res) => {
@@ -62,6 +65,7 @@ let UpdateTrip = async (req, res) => {
 }
 export default {
     BookTrip,
+    CallCenterBookTrip,
     GetTrips,
     GetTripById,
     UpdateTrip

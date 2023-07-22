@@ -53,17 +53,37 @@ let RegisterUser = async (req, res) => {
 }
 
 let GetUserByPhone = async (req, res) => {
-    let data = req.query.phone
-    let user = await userService.GetUserByPhone(data)
-    if (user == null) {
-        return res.status(404).json({
-            statusCode: 404,
-            message: "User not found"
+    let phone = req.query.phone
+    let phoneNormalized = '+' + phone.trim();
+    if (phoneNormalized.length != 12) {
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Invalid phone number"
         })
     }
+    let result = await userService.GetUserByPhone(phoneNormalized)
+    // if (result == null) {
+    //     return res.status(404).json({
+    //         statusCode: 404,
+    //         message: "User not found"
+    //     })
+    // }
+    if (result.error == 'Invalid phone number') {
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Invalid phone number"
+        })
+    }
+    if (result.error == 'Phone Number Not Found') {
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Phone Number Not Found"
+        })
+    }
+
     return res.status(200).json({
         statusCode: 200,
-        user_info: user,
+        user_info: result,
     })
 }
 

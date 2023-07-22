@@ -17,7 +17,7 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull:true,
+        allowNull: true,
       },
       password: {
         type: Sequelize.STRING
@@ -32,7 +32,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       type: {
-        type: Sequelize.ENUM('Admin', 'User', 'User_Vip', 'Driver')
+        type: Sequelize.ENUM('Admin', 'User', 'User_Vip', 'Driver', 'CallCenter')
       },
       active: {
         type: Sequelize.BOOLEAN

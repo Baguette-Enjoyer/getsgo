@@ -16,32 +16,38 @@ module.exports = {
       {
         name: "Admin",
         phone: "+84111111111",
-        password: "$2a$10$P3nKAg0XDgWKu5G96hhnjuYqmVsWkkmfUT4WDVMGEgWTI9/pDggxO",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "Admin",
       },
       {
         name: "Driver",
         phone: "+84222222222",
-        password: "$2a$10$P3nKAg0XDgWKu5G96hhnjuYqmVsWkkmfUT4WDVMGEgWTI9/pDggxO",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "Driver",
       },
       {
         name: "Driver",
         phone: "+84333333333",
-        password: "$2a$10$P3nKAg0XDgWKu5G96hhnjuYqmVsWkkmfUT4WDVMGEgWTI9/pDggxO",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "Driver",
       },
       {
         name: "User_vip",
         phone: "+84444444444",
-        password: "$2a$10$P3nKAg0XDgWKu5G96hhnjuYqmVsWkkmfUT4WDVMGEgWTI9/pDggxO",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "User_Vip",
       },
       {
         name: "User",
         phone: "+84555555555",
-        password: "$2a$10$P3nKAg0XDgWKu5G96hhnjuYqmVsWkkmfUT4WDVMGEgWTI9/pDggxO",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "User",
+      },
+      {
+        name: "CallCenter",
+        phone: "+84666666666",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
+        type: "CallCenter",
       },
     ]
     items.forEach(item => {

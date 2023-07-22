@@ -2,6 +2,7 @@ import db from '../models/index'
 import bcrypt from "bcryptjs"
 import { resolve } from "path";
 import jwtService from './jwtService';
+import { Op } from 'sequelize'
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -14,9 +15,15 @@ let RegisterUser = async (data) => {
     console.log(data)
     let phone = data.phone
     let checkUser = await GetUserByPhone(phone)
-    if (checkUser != null) {
+    if (checkUser.error == 'Invalid phone number') {
       return resolve({
-        statusCode: 400,
+        statusCode: 500,
+        message: "Invalid phone number",
+      })
+    }
+    if (checkUser.error != 'Phone Number Not Found') {
+      return resolve({
+        statusCode: 500,
         message: "Phone existed",
       })
     }
@@ -25,12 +32,10 @@ let RegisterUser = async (data) => {
     let hash = await hashUserPassword(pwd)
     try {
       let user = await db.User.create({
-        name: data.name,
+        // name: data.name,
         phone: phone,
         password: hash,
-        gender: data.gender,
-        birthday: new Date(),
-        avatar: data.avatar,
+        // gender: data.gender,
         active: true,
         type: "User"
       })
@@ -61,10 +66,11 @@ let LoginUser = async (data) => {
     let phone = data.phone
     let password = data.password
     let checkUser = await GetUserByPhone(phone)
-    if (checkUser == null) {
+    console.log(checkUser)
+    if (checkUser.error == 'Phone Number Not Found') {
       return resolve({
         statusCode: 500,
-        message: "Phone not exist",
+        message: checkUser.error,
       })
     }
     let hashPassword = checkUser.password
@@ -113,17 +119,54 @@ let LoginUser = async (data) => {
 
 let GetUserByPhone = async (phone) => {
   return new Promise(async (resolve, reject) => {
+    // const phoneNormalized = phone.trim()
+    // console.log(phoneNormalized)
+    // if (phoneNormalized.length != 11 && phoneNormalized.length != 12) {
+    //   return resolve({
+    //     error: "Invalid phone number"
+    //   })
+    // }
+    // let searchPhone = '+' + phoneNormalized
+    //copy to controoller
     let user = await db.User.findOne({
       where: {
-        phone: phone,
+        phone: {
+          [Op.eq]: phone,
+        },
       }
     })
     if (user) {
-      resolve(user)
+      return resolve(user)
     }
     else {
-      resolve(null)
+      return resolve({
+        error: "Phone Number Not Found"
+      })
     }
+  })
+}
+
+let CreateUserIfNotExist = async (phone) => {
+  return new Promise(async (resolve, reject) => {
+    // let phone = data.phone
+    let existedUser = await db.User.findOne({
+      where: {
+        phone: phone
+      }
+    })
+    if (existedUser != undefined) {
+      return resolve(existedUser)
+    }
+    let pwd = '000000'
+    let hashPWD = await hashUserPassword(pwd)
+    let user = await db.User.create({
+      phone: phone,
+      password: hashPWD,
+      active: true,
+      type: "User"
+    })
+    // console.log(first)
+    return resolve(user)
   })
 }
 
@@ -166,4 +209,5 @@ export default {
   LoginUser,
   RegisterUser,
   GetUserByPhone,
+  CreateUserIfNotExist,
 }
