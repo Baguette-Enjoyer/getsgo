@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/v1/users/login
+POST http://188.166.250.160:3000/v1/users/login
 Content-Type: application/json
 
 {
@@ -70,6 +70,8 @@ PUT http://localhost:3000/v1/trips/cancel/8
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
 
+###
+GET http://188.166.250.160:8080/v1/phone?phone=+84111111111
 ###
 GET http://localhost:3000/v1/phone?phone=+84111111111
 
