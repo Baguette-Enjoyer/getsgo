@@ -10,4 +10,4 @@ RUN npm run build
 
 EXPOSE 8080
 
-CMD ["node","/workspace/index.js"]
+CMD ["node","workspace/index.js"]
