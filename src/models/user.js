@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: "driver_id"
         }
       )
+      User.hasOne(models.Vehicle, {
+        foreignKey: "driver_id",
+        as: "driver_vehicle",
+      })
 
     }
   }

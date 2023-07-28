@@ -1,3 +1,4 @@
+import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
 
@@ -17,7 +18,7 @@ let CreateTrip = async (data) => {
         let is_scheduled = data.is_scheduled
         let scheduled_time = is_scheduled ? data.schedule_time : now
         //Check user role here
-        let status = "Waiting"
+        let status = "Pending"
         let paymentMethod = data.paymentMethod
         let is_paid = false
         let price = data.price
@@ -72,7 +73,7 @@ let CreateTripForCallCenter = async (data) => {
 
         let is_scheduled = data.is_scheduled
         let scheduled_time = is_scheduled ? data.schedule_time : now
-        let status = "Waiting"
+        let status = "Pending"
         let paymentMethod = data.paymentMethod
         let is_paid = false
         let price = data.price
@@ -120,15 +121,19 @@ let GetAvailableTrip = async () => {
     return new Promise(async (resolve, reject) => {
         let trips = await db.Trip.findAll(
             {
+                where: {
+                    status:
+                        { [Op.eq]: "Waiting" }
+                },
+            },
+            {
                 include: {
                     model: db.User,
                     as: 'user',
                     attributes: ['name', 'phone']
                 }
             },
-            {
-                where: { status: "Waiting" },
-            },
+
             {
                 order: [
                     ['createdAt', 'ASC'],
@@ -152,6 +157,7 @@ let GetTripById = async (trip_id) => {
     return new Promise(async (resolve, reject) => {
         let trips = await db.Trip.findOne(
             {
+                where: { id: trip_id },
                 include: [
                     {
                         model: db.User,
@@ -166,17 +172,65 @@ let GetTripById = async (trip_id) => {
                 ]
             },
 
-            {
-                where: { id: trip_id }
-            }
+
         )
+        if (trips == null) return reject(Error("Couldn't find trip"))
         trips.start = JSON.parse(trips.start)
         trips.end = JSON.parse(trips.end)
-        return resolve({
-            statusCode: 200,
-            trips: trips
-        })
+        return resolve(trips)
     })
+}
+
+let AcceptTrip = async (trip_id) => {
+    try {
+        let trip = await GetTripById(trip_id)
+        // if (trip.trips.id == null) throw new Error("Couldn't find trip")
+        if (trip.status == "Cancelled") throw new Error("Trip has been cancelled")
+        else if (trip.status == "Confirmed") {
+            throw new Error("Trip has been confirmed by other driver")
+        }
+    } catch (error) {
+        throw error
+    }
+    try {
+        let result = await db.Trip.update(
+            { status: 'Confirmed' },
+            {
+                where: {
+                    id: trip_id,
+                }
+            }
+        )
+        let newTrip = await GetTripById(trip_id)
+        return resolve(newTrip)
+    }
+    catch (err) {
+        throw new Error("Error updating trip")
+    }
+}
+
+let CancelTrip = async (trip_id) => {
+    try {
+        let trip = await GetTripById(trip_id)
+        // if (trip.id == null) throw new Error("Couldn't find trip")
+        let now = new Date().getTime()
+        let createdAt = new Date(trip.createdAt)
+        if (now - createdAt.getTime() > 300000) {
+            throw new Error("Overtime due")
+        }
+    } catch (error) {
+        throw error
+    }
+    let result = await db.Trip.update(
+        { status: 'Cancelled' },
+        {
+            where: {
+                id: trip_id,
+            }
+        }
+    )
+    let newTrip = await GetTripById(trip_id)
+    return newTrip
 }
 
 let UpdateTrip = async (data) => {
@@ -186,7 +240,7 @@ let UpdateTrip = async (data) => {
         if (data.driver_id != undefined) {
             updateObj.driver_id = data.driver_id
         }
-        if (data.status != undefined) {
+        if (data.status != "Cancelled" && data.status != null) {
             updateObj.status = data.status
         }
         if (data.finished_date != undefined) {
@@ -223,5 +277,7 @@ export default {
     CreateTripForCallCenter,
     GetAvailableTrip,
     GetTripById,
+    AcceptTrip,
+    CancelTrip,
     UpdateTrip
 }

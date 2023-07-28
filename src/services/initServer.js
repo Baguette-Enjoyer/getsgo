@@ -28,10 +28,17 @@ app.get("/", (req, res) => {
 })
 
 initServerRoutes(app)
-
+console.log("init server")
+let getServer = () => {
+    return server
+}
+let getApp = () => {
+    return app
+}
+let getIO = () => {
+    return io
+}
 
 export default {
-    server,
-    io,
-    app,
+    getServer, getApp, getIO
 }

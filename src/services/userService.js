@@ -2,13 +2,11 @@ import db from '../models/index'
 import bcrypt from "bcryptjs"
 import { resolve } from "path";
 import jwtService from './jwtService';
-import { Op } from 'sequelize'
-
+import { Op, where } from 'sequelize'
+import initServer from './initServer';
+import { test } from '../socket/socketServiceTS'
 const salt = bcrypt.genSaltSync(10);
 
-let Checkuser = async (data) => {
-  return new Promise((resolve, reject) => { first })
-}
 
 let RegisterUser = async (data) => {
   return new Promise(async (resolve, reject) => {
@@ -135,8 +133,12 @@ let GetUserByPhone = async (phone) => {
         },
       }
     })
-    if (user) {
+    if (user.password != null) {
       return resolve(user)
+    } else if (user.password == null) {
+      resolve({
+        error: "Require Register"
+      })
     }
     else {
       return resolve({
@@ -157,11 +159,8 @@ let CreateUserIfNotExist = async (phone) => {
     if (existedUser != undefined) {
       return resolve(existedUser)
     }
-    let pwd = '000000'
-    let hashPWD = await hashUserPassword(pwd)
     let user = await db.User.create({
       phone: phone,
-      password: hashPWD,
       active: true,
       type: "User"
     })
@@ -170,18 +169,49 @@ let CreateUserIfNotExist = async (phone) => {
   })
 }
 
-let GetUserById = async (user_id) => {
+let UpdatePassword = async (data) => {
   return new Promise(async (resolve, reject) => {
-    let user = db.User.findOne({
-      where: { id: user_id }
+    let id = data.user_id
+    let phone = data.phone
+    let type = data.type
+    let newPassword = data.password
+    // let user = await GetUserByPhone(phone)
+    let token = await jwtService.GenerateAccessToken(id, phone, type)
+    let hashPwd = await hashUserPassword(newPassword)
+
+    await db.User.update(
+      {
+        password: hashPwd,
+        accessToken: token,
+      },
+      {
+        where: {
+          id: id,
+        }
+      }
+    ).catch(err => {
+      throw err
     })
-    if (user) {
-      resolve(user)
-    }
-    else {
-      resolve(null)
+    return resolve({
+      user_id: id,
+      phone: phone,
+      type: type,
+      accessToken: token
+    })
+
+  })
+}
+
+let GetUserById = async (user_id) => {
+  let user = await db.User.findOne({
+    where: {
+      id: user_id,
     }
   })
+  if (user.id == null) {
+    throw new Error('user not found')
+  }
+  return user
 }
 
 
@@ -209,5 +239,7 @@ export default {
   LoginUser,
   RegisterUser,
   GetUserByPhone,
+  GetUserById,
   CreateUserIfNotExist,
+  UpdatePassword,
 }

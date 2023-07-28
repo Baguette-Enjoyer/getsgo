@@ -8,7 +8,7 @@
     "babel-cli": "^6.26.0"
   },
   "scripts": {
-    "start": "node workspace/index.js",
+    "start": "nodemon --exec babel-node src/socket/index.js --ext *",
     "build": "babel src -d workspace",
     "postbuild": "cp src/config/config.json workspace/config/",
     "dev": "nodemon --exec babel-node src/index.js --ext *"
@@ -26,10 +26,12 @@
     "express-list-endpoints": "^6.0.0",
     "firebase-admin": "^11.10.1",
     "http": "^0.0.1-security",
+    "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.5.0",
     "nodemon": "^2.0.22",
+    "redis": "^4.6.7",
     "sequelize": "^6.32.1",
     "socket.io": "^4.7.1",
     "ws": "^8.13.0"

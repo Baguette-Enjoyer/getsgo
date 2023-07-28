@@ -44,7 +44,7 @@ Content-Type: application/json
 {
     "start":"random places 1",
     "end": "random places 2",  
-    "phone": "+84123456789",
+    "phone": "+84123456788",
     "is_scheduled":false,
     "price":50000,
     "is_paid":false,
@@ -63,26 +63,41 @@ PUT http://localhost:3000/v1/trips/1
 Content-Type: application/json
 
 {
-    "status":"Confirmed"
+    "status":"Waiting"
 }
+###
+PUT http://localhost:3000/v1/trips/cancel/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
 
 ###
-POST https://gets-go-sv-zfnlw.ondigitalocean.app/v1/users/signup
+GET http://localhost:3000/v1/phone?phone=+84111111111
+
+###
+GET http://localhost:3000/v1/driver/2
+
+###
+GET http://localhost:3000/v1/history/user/4
+
+###
+GET http://localhost:3000/v1/history/driver/3?type=Month
+
+###
+PUT http://localhost:3000/v1/users/updatepassword
 Content-Type: application/json
 
 {
-    "phone":"+8466666666",
-    "password":"123456"
+    "user_id": 8,
+    "phone": "+84123456788",
+    "type": "User",
+    "password": "123123"
 }
 
 ###
-POST https://gets-go-sv-zfnlw.ondigitalocean.app/v1/users/login
+POST http://localhost:3000/v1/location/localdriver
 Content-Type: application/json
 
 {
-    "phone":"+84555555555",
-    "password":"123"
+    "lat":10.1,
+    "lng":10.2
 }
-
-###
-GET http://localhost:3000/v1/phone?phone=8411111111

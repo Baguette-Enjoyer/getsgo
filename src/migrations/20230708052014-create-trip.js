@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       status: {
-        type: Sequelize.ENUM('Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled')
+        type: Sequelize.ENUM('Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled')
       },
       start: {
         type: Sequelize.JSON
@@ -20,7 +20,7 @@ module.exports = {
       },
       finished_date: {
         type: Sequelize.DATE,
-        allowNull:true,
+        allowNull: true,
       },
       price: {
         type: Sequelize.DECIMAL
@@ -36,7 +36,7 @@ module.exports = {
       },
       schedule_time: {
         type: Sequelize.DATE,
-        allowNull:true,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

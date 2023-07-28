@@ -7,6 +7,7 @@ const initTripRoutes = (app) => {
     AuthRoutes.use(authMiddleware.AuthMiddleware)
     AuthRoutes.post('/v1/booking/users', tripController.BookTrip)
     AuthRoutes.get('/v1/drivers/trips', tripController.GetTrips)
+    AuthRoutes.put('/v1/trips/cancel/:trip_id', tripController.CancelTrip)
     Routes.post('/v1/booking/callcenter', tripController.CallCenterBookTrip)
     Routes.get('/v1/trips/:trip_id', tripController.GetTripById)
     Routes.put('/v1/trips/:trip_id', tripController.UpdateTrip)

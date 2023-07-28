@@ -28,6 +28,7 @@ module.exports = {
             {
                 "user_id": 4,
                 "driver_id": 2,
+                "status": "Cancelled",
                 "start": startJSON,
                 "end": endJSON,
                 "is_scheduled": false,
@@ -38,6 +39,7 @@ module.exports = {
             {
                 "user_id": 4,
                 "driver_id": 2,
+                "status": "Done",
                 "start": startJSON,
                 "end": endJSON,
                 "is_scheduled": false,
@@ -48,6 +50,7 @@ module.exports = {
             {
                 "user_id": 5,
                 "driver_id": 2,
+                "status": "Cancelled",
                 "start": startJSON,
                 "end": endJSON,
                 "is_scheduled": false,
@@ -58,6 +61,7 @@ module.exports = {
             {
                 "user_id": 4,
                 "driver_id": 3,
+                "status": "Done",
                 "start": startJSON,
                 "end": endJSON,
                 "is_scheduled": false,
@@ -68,6 +72,7 @@ module.exports = {
             {
                 "user_id": 4,
                 "driver_id": 3,
+                "status": "Done",
                 "start": startJSON,
                 "end": endJSON,
                 "is_scheduled": false,
@@ -78,6 +83,7 @@ module.exports = {
             {
                 "user_id": 5,
                 "driver_id": 3,
+                "status": "Done",
                 "start": startJSON,
                 "end": endJSON,
                 "is_scheduled": false,

@@ -38,14 +38,21 @@ let GetTrips = async (req, res) => {
 }
 
 let GetTripById = async (req, res) => {
-    let trip_id = await tripService.GetTripById(req.params.trip_id)
+    // let trip_id = await tripService.GetTripById(req.params.trip_id)
     // console.log(trip_id)
-    let trip = await tripService.GetTripById(trip_id)
-    return res.status(200).json({
-        statusCode: 200,
-        trip: trip,
+    let trip_id = req.params.trip_id
+    try {
+        let trip = await tripService.GetTripById(trip_id)
+        return res.status(200).json({
+            statusCode: 200,
+            trip: trip
+        })
+    } catch (error) {
+        return res.status(500).json({
+            statusCode: 500,
+            error: error.message,
+        })
     }
-    )
 }
 
 let UpdateTrip = async (req, res) => {
@@ -63,10 +70,28 @@ let UpdateTrip = async (req, res) => {
     }
 
 }
+
+let CancelTrip = async (req, res) => {
+    let trip_id = req.params.trip_id
+    let credential = JSON.parse(req.decodedToken)
+    try {
+        await tripService.CancelTrip(trip_id)
+        res.status(200).json({
+            statusCode: 200,
+            message: "trip cancelled",
+        })
+    } catch (error) {
+        res.status(500).json({
+            statusCode: 500,
+            error: error.message,
+        })
+    }
+}
 export default {
     BookTrip,
     CallCenterBookTrip,
     GetTrips,
     GetTripById,
-    UpdateTrip
+    UpdateTrip,
+    CancelTrip
 }

@@ -11,11 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Vehicle.belongsTo(models.Vehicle_Type,{
-        foreignKey:"vehicle_type_id",
+      Vehicle.belongsTo(models.Vehicle_Type, {
+        foreignKey: "vehicle_type_id",
+        as: "vehicle_type",
       })
-      Vehicle.belongsTo(models.User,{
-        foreignKey:"driver_id",
+      Vehicle.belongsTo(models.User, {
+        foreignKey: "driver_id",
+        as: "vehicle_driver"
       })
     }
   }

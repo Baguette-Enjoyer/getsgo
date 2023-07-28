@@ -59,6 +59,7 @@ let initSeed = async (req, res) => {
         {
             "user_id": 4,
             "driver_id": 2,
+            "status": "Cancelled",
             "start": startJSON,
             "end": endJSON,
             "is_scheduled": false,
@@ -69,6 +70,7 @@ let initSeed = async (req, res) => {
         {
             "user_id": 4,
             "driver_id": 2,
+            "status": "Done",
             "start": startJSON,
             "end": endJSON,
             "is_scheduled": false,
@@ -79,6 +81,7 @@ let initSeed = async (req, res) => {
         {
             "user_id": 5,
             "driver_id": 2,
+            "status": "Done",
             "start": startJSON,
             "end": endJSON,
             "is_scheduled": false,
@@ -89,6 +92,7 @@ let initSeed = async (req, res) => {
         {
             "user_id": 4,
             "driver_id": 3,
+            "status": "Cancelled",
             "start": startJSON,
             "end": endJSON,
             "is_scheduled": false,
@@ -99,6 +103,7 @@ let initSeed = async (req, res) => {
         {
             "user_id": 4,
             "driver_id": 3,
+            "status": "Done",
             "start": startJSON,
             "end": endJSON,
             "is_scheduled": false,
@@ -109,6 +114,7 @@ let initSeed = async (req, res) => {
         {
             "user_id": 5,
             "driver_id": 3,
+            "status": "Done",
             "start": startJSON,
             "end": endJSON,
             "is_scheduled": false,
@@ -144,6 +150,33 @@ let initSeed = async (req, res) => {
         },
     ]
 
+    let vehicle_types = [
+        {
+            name: "Xe 4 Chỗ",
+        },
+        {
+            name: "Xe 7 Chỗ",
+        },
+    ]
+
+    let vehicles = [
+        {
+            "driver_license": "0964155097",
+            "vehicle_registration": "123456",
+            "license_plate": "30D-206.32",
+            "name": "Honda 4 Chỗ Vip",
+            "vehicle_type_id": 1,
+            "driver_id": 2,
+        },
+        {
+            "driver_license": "0964155097",
+            "vehicle_registration": "123456",
+            "license_plate": "30D-206.32",
+            "name": "Honda 7 Chỗ Vip",
+            "vehicle_type_id": 2,
+            "driver_id": 3,
+        },
+    ]
     users.forEach(item => {
         item.createdAt = Sequelize.literal("NOW()")
         item.updatedAt = Sequelize.literal("NOW()")
@@ -156,6 +189,15 @@ let initSeed = async (req, res) => {
         item.createdAt = Sequelize.literal("NOW()")
         item.updatedAt = Sequelize.literal("NOW()")
     })
+    vehicles.forEach(item => {
+        item.createdAt = Sequelize.literal("NOW()")
+        item.updatedAt = Sequelize.literal("NOW()")
+    })
+    vehicle_types.forEach(item => {
+        item.createdAt = Sequelize.literal("NOW()")
+        item.updatedAt = Sequelize.literal("NOW()")
+    })
+
 
     try {
         await db.User.bulkCreate(users).then(() => {
@@ -166,6 +208,12 @@ let initSeed = async (req, res) => {
         })
         await db.Rate.bulkCreate(rates).then(() => {
             console.log("seeded rates")
+        })
+        await db.Vehicle_Type.bulkCreate(vehicle_types).then(() => {
+            console.log("seeded vehicle types")
+        })
+        await db.Vehicle.bulkCreate(vehicles).then(() => {
+            console.log("seeded vehicle")
         })
         res.status(200).json({
             statusCode: 200,
@@ -179,7 +227,25 @@ let initSeed = async (req, res) => {
     }
 }
 
+let GetAllCustomer = async (req, res) => {
+    let customers = await db.User.findAll()
+    return res.status(200).json(customers)
+}
+
+let GetAllTrips = async (req, res) => {
+    let trips = await db.Trip.findAll()
+    return res.status(200).json(trips)
+}
+
+let GetAllVehicles = async (req, res) => {
+    let vehicles = await db.Vehicle.findAll()
+    return res.status(200).json(vehicles)
+}
+
 export default {
     initTable,
     initSeed,
+    GetAllCustomer,
+    GetAllTrips,
+    GetAllVehicles
 }

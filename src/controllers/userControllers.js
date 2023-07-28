@@ -1,5 +1,6 @@
 import jwtService from '../services/jwtService'
 import userService from '../services/userService'
+import socketService from '../socket/socketServiceTS'
 
 let LoginUser = async (req, res) => {
     let data = req.body
@@ -68,10 +69,10 @@ let GetUserByPhone = async (req, res) => {
     //         message: "User not found"
     //     })
     // }
-    if (result.error == 'Invalid phone number') {
+    if (result.error == 'Require Register') {
         return res.status(500).json({
             statusCode: 500,
-            message: "Invalid phone number"
+            message: "Require Register"
         })
     }
     if (result.error == 'Phone Number Not Found') {
@@ -87,12 +88,57 @@ let GetUserByPhone = async (req, res) => {
     })
 }
 
-let RegisterDriver = async (req, res) => {
+let UpdatePassword = async (req, res) => {
     let data = req.body
+    try {
+        let result = await userService.UpdatePassword(data)
+        res.status(200).json({
+            statusCode: 200,
+            user_info: result
+        })
+    } catch (error) {
+        res.status(500).json({
+            statusCode: 500,
+            error: error,
+        })
+    }
+}
 
+let UpdateUserInfo = async (data) => {
+    return new Promise((resolve, reject) => {
+        let updateObj = {}
+
+        if (data.name != null) {
+            updateObj.name = data.name
+        }
+        if (data.avatar != null) {
+            updateObj.avatar = data.avatar
+        }
+        if (data.email != null) {
+            updateObj.email = data.email
+        }
+
+    })
+}
+
+let GetDriverAround3KM = async (req, res) => {
+    let dat = req.body
+    let result = socketService.GetDriversAround3KM(dat)
+    let randomGeometer = []
+    for (let i = 0; i < 10; i++) {
+        randomGeometer.push(
+            {
+                lat: Math.random() * 100,
+                lng: Math.random() * 100,
+            }
+        )
+    }
+    res.status(200).json({ drivers: result, random: randomGeometer })
 }
 export default {
     RegisterUser,
     LoginUser,
-    GetUserByPhone
+    UpdatePassword,
+    GetUserByPhone,
+    GetDriverAround3KM
 }

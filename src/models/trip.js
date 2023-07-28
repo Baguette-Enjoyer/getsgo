@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Trip.init({
-    status: DataTypes.ENUM('Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled'),
+    status: DataTypes.ENUM('Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled'),
     start: DataTypes.JSON,
     end: DataTypes.JSON,
     finished_date: DataTypes.DATE,
