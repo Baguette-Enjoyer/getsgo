@@ -133,9 +133,10 @@ let GetUserByPhone = async (phone) => {
         },
       }
     })
-    if (user.password != null) {
+    if (user != null) {
       return resolve(user)
-    } else if (user.password == null) {
+    }
+    else if (user != null && user.password == null) {
       resolve({
         error: "Require Register"
       })

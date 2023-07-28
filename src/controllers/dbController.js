@@ -42,6 +42,12 @@ let initSeed = async (req, res) => {
             password: "$2a$10$P3nKAg0XDgWKu5G96hhnjuYqmVsWkkmfUT4WDVMGEgWTI9/pDggxO",
             type: "User",
         },
+        {
+            name: "CallCenter",
+            phone: "+84666666666",
+            password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
+            type: "CallCenter",
+        },
     ]
     let start = {
         "lat": 10.1,
