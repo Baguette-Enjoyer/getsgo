@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/v1/users/login
+POST http://localhost:8080/v1/users/login
 Content-Type: application/json
 
 {
@@ -56,17 +56,17 @@ GET http://localhost:3000/v1/drivers/trips
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
 
 ###
-GET http://localhost:3000/v1/trips/1
+GET http://localhost:3000/v1/trips/7
 
 ###
-PUT http://localhost:3000/v1/trips/1
+PUT http://localhost:3000/v1/trips/7
 Content-Type: application/json
 
 {
     "status":"Waiting"
 }
 ###
-PUT http://localhost:3000/v1/trips/cancel/1
+PUT http://localhost:3000/v1/trips/cancel/8
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
 
@@ -101,3 +101,10 @@ Content-Type: application/json
     "lat":10.1,
     "lng":10.2
 }
+
+###
+GET http://localhost:3000/getallusers
+###
+GET http://localhost:3000/getalltrips
+###
+GET http://localhost:3000/getallvehicles
