@@ -1,9 +1,9 @@
 import ioredis from 'ioredis';
 
 let rd = null
-
+require('dotenv').config()
 let initRedis = () => {
-    rd = new ioredis("rediss://default:AVNS_x-0O94XpjDC1FBP_ud6@getsgo-redis-do-user-14291271-0.b.db.ondigitalocean.com:25061")
+    rd = new ioredis(process.env.REDIS_CONN_STR)
     rd.on('connect', () => {
         console.log("connect redis")
     })
