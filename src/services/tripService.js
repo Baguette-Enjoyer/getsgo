@@ -23,16 +23,16 @@ let CreateTrip = async (data) => {
         let is_paid = false
         let price = data.price
         let trip = {
-            start: {
+            start: JSON.stringify({
                 name: place1,
                 lat: lat1,
                 lng: lng1
-            },
-            end: {
+            }),
+            end: JSON.stringify({
                 name: place2,
                 lat: lat2,
                 lng: lng2
-            },
+            }),
             user_id: user_id,
             is_scheduled: is_scheduled,
             scheduled_time: scheduled_time,
@@ -154,59 +154,57 @@ let GetAvailableTrip = async () => {
 }
 
 let GetTripById = async (trip_id) => {
-    return new Promise(async (resolve, reject) => {
-        let trips = await db.Trip.findOne(
-            {
-                where: { id: trip_id },
-                include: [
-                    {
-                        model: db.User,
-                        as: 'user',
-                        attributes: ['name', 'phone']
-                    },
-                    {
-                        model: db.User,
-                        as: 'driver',
-                        attributes: ['name', 'phone']
-                    }
-                ]
-            },
+    let trips = await db.Trip.findOne(
+        {
+            where: { id: trip_id },
+            include: [
+                {
+                    model: db.User,
+                    as: 'user',
+                    attributes: ['name', 'phone']
+                },
+                {
+                    model: db.User,
+                    as: 'driver',
+                    attributes: ['name', 'phone']
+                }
+            ]
+        },
 
 
-        )
-        if (trips == null) return reject(Error("Couldn't find trip"))
-        trips.start = JSON.parse(trips.start)
-        trips.end = JSON.parse(trips.end)
-        return resolve(trips)
-    })
+    )
+    if (trips == null) throw new Error("Couldn't find trip")
+    trips.start = JSON.parse(trips.start)
+    trips.end = JSON.parse(trips.end)
+    return (trips)
 }
 
-let AcceptTrip = async (trip_id) => {
+let AcceptTrip = async (data) => {
     try {
-        let trip = await GetTripById(trip_id)
+
+        let trip = await GetTripById(data.trip_id)
+        // let driver_id = data.driver_id
         // if (trip.trips.id == null) throw new Error("Couldn't find trip")
         if (trip.status == "Cancelled") throw new Error("Trip has been cancelled")
         else if (trip.status == "Confirmed") {
             throw new Error("Trip has been confirmed by other driver")
-        }
+        } else if (trip.status != "Waiting") throw new Error("Trip is not waiting")
     } catch (error) {
         throw error
     }
-    try {
-        let result = await db.Trip.update(
-            { status: 'Confirmed' },
-            {
-                where: {
-                    id: trip_id,
-                }
+    let result = await db.Trip.update(
+        { status: 'Confirmed', driver_id: data.driver_id },
+        {
+            where: {
+                id: data.trip_id,
             }
-        )
-        let newTrip = await GetTripById(trip_id)
-        return resolve(newTrip)
+        }
+    )
+    if (result != 1) {
+        throw new Error("Something went wrong")
     }
-    catch (err) {
-        throw new Error("Error updating trip")
-    }
+    let newTrip = await GetTripById(data.trip_id)
+    return newTrip
 }
 
 let CancelTrip = async (trip_id) => {
@@ -218,6 +216,7 @@ let CancelTrip = async (trip_id) => {
         if (now - createdAt.getTime() > 300000) {
             throw new Error("Overtime due")
         }
+        // if (trip.status != "Waiting") throw new Error("Trip is not waiting")
     } catch (error) {
         throw error
     }
@@ -229,42 +228,50 @@ let CancelTrip = async (trip_id) => {
             }
         }
     )
+    if (result != 1) {
+        throw new Error("Something went wrong")
+    }
     let newTrip = await GetTripById(trip_id)
     return newTrip
 }
 
 let UpdateTrip = async (data) => {
-    return new Promise(async (resolve, reject) => {
-        // let trip = await GetTripById(data.trip_id)
-        let updateObj = {}
-        if (data.driver_id != undefined) {
-            updateObj.driver_id = data.driver_id
+    let updateObj = {}
+    if (data.driver_id != null) {
+        updateObj.driver_id = data.driver_id
+    }
+    if (data.status != "Cancelled" && data.status != null) {
+        updateObj.status = data.status
+    }
+    if (data.finished_date != null) {
+        updateObj.finished_date = data.finished_date
+    }
+    // console.log(updateObj)
+    // console.log(data.trip_id)
+    try {
+        let res = await db.Trip.update(updateObj, {
+            where: { id: data.trip_id }
+        })
+        console.log(res)
+        if (res != 1) {
+            throw new Error("Something went wrong")
         }
-        if (data.status != "Cancelled" && data.status != null) {
-            updateObj.status = data.status
-        }
-        if (data.finished_date != undefined) {
-            updateObj.finished_date = data.finished_date
-        }
-        // console.log(updateObj)
-        // console.log(data.trip_id)
-        try {
-            const result = await db.Trip.update(
-                updateObj,
-                {
-                    where: {
-                        id: data.trip_id,
-                    }
-                }
-            )
-            let newTrip = await GetTripById(data.trip_id)
-            return resolve(newTrip)
-        } catch (error) {
-            console.log(error)
-            throw new Error(error)
-        }
+        let newTrip = await GetTripById(data.trip_id)
+        return newTrip
+    } catch (error) {
+        throw error
+    }
+}
 
-    })
+let DeleteTrip = async (trip_id) => {
+    try {
+        await db.Trip.destroy({
+            where: { id: trip_id }
+        })
+    } catch (error) {
+        throw error
+    }
+
 }
 let GetAppointmentTrip = async () => {
     return new Promise((resolve, reject) => {
@@ -279,5 +286,6 @@ export default {
     GetTripById,
     AcceptTrip,
     CancelTrip,
-    UpdateTrip
+    UpdateTrip,
+    DeleteTrip
 }

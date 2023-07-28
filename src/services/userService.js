@@ -9,144 +9,108 @@ const salt = bcrypt.genSaltSync(10);
 
 
 let RegisterUser = async (data) => {
-  return new Promise(async (resolve, reject) => {
-    console.log(data)
-    let phone = data.phone
-    let checkUser = await GetUserByPhone(phone)
-    if (checkUser.error == 'Invalid phone number') {
-      return resolve({
-        statusCode: 500,
-        message: "Invalid phone number",
-      })
+  let phone = data.phone
+  let user = await db.User.findOne({
+    where: {
+      phone: {
+        [Op.eq]: phone,
+      },
     }
-    if (checkUser.error != 'Phone Number Not Found') {
-      return resolve({
-        statusCode: 500,
-        message: "Phone existed",
-      })
-    }
-
-    let pwd = data.password
-    let hash = await hashUserPassword(pwd)
-    try {
-      let user = await db.User.create({
-        // name: data.name,
-        phone: phone,
-        password: hash,
-        // gender: data.gender,
-        active: true,
-        type: "User"
-      })
-      let token = await jwtService.GenerateAccessToken(user.id, phone, "User")
-      await db.User.update({
-        accessToken: token
-      }, {
-        where: {
-          id: user.id
-        }
-      })
-      return resolve({
-        statusCode: 200,
-        message: "User created",
-        phone: phone,
-        accessToken: token,
-      })
-    } catch (error) {
-      reject(new Error("error registering"))
-    }
-    // let avatarURL = 'https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg'
-
   })
+  if (user != null) throw new Error("Phone existed")
+
+  let pwd = data.password
+  let hash = await hashUserPassword(pwd)
+  try {
+    let user = await db.User.create({
+      // name: data.name,
+      phone: phone,
+      password: hash,
+      // gender: data.gender,
+      active: true,
+      type: "User"
+    })
+    let token = await jwtService.GenerateAccessToken(user.id, phone, "User")
+    await db.User.update({
+      accessToken: token
+    }, {
+      where: {
+        id: user.id
+      }
+    })
+    return {
+      user_id: user.id,
+      message: "User created",
+      phone: phone,
+      accessToken: token,
+    }
+  } catch (error) {
+    throw new Error("error registering")
+  }
 }
 
 let LoginUser = async (data) => {
-  return new Promise(async (resolve, reject) => {
-    let phone = data.phone
-    let password = data.password
-    let checkUser = await GetUserByPhone(phone)
-    console.log(checkUser)
-    if (checkUser.error == 'Phone Number Not Found') {
-      return resolve({
-        statusCode: 500,
-        message: checkUser.error,
-      })
-    }
-    let hashPassword = checkUser.password
-    let result = await comparePassword(password, hashPassword)
-    if (!result) {
-      return resolve({
-        statusCode: 500,
-        message: "wrong password",
-      })
-    }
-    let token = checkUser.accessToken
-    // if (token == null){
-    //   token = await jwtService.GenerateAccessToken(checkUser.id,checkUser.phone,checkUser.type)
-    // await db.User.update({
-    //     accessToken:token
-    //   },{
-    //     where: {
-    //       id: checkUser.id
-    //     }
-    //   })
-    // }
-    let verifyToken = await jwtService.VerifyToken(token)
-    if (verifyToken.result == false || token == null) {
-      token = await jwtService.GenerateAccessToken(checkUser.id, checkUser.phone, checkUser.type)
-      await db.User.update({
-        accessToken: token
+  let phone = data.phone
+  let password = data.password
+  let user = await db.User.findOne({
+    where: {
+      phone: {
+        [Op.eq]: phone,
       },
-        {
-          where: {
-            id: checkUser.id
-          }
-        })
     }
-
-    return resolve({
-      statusCode: 200,
-      user_info: {
-        user_id: checkUser.id,
-        phone: checkUser.phone,
-        type: checkUser.type,
-        accessToken: token,
-      }
-    })
   })
+  if (user == null) throw new Error("Couldnt find phone")
+  if (user.password == null) throw new Error("Require password")
+
+  let hashPassword = user.password
+  let result = await comparePassword(password, hashPassword)
+  if (!result) {
+    throw new Error("Wrong password")
+  }
+  let token = user.accessToken
+  let verifyToken = await jwtService.VerifyToken(token)
+  if (verifyToken.result == false || token == null) {
+    token = await jwtService.GenerateAccessToken(checkUser.id, checkUser.phone, checkUser.type)
+    await db.User.update({
+      accessToken: token
+    },
+      {
+        where: {
+          id: checkUser.id
+        }
+      })
+  }
+  return {
+    user_id: user.id,
+    phone: user.phone,
+    type: user.type,
+    accessToken: token,
+  }
 }
 
 let GetUserByPhone = async (phone) => {
-  return new Promise(async (resolve, reject) => {
-    // const phoneNormalized = phone.trim()
-    // console.log(phoneNormalized)
-    // if (phoneNormalized.length != 11 && phoneNormalized.length != 12) {
-    //   return resolve({
-    //     error: "Invalid phone number"
-    //   })
-    // }
-    // let searchPhone = '+' + phoneNormalized
-    //copy to controoller
-    let user = await db.User.findOne({
-      where: {
-        phone: {
-          [Op.eq]: phone,
-        },
-      }
-    })
-    if (user != null) {
-      return resolve(user)
-    }
-    else if (user != null && user.password == null) {
-      resolve({
-        error: "Require Register"
-      })
-    }
-    else {
-      return resolve({
-        error: "Phone Number Not Found"
-      })
+  let user = await db.User.findOne({
+    where: {
+      phone: {
+        [Op.eq]: phone,
+      },
     }
   })
+  if (user != null) {
+    return user
+  }
+  else if (user != null && user.password == null) {
+    // resolve({
+    //   error: "Require Register"
+    // })
+    throw new Error("Require Register")
+  }
+  else {
+    // return resolve({
+    //   error: "Phone Number Not Found"
+    // })
+    throw new Error("Phone Number Not Found")
+  }
 }
 
 let CreateUserIfNotExist = async (phone) => {

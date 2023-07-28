@@ -426,6 +426,17 @@ let GetDriversAround3KM = (data: {lat:number,lng:number}) => {
     return posDrivers
 }
 
+let GetTripInfoById = (id:number): TripValue|null => {
+    trips.forEach((trip_value,trip_id) => {
+        if (trip_id == id) return trip_value
+    })
+    return null
+}
+
+let UpdateTripInSocket = (data) => {
+    
+}
+
 let handleDisconnect = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
     socket.on('disconnect', () => {
         if (users.get(socket.id)) {
@@ -447,4 +458,5 @@ export default {
     runSocketService,
     GetDriversAround3KM,
     test,
+    GetTripInfoById
 }

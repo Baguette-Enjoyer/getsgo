@@ -55,6 +55,27 @@ let GetTripById = async (req, res) => {
     }
 }
 
+let AcceptTrip = async (req, res) => {
+    let credential = JSON.parse(req.decodedToken)
+    if (credential.type == "User" || credential.type == "User_vip") {
+        return res.status(500).json({
+            statusCode: 500,
+            error: "not authorized",
+        })
+    }
+    let driver_id = credential.id
+    let trip_id = req.params.trip_id
+    try {
+        let trip = await tripService.AcceptTrip({ trip_id, driver_id })
+        res.status(200).json({ statusCode: 200, trip })
+    } catch (error) {
+        return res.status(500).json({
+            statusCode: 500,
+            error: error.message
+        })
+    }
+}
+
 let UpdateTrip = async (req, res) => {
     let data = req.body
     data.trip_id = req.params.trip_id
@@ -65,7 +86,7 @@ let UpdateTrip = async (req, res) => {
     } catch (error) {
         return res.status(400).json({
             statusCode: 400,
-            error: error,
+            error: error.message,
         })
     }
 
@@ -87,11 +108,30 @@ let CancelTrip = async (req, res) => {
         })
     }
 }
+
+let DeleteTrip = async (req, res) => {
+    let trip_id = req.params.trip_id;
+    try {
+        await tripService.DeleteTrip(trip_id)
+        return res.status(200).json({
+            statusCode: 200,
+            message: 'trip deleted'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            statusCode: 500,
+            error: error.message
+        })
+    }
+}
+
 export default {
     BookTrip,
     CallCenterBookTrip,
     GetTrips,
     GetTripById,
+    AcceptTrip,
     UpdateTrip,
-    CancelTrip
+    CancelTrip,
+    DeleteTrip
 }

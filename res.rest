@@ -3,17 +3,17 @@ POST http://localhost:3000/v1/users/signup
 Content-Type: application/json
 
 {
-    "phone":"+84555555555",
+    "phone":"+845555555",
     "password":"123"
 }
 
 ###
-POST http://188.166.250.160:3000/v1/users/login
+POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"+84666666666",
-    "password":"000000"
+    "phone":"+84333333333",
+    "password":"123"
 }
 
 ###
@@ -57,6 +57,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiO
 
 ###
 GET http://localhost:3000/v1/trips/7
+###
+DELETE http://localhost:3000/v1/trips/7
 
 ###
 PUT http://localhost:3000/v1/trips/7
@@ -69,14 +71,18 @@ Content-Type: application/json
 PUT http://localhost:3000/v1/trips/cancel/8
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
+###
+PUT http://localhost:3000/v1/trips/accept/7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwNTQ3OTUwLCJleHAiOjE2OTE2Mjc5NTB9.ejAONA79hsVKG2SJw_UWVlquHFYiMyvQ2AS7BLIVsbY
 
 ###
 GET http://188.166.250.160:8080/v1/phone?phone=+84111111111
 ###
-GET http://localhost:3000/v1/phone?phone=+84111111111
+GET http://localhost:3000/v1/phone?phone=+8412312312
 
 ###
-GET http://localhost:3000/v1/driver/2
+GET http://localhost:3000/v1/driver/5
 
 ###
 GET http://localhost:3000/v1/history/user/4
@@ -89,7 +95,7 @@ PUT http://localhost:3000/v1/users/updatepassword
 Content-Type: application/json
 
 {
-    "user_id": 8,
+    "user_id": 7,
     "phone": "+84123456788",
     "type": "User",
     "password": "123123"
