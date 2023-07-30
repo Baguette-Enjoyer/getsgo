@@ -2,24 +2,25 @@ import { Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import locationServices from "../services/locationService"
 import { getRedisCon } from '../config/connectRedis'
+import getRedisClient from "../config/connectRedisTS"
 import initServer from "../services/initServer"
 import driverServices from "../services/driverServices"
 import userService from "../services/userService"
 import tripService from "../services/tripService"
 import ggMapService from "./ggMapService.js"
 // let io = initServer.getIO()
-let rd = getRedisCon()
+let rd = getRedisClient()
 
 interface User {
     user_id: number
-    socket_id: string
-    socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+    // socket_id: string
+    // socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
 }
 
 interface Driver {
     user_id: number
-    socket_id: string
-    socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>
+    // socket_id: string
+    // socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>
     lat: number
     lng: number
     status: string
@@ -55,25 +56,18 @@ interface TripValue {
 let users = new Map<string,User>()
 let drivers = new Map<string, Driver>()
 let trips = new Map<number,TripValue>()
+let driversInBroadcast:number[] = []
 let callcenterTrips = new Map<number, TripValue>()
 let current_intervals = new Map<number,NodeJS.Timer>()
 
 let updateLocationLoop = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {   
-    // for (const [trip_id, trip_value] of trips) {
-    //     let driver_id = trip_value.driver_id
-    //     if (driver_id === undefined) return 
-    //     // let socketDriver = GetSocketByDriverId(driver_id)
-    //     let driver_info = getCurrentDriverInfoById(driver_id)
-    //     let stringifiedResponse = JSON.stringify(driver_info)
-    //     io.to(`/trip/${trip_id}`).emit('location-update',stringifiedResponse)
-    // }
     trips.forEach((trip_value, trip_id) => {
         let driver_id = trip_value.driver_id
         if (driver_id === undefined) return 
         // let socketDriver = GetSocketByDriverId(driver_id)
         let driver_info = getCurrentDriverInfoById(driver_id)
         let stringifiedResponse = JSON.stringify(driver_info)
-        io.to(`/trip/${trip_id}`).emit('location-update',stringifiedResponse)
+        io.in(`/user/${trip_value.user_id}`).emit('location-update',stringifiedResponse)
     })
     setTimeout(() => updateLocationLoop(io),60000)
 }
@@ -81,30 +75,21 @@ let updateLocationLoop = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultE
 let deleteTripExceeded = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     setInterval(()=>{
         let now = new Date().getTime()
-        // for (const [trip_id,trip_value] of trips){
-        //     if (now - trip_value.createdAt.getTime() >= 300000 && trip_value.status === 'Pending' && trip_value.driver_id == null){
-        //         io.in(`/trip/${trip_id}`).emit('trip-cancelled',{message:"trip cancelled due to lack of driver"})
-        //         io.in(`/trip/${trip_id}`).socketsLeave(`/trip/${trip_id}`)
-        //     }
-        // }
         trips.forEach((trip_value,trip_id) => {
             if (now - trip_value.createdAt.getTime() >= 300000 && trip_value.status === 'Pending' && trip_value.driver_id == null){
-                io.in(`/trip/${trip_id}`).emit('trip-cancelled',{message:"trip cancelled due to lack of driver"})
-                io.in(`/trip/${trip_id}`).socketsLeave(`/trip/${trip_id}`)
+                
+                io.in(`/user/${trip_value.user_id}`).emit('trip-cancelled',{message:"trip cancelled due to lack of driver"})
+                
             }
         })
     },300000)
 }
 
 let notifyIfClose = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    // for (const [trip_id,trip_value] of trips){
-    //     if(locationServices.getDistance(trip_value.start.lat,trip_value.start.lng,trip_value.end.lat,trip_value.end.lng) <= 1){
-    //         io.in(`/trip/${trip_id}`).emit('driver-close', {message:"driver is close"})
-    //     }
-    // }
     trips.forEach((trip_value, trip_id) =>{
         if(locationServices.getDistance(trip_value.start.lat,trip_value.start.lng,trip_value.end.lat,trip_value.end.lng) <= 1){
-            io.in(`/trip/${trip_id}`).emit('driver-close', {message:"driver is close"})
+            
+            io.in(`/user/${trip_value.user_id}`).emit('driver-close', {message:"driver is close"})
         }
     })
     setTimeout(()=>notifyIfClose(io),15000)
@@ -127,9 +112,10 @@ let initSocket = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap
         console.log("socket " + socket.id + " connected")
         handleUserLogin(socket)
         handleDriverLogin(socket)
-        handleUserFindTrip(socket)
+        handleUserFindTrip(io,socket)
         //handleCallcenterFindTrip(socket)
         handleDriverResponseBooking(io,socket)
+        handleLocationUpdate(socket)
         handleDisconnect(socket)
     })
 }
@@ -138,15 +124,10 @@ let initSocket = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap
 let handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any> ) =>{
     socket.on('user-login',(data:User) =>{
         let user_id = data.user_id
-        let trip_id = GetCurrentTripOfUser(user_id)
-        if(trip_id!=null){
-            socket.join(`/trip/${trip_id}`)
-            socket.emit('user-rejoin',{message:"user rejoin trip"})
-        }
+        socket.join(`/user/${user_id}`)
+        
         users.set(socket.id, {
             user_id: user_id,
-            socket: socket,
-            socket_id: socket.id,
         })
     })
 }
@@ -154,15 +135,9 @@ let handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Defaul
 let handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any> ) =>{
     socket.on('driver-login',(data:Driver) =>{
         let user_id = data.user_id
-        let trip_id = GetCurrentTripOfUser(user_id)
-        if(trip_id!=null){
-            socket.join(`/trip/${trip_id}`)
-            socket.emit('user-rejoin',{message:"driver rejoin trip"})
-        }
+        socket.join(`/driver/${user_id}`)
         drivers.set(socket.id, {
             user_id: user_id,
-            socket: socket,
-            socket_id: socket.id,
             lat: data.lat,
             lng: data.lng,
             status: data.status,
@@ -171,7 +146,7 @@ let handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Defa
     })
 }
 
-let handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
+let handleUserFindTrip = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
     socket.on('user-find-trip',async (data:TripValue) =>{
         let trip_id = data.trip_id
         let place1 = data.start
@@ -180,49 +155,61 @@ let handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Def
         let user_id = user?.user_id
 
         let userData = await userService.GetUserById(user_id)
-        // let userDataStringified = JSON.stringify(userData)
-        socket.join(`/trip/${trip_id}`)
+    
         let DataResponse = {
             user_info: userData,
             trip_info:data
         }
         let DataResponseStringified = JSON.stringify(DataResponse)
 
-        let possibleDrivers = locationServices.findPossibleDriver(drivers, place1)
-        broadCastToDriver(possibleDrivers[0][1].socket, "user-trip", DataResponseStringified)
-        console.log(`broadcasting to driver ${possibleDrivers[0]}`)
 
-        let i = 1;
-        let new_interval = setInterval(() => {
-            //
-            broadCastToDriver(possibleDrivers[i][1].socket, "user-trip", DataResponseStringified)
-            console.log(`broadcasting to driver ${possibleDrivers[i]}`)
-            i++
-            if (i >= possibleDrivers.length) {
-                setTimeout(async () => {
-                    let dat = {
-                        trip_id,
-                        status: "Waiting"
-                    }
-                    await tripService.UpdateTrip(dat)
-                    clearInterval(new_interval)
-                    // socket.leave(`/trip/${trip_id}`)
-                    // trips.delete(trip_id)
-                    // console.log(`User ${user.user_id} has left trip ${trip_id}`)
-                }, 15000)
+        let possibleDrivers = locationServices.getFiveNearestDriver(drivers,place1,driversInBroadcast)
+        console.log(possibleDrivers)
 
-                //notify user that no driver has been found
-            }
-        }, 15000)
+        for (let i = 0; i < possibleDrivers.length; i++) {
+            const driver = possibleDrivers[i];
+            AddDriverToBroadCast(driver.user_id);
+            broadCastToDriver(io, driver.socketId, "user-trip", DataResponseStringified);
+
+            console.log(`broadcasting to driver ${driver.user_id}`);
+
+            // Chờ 15 giây trước khi gửi cho tài xế tiếp theo
+            await new Promise((resolve) => setTimeout(resolve, 15000));
+        }
+        // AddDriverToBroadCast(possibleDrivers[0].user_id)
+        // broadCastToDriver(io,possibleDrivers[0].socketId, "user-trip", DataResponseStringified)
+
+        // console.log(`broadcasting to driver ${possibleDrivers[0].user_id}`)
+
+        // let i = 1;
+        // let new_interval = setInterval(() => {
+        //     if (i >= possibleDrivers.length) {
+        //         setTimeout(async () => {
+        //             let dat = {
+        //                 trip_id,
+        //                 status: "Waiting"
+        //             }
+        //             await tripService.UpdateTrip(dat)
+        //             clearInterval(new_interval)
+                    
+        //         }, 15000)
+        //     }
+        //     else {
+        //         AddDriverToBroadCast(possibleDrivers[i].user_id)
+        //         broadCastToDriver(io,possibleDrivers[i][0], "user-trip", DataResponseStringified)
+        //         console.log(`broadcasting to driver ${possibleDrivers[i].user_id}`)
+        //         i++
+        //     }
+        // }, 15000)
         let rdTripKey = `trip_id:${trip_id}`
         trips.set(trip_id, data)
         let TripDataStringified = JSON.stringify(data)
         await rd.set(rdTripKey, TripDataStringified)
-        current_intervals.set(trip_id, new_interval)
+        // current_intervals.set(trip_id, new_interval)
     })
 }
 
-let handleCallcenterFindTrip = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) =>{
+let handleCallcenterFindTrip = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) =>{
     socket.on('callcenter-find-trip', async(data:TripValue) =>{
         let trip_id = data.trip_id
         let place1 = data.start
@@ -234,14 +221,20 @@ let handleCallcenterFindTrip = (socket:Socket<DefaultEventsMap, DefaultEventsMap
             trip_info:data
         }
         let DataResponseStringified = JSON.stringify(DataResponse)
-        let possibleDrivers = locationServices.findPossibleDriver(drivers,place1)
-        broadCastToDriver(possibleDrivers[0][1].socket, "user-trip", DataResponseStringified)
-        console.log(`broadcasting to driver ${possibleDrivers[0]}`)
+
+        let possibleDrivers = locationServices.getFiveNearestDriver(drivers,place1,driversInBroadcast)
+
+        AddDriverToBroadCast(possibleDrivers[0].user_id)
+        broadCastToDriver(io,possibleDrivers[0][0], "callcenter-trip", DataResponseStringified)
+
+        console.log(`broadcasting to driver ${possibleDrivers[0].user_id}`)
+
         let i = 1;
         let new_interval = setInterval(() => {
             //
-            broadCastToDriver(possibleDrivers[i][1].socket, "user-trip", DataResponseStringified)
-            console.log(`broadcasting to driver ${possibleDrivers[i]}`)
+            AddDriverToBroadCast(possibleDrivers[0].user_id)
+            broadCastToDriver(io,possibleDrivers[i].user_id, "callcenter-trip", DataResponseStringified)
+            console.log(`broadcasting to driver ${possibleDrivers[i].user_id}`)
             i++
             if (i >= possibleDrivers.length) {
                 setTimeout(async () => {
@@ -251,9 +244,6 @@ let handleCallcenterFindTrip = (socket:Socket<DefaultEventsMap, DefaultEventsMap
                     }
                     await tripService.UpdateTrip(dat)
                     clearInterval(new_interval)
-                    // socket.leave(`/trip/${trip_id}`)
-                    // trips.delete(trip_id)
-                    // console.log(`User ${user.user_id} has left trip ${trip_id}`)
                 }, 15000)
 
                 //notify user that no driver has been found
@@ -264,20 +254,30 @@ let handleCallcenterFindTrip = (socket:Socket<DefaultEventsMap, DefaultEventsMap
 
 let handleDriverResponseBooking = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) =>{
     socket.on('driver-response-booking', async (data: {trip_id:number,status: 'Agree'|'Deny'})=>{
-        let driver = getDriverBySocket(socket)
+        let driver = drivers.get(socket.id)
+        if (driver == undefined) return
         let driver_id = driver?.user_id
         let trip_id = data.trip_id
         if (data.status == 'Deny' ) return 
+
+        driver.status = 'Driving'
+        drivers.set(socket.id,driver)
         await tripService.UpdateTrip({trip_id:trip_id,status:"Confirmed",driver_id: driver_id})
         let driverData = await driverServices.GetDriverInfoById(driver_id)
+
         let responseData = {
             trip_id: trip_id,
             driver_info: driverData,
             message: "found driver"
         }
         let stringifiedResponse = JSON.stringify(responseData)
-        io.to(`/trip/${trip_id}`).emit('found-driver', stringifiedResponse)
-        socket.join(`/trip/${trip_id}`)
+        let trip = trips.get(trip_id)
+        let user_id = trip?.user_id
+
+        // io.to(`/trip/${trip_id}`).emit('found-driver', stringifiedResponse)
+        // socket.join(`/trip/${trip_id}`)
+        io.in(`/user/${user_id}`).emit('found-driver', stringifiedResponse)
+
         let updatedTrip = trips.get(trip_id)
         updatedTrip!.driver_id = driver_id
         if (updatedTrip === undefined) return
@@ -289,9 +289,9 @@ let handleDriverResponseBooking = (io:Server<DefaultEventsMap, DefaultEventsMap,
 
 let handleLocationUpdate = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
     socket.on('driver-location-update', (data: {lat:number,lng:number}) => {
-        let driver = getDriverBySocket(socket)
+        let driver = drivers.get(socket.id)
+        if (driver == undefined) return
         let driver_id = driver?.user_id 
-        if (driver_id == undefined) return
         let socket_ids = GetSocketByDriverId(driver_id)
         
         for (let i = 0; i < socket_ids.length; i++) {
@@ -302,7 +302,6 @@ let handleLocationUpdate = (socket:Socket<DefaultEventsMap, DefaultEventsMap, De
             drivers.set(socket_ids[i], driver)
         }
     })
-    
 }
 
 let getTripIfDisconnected = (id:number) => {
@@ -330,14 +329,25 @@ let getDriverBySocket = (socket:Socket<DefaultEventsMap, DefaultEventsMap, Defau
     //similar to get user by socket
 }
 
-let broadCastToUser = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>, event:string, data:string) => {
-    let socket_value = users.get(socket.id) || undefined
+let broadCastToUser = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socketid:string, event:string, data:string) => {
+    let socket_value = users.get(socketid) || undefined
     if (socket_value === undefined ){return}
     // console.log(socket_value.socket)
     if (socket_value === null) {
         throw new Error("user socket error")
     }
-    socket_value.socket.emit(event, data)
+    let user_id = socket_value.user_id
+    io.in(`/user/${user_id}`).emit(event,data)
+}
+
+let broadCastToDriver = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socketid:string, event:string, data:string) => {
+    let socket_value = drivers.get(socketid) || undefined
+    if (socket_value === undefined ){return}
+    if (socket_value === null) {
+        throw new Error("driver socket error")
+    }
+    let driver_id = socket_value.user_id
+    io.in(`/driver/${driver_id}`).emit(event,data)
 }
 
 let GetSocketByUserId = (user_id:number) => {
@@ -364,14 +374,7 @@ let GetSocketByDriverId = (driver_id:number) => {
     return socketArr
 }
 
-let broadCastToDriver = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>, event:string, data:string) => {
-    let socket_value = drivers.get(socket.id) || undefined
-    if (socket_value === undefined ){return}
-    if (socket_value === null) {
-        throw new Error("driver socket error")
-    }
-    socket_value.socket.emit(event, data)
-}
+
 
 let getUsersBySocket = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
     if (users.get(socket.id) !== null) {
@@ -426,6 +429,17 @@ let GetDriversAround3KM = (data: {lat:number,lng:number}) => {
     return posDrivers
 }
 
+let AddDriverToBroadCast = (driver_id:number) => {
+    driversInBroadcast.push(driver_id)
+    setTimeout(()=>{
+        const index = driversInBroadcast.indexOf(driver_id);
+        if (index !== -1) {
+        driversInBroadcast.splice(index, 1);
+        }
+    },15000)
+}
+
+
 let GetTripInfoById = (id:number): TripValue|null => {
     trips.forEach((trip_value,trip_id) => {
         if (trip_id == id) return trip_value
@@ -433,9 +447,6 @@ let GetTripInfoById = (id:number): TripValue|null => {
     return null
 }
 
-let UpdateTripInSocket = (data) => {
-    
-}
 
 let handleDisconnect = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
     socket.on('disconnect', () => {
@@ -450,6 +461,14 @@ let handleDisconnect = (socket:Socket<DefaultEventsMap, DefaultEventsMap, Defaul
     })
 }
 
+let setDriverStatusToIdle = (driver_id:number,status:string) => {
+    drivers.forEach((driver_value,socketid) => {
+        if (driver_value.user_id === driver_id) {
+            driver_value.status = status
+        }
+    })
+}
+
 let test = () =>{
     console.log(1)
 }
@@ -457,6 +476,5 @@ let test = () =>{
 export default {
     runSocketService,
     GetDriversAround3KM,
-    test,
     GetTripInfoById
 }

@@ -8,6 +8,7 @@ import socket2 from './socket/socketServiceTS.js'
 import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
 import { getRedisCon } from './config/connectRedis'
+import getRedisClient from './config/connectRedisTS'
 // const app = express()
 // const server = http.createServer(app)
 
@@ -17,7 +18,7 @@ import { getRedisCon } from './config/connectRedis'
 //     // methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //   },
 // })
-let rd = getRedisCon()
+let rd = getRedisClient()
 require("dotenv").config();
 
 // app.use(express.json())

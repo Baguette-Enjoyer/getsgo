@@ -36,10 +36,30 @@ let findPossibleDriver = (drivers, place) => {
     return possibleDriver
 }
 
+let getFiveNearestDriver = (drivers, targetLocation, driversInBroadcast) => {
+    let targetLat = targetLocation.lat
+    let targetLng = targetLocation.lng
+
+    const idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId, { lat, lng, user_id, status }]) => ({
+        socketId,
+        lat,
+        lng,
+        user_id,
+        status,
+        distance: getDistance(lat, lng, targetLat, targetLng),
+    })).filter(driver => driver.status === 'Idle');
+
+    idleDriversWithDistance.sort((a, b) => a.distance - b.distance);
+    console.log(idleDriversWithDistance);
+    const maxFiveIdleDrivers = idleDriversWithDistance.slice(0, 5);
+
+    return maxFiveIdleDrivers;
+}
 
 
 export default {
     getDistance,
     toRad,
     findPossibleDriver,
+    getFiveNearestDriver
 }

@@ -3,8 +3,8 @@ POST http://localhost:3000/v1/users/signup
 Content-Type: application/json
 
 {
-    "phone":"+845555555",
-    "password":"123"
+    "phone":"+84555555113",
+    "password":"123456"
 }
 
 ###
@@ -12,8 +12,8 @@ POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"+84333333333",
-    "password":"123"
+    "phone":"+84111111111",
+    "password":"000000"
 }
 
 ###
@@ -44,7 +44,7 @@ Content-Type: application/json
 {
     "start":"random places 1",
     "end": "random places 2",  
-    "phone": "+84123456788",
+    "phone": "+84123123123",
     "is_scheduled":false,
     "price":50000,
     "is_paid":false,

@@ -1,7 +1,7 @@
 import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
-
+import socketServiceTS from '../socket/socketServiceTS.js'
 let CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location
@@ -46,6 +46,7 @@ let CreateTrip = async (data) => {
             trip
         )
         trip.trip_id = newTrip.id
+        socketServiceTS.AddToTrips(trip)
         console.log(trip)
         if (newTrip.id == null) {
             return resolve({
