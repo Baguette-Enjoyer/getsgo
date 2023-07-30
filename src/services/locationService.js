@@ -47,10 +47,10 @@ let getFiveNearestDriver = (drivers, targetLocation, driversInBroadcast) => {
         user_id,
         status,
         distance: getDistance(lat, lng, targetLat, targetLng),
-    })).filter(driver => driver.status === 'Idle');
+    })).filter(driver => driver.status === 'Idle' && driversInBroadcast.includes(driver.user_id) == false);
 
     idleDriversWithDistance.sort((a, b) => a.distance - b.distance);
-    console.log(idleDriversWithDistance);
+    // console.log(idleDriversWithDistance);
     const maxFiveIdleDrivers = idleDriversWithDistance.slice(0, 5);
 
     return maxFiveIdleDrivers;

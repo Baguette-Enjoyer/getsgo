@@ -15,7 +15,7 @@ let initSeed = async (req, res) => {
         {
             name: "Admin",
             phone: "+84111111111",
-            password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
+            password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",//000000
             type: "Admin",
         },
         {

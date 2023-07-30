@@ -46,7 +46,7 @@ let CreateTrip = async (data) => {
             trip
         )
         trip.trip_id = newTrip.id
-        socketServiceTS.AddToTrips(trip)
+        // socketServiceTS.AddToTrips(trip)
         console.log(trip)
         if (newTrip.id == null) {
             return resolve({
