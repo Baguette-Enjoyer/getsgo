@@ -7,7 +7,6 @@ import getRedisClient from "../config/connectRedisTS"
 import driverServices from "../services/driverServices"
 import userService from "../services/userService"
 import tripService from "../services/tripService"
-import ggMapService from "./ggMapService.js"
 // import delay from "delay"
 // let io = initServer.getIO()
 

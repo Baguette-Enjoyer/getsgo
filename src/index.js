@@ -3,7 +3,6 @@
 // import { Server } from "socket.io";
 import listEndpoints from "express-list-endpoints";
 // import initServerRoutes from "./routes/serverRoutes";
-import initSocket from './socket/socketService';
 import socket2 from './socket/socketServiceTS.js'
 import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
