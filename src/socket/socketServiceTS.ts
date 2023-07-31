@@ -3,7 +3,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import locationServices from "../services/locationService"
 import { getRedisCon } from '../config/connectRedis'
 import getRedisClient from "../config/connectRedisTS"
-import initServer from "../services/initServer"
+// import {io} from '../services/initServer'
 import driverServices from "../services/driverServices"
 import userService from "../services/userService"
 import tripService from "../services/tripService"
@@ -29,7 +29,7 @@ interface Driver {
 }
 
 interface TripValue {
-    trip_id: number
+    id: number
     user_id?: number
     driver_id?: number 
     start: {
@@ -42,7 +42,7 @@ interface TripValue {
         lng: number
         place: string
     }
-    status?: "Pending" | "Waiting" | "Confirmed" | "Driving" | "Arrived" | "Done" | "Cancelled"
+    status?: "Pending" | "Waiting" | "Confirmed" | "Driving" | "Arrived" | "Done" | "Cancelled" | string
     price: number
     is_paid: boolean
     paymentMethod: string
@@ -149,7 +149,7 @@ let handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Defa
 
 let handleUserFindTrip = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
     socket.on('user-find-trip',async (data:TripValue) =>{
-        let trip_id = data.trip_id
+        let trip_id = data.id
         let place1 = data.start
 
         let user = getUserBySocket(socket)
@@ -180,6 +180,15 @@ let handleUserFindTrip = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultE
             // await delay(15000)
 
             let d = drivers.get(driver.socketId);
+            if (trips.get(trip_id)?.status == 'Cancelled'){
+                if (d?.hasResponded && d?.status == 'Accept'){
+                    broadCastToDriver(io,driver.socketId,'trip-cancelled',"User has canceled")
+                }
+                await tripService.CancelTrip(trip_id)
+                trips.delete(trip_id)
+
+                break;
+            }
 
             if(d?.hasResponded){
                 if(d.response == 'Accept'){
@@ -259,7 +268,7 @@ let handleUserFindTrip = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultE
 
 let handleCallcenterFindTrip = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) =>{
     socket.on('callcenter-find-trip', async(data:TripValue) =>{
-        let trip_id = data.trip_id
+        let trip_id = data.id
         let place1 = data.start
 
         // khong can dung toi user
@@ -370,6 +379,12 @@ let handleLocationUpdate = (socket:Socket<DefaultEventsMap, DefaultEventsMap, De
     })
 }
 
+let handleUserCancelTrip = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap,any>) => {
+    socket.on('user-cancel-trip',(data: {trip_id:number})=>{
+        UserCancelTrip(data.trip_id)
+    })
+} 
+
 let getTripIfDisconnected = (id:number) => {
     // for (const [trip_id, value] of trips) {
         
@@ -467,6 +482,26 @@ let getCurrentDriverInfoById = (id:number): {lat:number,lng:number} => {
         }
     })
     return {lat:0,lng:0}
+}
+
+let UpdateTrip = (id:number,status:string) => {
+    // if (status == undefined) return
+    trips.forEach((trip_value,trip_id) => {
+        if (trip_id == id ) {
+            trip_value.status = status   
+            return 
+        }
+    })
+}
+
+let UserCancelTrip = (id:number) => {
+    // if (status == undefined) return
+    trips.forEach((trip_value,trip_id) => {
+        if (trip_id == id ) {
+            trip_value.status = "Cancelled"   
+            return 
+        }
+    })
 }
 
 let GetCurrentTripOfUser = (id:number): string|null => {

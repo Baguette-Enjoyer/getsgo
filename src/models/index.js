@@ -34,13 +34,13 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
     host: process.env.HOST,
     dialect: "mysql",
-    "port": process.env.DB_PORT,
-    "dialectOptions": {
-      "ssl": {
-        "required": true,
-        "rejectUnauthorized": false
-      }
-    },
+    // "port": process.env.DB_PORT,
+    // "dialectOptions": {
+    //   "ssl": {
+    //     "required": true,
+    //     "rejectUnauthorized": false
+    //   }
+    // },
 
   });
   // let config_dev = {
