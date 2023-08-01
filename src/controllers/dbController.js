@@ -11,7 +11,7 @@ let initTable = async (req, res) => {
 }
 
 let initSeed = async (req, res) => {
-    let users = [
+    const users = [
         {
             name: "Admin",
             phone: "+84111111111",
@@ -49,19 +49,19 @@ let initSeed = async (req, res) => {
             type: "CallCenter",
         },
     ]
-    let start = {
+    const start = {
         "lat": 10.1,
         "lng": 10.2,
         "place": "random places"
     }
-    let end = {
+    const end = {
         "lat": 10.3,
         "lng": 10.4,
         "place": "2nd random places"
     }
-    let startJSON = JSON.stringify(start)
-    let endJSON = JSON.stringify(end)
-    let trips = [
+    const startJSON = JSON.stringify(start)
+    const endJSON = JSON.stringify(end)
+    const trips = [
         {
             "user_id": 4,
             "driver_id": 2,
@@ -129,7 +129,7 @@ let initSeed = async (req, res) => {
             "paymentMethod": "Cash"
         },
     ]
-    let rates = [
+    const rates = [
         {
             star: 4,
             trip_id: 1,
@@ -156,7 +156,7 @@ let initSeed = async (req, res) => {
         },
     ]
 
-    let vehicle_types = [
+    const vehicle_types = [
         {
             name: "Xe 4 Chỗ",
         },
@@ -165,7 +165,7 @@ let initSeed = async (req, res) => {
         },
     ]
 
-    let vehicles = [
+    const vehicles = [
         {
             "driver_license": "0964155097",
             "vehicle_registration": "123456",
@@ -234,17 +234,17 @@ let initSeed = async (req, res) => {
 }
 
 let GetAllCustomer = async (req, res) => {
-    let customers = await db.User.findAll()
+    const customers = await db.User.findAll()
     return res.status(200).json(customers)
 }
 
 let GetAllTrips = async (req, res) => {
-    let trips = await db.Trip.findAll()
+    const trips = await db.Trip.findAll()
     return res.status(200).json(trips)
 }
 
 let GetAllVehicles = async (req, res) => {
-    let vehicles = await db.Vehicle.findAll()
+    const vehicles = await db.Vehicle.findAll()
     return res.status(200).json(vehicles)
 }
 

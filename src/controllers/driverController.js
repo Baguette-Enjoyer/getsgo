@@ -1,9 +1,9 @@
 import driverServices from "../services/driverServices";
 
-let GetDriverInfoById = async (req, res) => {
-    let driver_id = req.params.driver_id;
+const GetDriverInfoById = async (req, res) => {
+    const driver_id = req.params.driver_id;
     try {
-        let driver = await driverServices.GetDriverInfoById(driver_id);
+        const driver = await driverServices.GetDriverInfoById(driver_id);
         return res.status(200).json({
             statusCode: 200,
             driver,
@@ -17,10 +17,10 @@ let GetDriverInfoById = async (req, res) => {
     }
 }
 
-let GetProfitPlusTrip = async (req, res) => {
-    let driver_id = req.params.driver_id;
-    let type = req.query["type"];
-    let trips = await driverServices.GetProfitPlusTrip(driver_id, type);
+const GetProfitPlusTrip = async (req, res) => {
+    const driver_id = req.params.driver_id;
+    const type = req.query["type"];
+    const trips = await driverServices.GetProfitPlusTrip(driver_id, type);
     return res.status(200).json({
         trips: trips
     })

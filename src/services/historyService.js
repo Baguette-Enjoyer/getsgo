@@ -1,6 +1,6 @@
 import db from '../models/index'
 
-let GetHistoryOfUser = async (user_id) => {
+const GetHistoryOfUser = async (user_id) => {
     const trips = await db.Trip.findAll({
         where: { user_id: user_id },
         include: [
@@ -16,7 +16,7 @@ let GetHistoryOfUser = async (user_id) => {
     return trips
 }
 
-let GetHistoryOfDriver = async (driver_id) => {
+const GetHistoryOfDriver = async (driver_id) => {
     const trips = await db.Trip.findAll({
         where: { driver_id: driver_id },
         include: [
@@ -32,7 +32,7 @@ let GetHistoryOfDriver = async (driver_id) => {
     return trips
 }
 
-let GetDriverStatics = (trips) => {
+const GetDriverStatics = (trips) => {
     let stars = 0
     let success = 0
     let cancelled = 0

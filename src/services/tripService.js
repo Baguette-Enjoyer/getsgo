@@ -2,7 +2,7 @@ import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
 // import socketServiceTS from '../socket/socketServiceTS.js'
-let CreateTrip = async (data) => {
+const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location
         const lat1 = data.start.lat
@@ -22,7 +22,7 @@ let CreateTrip = async (data) => {
         const paymentMethod = data.paymentMethod
         const is_paid = false
         const price = data.price
-        let trip = {
+        const trip = {
             start: JSON.stringify({
                 name: place1,
                 lat: lat1,
@@ -61,7 +61,7 @@ let CreateTrip = async (data) => {
     })
 }
 
-let CreateTripForCallCenter = async (data) => {
+const CreateTripForCallCenter = async (data) => {
     return new Promise(async (resolve, reject) => {
         // let lat1 = data.start.lat
         // let lng1 = data.start.lng
@@ -118,9 +118,9 @@ let CreateTripForCallCenter = async (data) => {
     })
 }
 
-let GetAvailableTrip = async () => {
+const GetAvailableTrip = async () => {
     return new Promise(async (resolve, reject) => {
-        let trips = await db.Trip.findAll(
+        const trips = await db.Trip.findAll(
             {
                 where: {
                     status:
@@ -155,7 +155,7 @@ let GetAvailableTrip = async () => {
 }
 
 let GetTripById = async (trip_id) => {
-    let trips = await db.Trip.findOne(
+    const trips = await db.Trip.findOne(
         {
             where: { id: trip_id },
             include: [
@@ -180,10 +180,10 @@ let GetTripById = async (trip_id) => {
     return (trips)
 }
 
-let AcceptTrip = async (data) => {
+const AcceptTrip = async (data) => {
     try {
 
-        let trip = await GetTripById(data.trip_id)
+        const trip = await GetTripById(data.trip_id)
         // let driver_id = data.driver_id
         // if (trip.trips.id == null) throw new Error("Couldn't find trip")
         if (trip.status == "Cancelled") throw new Error("Trip has been cancelled")
@@ -193,7 +193,7 @@ let AcceptTrip = async (data) => {
     } catch (error) {
         throw error
     }
-    let result = await db.Trip.update(
+    const result = await db.Trip.update(
         { status: 'Confirmed', driver_id: data.driver_id },
         {
             where: {
@@ -204,11 +204,11 @@ let AcceptTrip = async (data) => {
     if (result != 1) {
         throw new Error("Something went wrong")
     }
-    let newTrip = await GetTripById(data.trip_id)
+    const newTrip = await GetTripById(data.trip_id)
     return newTrip
 }
 
-let CancelTrip = async (trip_id) => {
+const CancelTrip = async (trip_id) => {
     try {
         let trip = await GetTripById(trip_id)
         // if (trip.id == null) throw new Error("Couldn't find trip")
@@ -236,7 +236,7 @@ let CancelTrip = async (trip_id) => {
     return newTrip
 }
 
-let UpdateTrip = async (data) => {
+const UpdateTrip = async (data) => {
     let updateObj = {}
     if (data.driver_id != null) {
         updateObj.driver_id = data.driver_id
@@ -264,7 +264,7 @@ let UpdateTrip = async (data) => {
     }
 }
 
-let DeleteTrip = async (trip_id) => {
+const DeleteTrip = async (trip_id) => {
     try {
         await db.Trip.destroy({
             where: { id: trip_id }
@@ -274,7 +274,7 @@ let DeleteTrip = async (trip_id) => {
     }
 
 }
-let GetAppointmentTrip = async () => {
+const GetAppointmentTrip = async () => {
     return new Promise((resolve, reject) => {
 
     })

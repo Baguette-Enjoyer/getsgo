@@ -53,37 +53,6 @@ const GetDriverInfoById = async (driver_id) => {
         }
         const trips = await historyService.GetHistoryOfDriver(driver.id)
         const stats = historyService.GetDriverStatics(trips)
-        // let trips = await db.Trip.findAll({
-        //     where: { driver_id: driver_id },
-        //     include: [
-        //         {
-        //             model: db.Rate,
-        //             attributes: {
-        //                 exclude: ['createdAt', 'updatedAt']
-        //             }
-        //         }
-        //     ],
-        //     attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
-        // })
-        // let stars = 0
-        // let success = 0
-        // let cancelled = 0
-        // trips.forEach(item => {
-        //     item.start = JSON.parse(item.start)
-        //     item.end = JSON.parse(item.end)
-        //     stars += item.Rate.star
-        //     if (item.status == 'Done') success++;
-        //     else if (item.status == 'Cancelled') cancelled++;
-        // })
-        // let starResult = stars / (success + cancelled)
-        // let successResult = Math.floor(success * 100 / (success + cancelled))
-        // let cancelledResult = 100 - successResult
-        // driver["star"] = starResult
-        // driver["successRate"] = successResult
-        // driver["cancelRate"] = cancelledResult
-        // console.log(driver)
-
-        //get star and stuff here
 
         return resolve({
             "driver_info": driver,
@@ -115,7 +84,7 @@ const GetProfitPlusTrip = async (driver_id, type) => {
         endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1)
 
     }
-    let trips = await db.Trip.findAll({
+    const trips = await db.Trip.findAll({
         where: {
             driver_id: driver_id,
             createdAt: {
