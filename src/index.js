@@ -3,7 +3,7 @@
 // import { Server } from "socket.io";
 import listEndpoints from "express-list-endpoints";
 // import initServerRoutes from "./routes/serverRoutes";
-import socket2 from './socket/socketServiceTS.js'
+import { runSocketService } from './socket/JS/socketService.js'
 import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
 // import { rd } from '../config/connectRedis'
@@ -27,11 +27,12 @@ require("dotenv").config();
 //   console.log(`${req.method} ${req.url} ${res.statusCode}`);
 //   next();
 // });
-const io = initServer.getIO()
+// const io = initServer.getIO()
 
 connectDB();
 // initSocket();
-socket2.runSocketService(io)
+// socket2.runSocketService(io)
+runSocketService()
 
 console.log(listEndpoints(initServer.getApp()))
 

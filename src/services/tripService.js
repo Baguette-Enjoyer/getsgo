@@ -1,7 +1,7 @@
 import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
-import socketServiceTS from '../socket/socketServiceTS.js'
+// import socketServiceTS from '../socket/socketServiceTS.js'
 let CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location

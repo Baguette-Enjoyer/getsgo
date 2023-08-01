@@ -4,7 +4,7 @@ import { resolve } from "path";
 import jwtService from './jwtService';
 import { Op, where } from 'sequelize'
 import initServer from './initServer';
-import { test } from '../socket/socketServiceTS'
+// import { test } from '../socket/socketServiceTS'
 const salt = bcrypt.genSaltSync(10);
 
 

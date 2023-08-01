@@ -1,7 +1,7 @@
 import jwtService from '../services/jwtService'
 import userService from '../services/userService'
-import socketService from '../socket/socketServiceTS'
-
+// import socketService from '../socket/socketServiceTS'
+import { GetDriversAround3KM } from '../socket/JS/socketService'
 let LoginUser = async (req, res) => {
     let data = req.body
     try {
@@ -111,7 +111,7 @@ let UpdateUserInfo = async (data) => {
 
 let GetDriverAround3KM = async (req, res) => {
     let dat = req.body
-    let result = socketService.GetDriversAround3KM(dat)
+    let result = GetDriversAround3KM(dat)
     let randomGeometer = []
     for (let i = 0; i < 10; i++) {
         randomGeometer.push(
