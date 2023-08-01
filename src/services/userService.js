@@ -9,8 +9,8 @@ const salt = bcrypt.genSaltSync(10);
 
 
 let RegisterUser = async (data) => {
-  let phone = data.phone
-  let user = await db.User.findOne({
+  const phone = data.phone
+  const user = await db.User.findOne({
     where: {
       phone: {
         [Op.eq]: phone,
@@ -19,10 +19,10 @@ let RegisterUser = async (data) => {
   })
   if (user != null) throw new Error("Phone existed")
 
-  let pwd = data.password
-  let hash = await hashUserPassword(pwd)
+  const pwd = data.password
+  const hash = await hashUserPassword(pwd)
   try {
-    let user = await db.User.create({
+    let newuser = await db.User.create({
       // name: data.name,
       phone: phone,
       password: hash,
@@ -30,16 +30,16 @@ let RegisterUser = async (data) => {
       active: true,
       type: "User"
     })
-    let token = await jwtService.GenerateAccessToken(user.id, phone, "User")
+    const token = await jwtService.GenerateAccessToken(newuser.id, phone, "User")
     await db.User.update({
       accessToken: token
     }, {
       where: {
-        id: user.id
+        id: newuser.id
       }
     })
     return {
-      user_id: user.id,
+      user_id: newuser.id,
       message: "User created",
       phone: phone,
       accessToken: token,
@@ -50,9 +50,9 @@ let RegisterUser = async (data) => {
 }
 
 let LoginUser = async (data) => {
-  let phone = data.phone
-  let password = data.password
-  let user = await db.User.findOne({
+  const phone = data.phone
+  const password = data.password
+  const user = await db.User.findOne({
     where: {
       phone: {
         [Op.eq]: phone,
@@ -62,21 +62,21 @@ let LoginUser = async (data) => {
   if (user == null) throw new Error("Couldnt find phone")
   if (user.password == null) throw new Error("Require password")
 
-  let hashPassword = user.password
+  const hashPassword = user.password
   let result = await comparePassword(password, hashPassword)
   if (!result) {
     throw new Error("Wrong password")
   }
   let token = user.accessToken
-  let verifyToken = await jwtService.VerifyToken(token)
+  const verifyToken = await jwtService.VerifyToken(token)
   if (verifyToken.result == false || token == null) {
-    token = await jwtService.GenerateAccessToken(checkUser.id, checkUser.phone, checkUser.type)
+    token = await jwtService.GenerateAccessToken(user.id, user.phone, user.type)
     await db.User.update({
       accessToken: token
     },
       {
         where: {
-          id: checkUser.id
+          id: user.id
         }
       })
   }

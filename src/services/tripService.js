@@ -5,23 +5,23 @@ import socketServiceTS from '../socket/socketServiceTS.js'
 let CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location
-        let lat1 = data.start.lat
-        let lng1 = data.start.lng
-        let place1 = data.start.place
-        let lat2 = data.end.lat
-        let lng2 = data.end.lng
-        let place2 = data.end.place
-        let now = new Date()
+        const lat1 = data.start.lat
+        const lng1 = data.start.lng
+        const place1 = data.start.place
+        const lat2 = data.end.lat
+        const lng2 = data.end.lng
+        const place2 = data.end.place
+        const now = new Date()
 
         //user_info
-        let user_id = data.user_id
-        let is_scheduled = data.is_scheduled
-        let scheduled_time = is_scheduled ? data.schedule_time : now
+        const user_id = data.user_id
+        const is_scheduled = data.is_scheduled
+        const scheduled_time = is_scheduled ? data.schedule_time : now
         //Check user role here
-        let status = "Pending"
-        let paymentMethod = data.paymentMethod
-        let is_paid = false
-        let price = data.price
+        const status = "Pending"
+        const paymentMethod = data.paymentMethod
+        const is_paid = false
+        const price = data.price
         let trip = {
             start: JSON.stringify({
                 name: place1,
@@ -42,7 +42,7 @@ let CreateTrip = async (data) => {
             price: price,
         }
         // console.log(trip)
-        let newTrip = await db.Trip.create(
+        const newTrip = await db.Trip.create(
             trip
         )
         trip.trip_id = newTrip.id
@@ -65,22 +65,22 @@ let CreateTripForCallCenter = async (data) => {
     return new Promise(async (resolve, reject) => {
         // let lat1 = data.start.lat
         // let lng1 = data.start.lng
-        let place1 = data.start
+        const place1 = data.start
         // let lat2 = data.end.lat
         // let lng2 = data.end.lng
-        let place2 = data.end
-        let now = new Date()
-        let phone = data.phone
+        const place2 = data.end
+        const now = new Date()
+        const phone = data.phone
 
-        let is_scheduled = data.is_scheduled
-        let scheduled_time = is_scheduled ? data.schedule_time : now
-        let status = "Pending"
-        let paymentMethod = data.paymentMethod
-        let is_paid = false
-        let price = data.price
+        const is_scheduled = data.is_scheduled
+        const scheduled_time = is_scheduled ? data.schedule_time : now
+        const status = "Pending"
+        const paymentMethod = data.paymentMethod
+        const is_paid = false
+        const price = data.price
 
-        let user = await userService.CreateUserIfNotExist(phone);
-        let user_id = user.id;
+        const user = await userService.CreateUserIfNotExist(phone);
+        const user_id = user.id;
 
         console.log(user_id)
 
@@ -100,7 +100,7 @@ let CreateTripForCallCenter = async (data) => {
             price: price,
         }
         // console.log(trip)
-        let newTrip = await db.Trip.create(
+        const newTrip = await db.Trip.create(
             trip
         )
         trip.trip_id = newTrip.id
@@ -250,7 +250,7 @@ let UpdateTrip = async (data) => {
     // console.log(updateObj)
     // console.log(data.trip_id)
     try {
-        let res = await db.Trip.update(updateObj, {
+        const res = await db.Trip.update(updateObj, {
             where: { id: data.trip_id }
         })
         console.log(res)

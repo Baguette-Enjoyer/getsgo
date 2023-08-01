@@ -2,7 +2,7 @@ import db from '../models/index'
 import historyService from './historyService'
 import { Op } from 'sequelize'
 let GetHistoryOfUser = async (user_id) => {
-    let trips = await db.Trip.findAll({
+    const trips = await db.Trip.findAll({
         where: { user_id: user_id },
         include: [
             {
@@ -18,10 +18,10 @@ let GetHistoryOfUser = async (user_id) => {
 }
 
 
-let GetDriverInfoById = async (driver_id) => {
+const GetDriverInfoById = async (driver_id) => {
     return new Promise(async (resolve, reject) => {
         console.log(driver_id)
-        let driver = await db.User.findOne(
+        const driver = await db.User.findOne(
             {
                 where: { id: driver_id, type: "Driver" },
                 include: [
@@ -51,8 +51,8 @@ let GetDriverInfoById = async (driver_id) => {
         if (driver == null) {
             return reject(new Error(`Driver not found`))
         }
-        let trips = await historyService.GetHistoryOfDriver(driver.id)
-        let stats = historyService.GetDriverStatics(trips)
+        const trips = await historyService.GetHistoryOfDriver(driver.id)
+        const stats = historyService.GetDriverStatics(trips)
         // let trips = await db.Trip.findAll({
         //     where: { driver_id: driver_id },
         //     include: [
@@ -92,9 +92,8 @@ let GetDriverInfoById = async (driver_id) => {
     })
 }
 
-let GetProfitPlusTrip = async (driver_id, type) => {
+const GetProfitPlusTrip = async (driver_id, type) => {
     // type = 'Day' | 'Week' | 'Month'
-    let query;
     let startDate;
     let endDate
     let today = new Date()

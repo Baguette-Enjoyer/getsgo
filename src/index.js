@@ -17,7 +17,7 @@ import getRedisClient from './config/connectRedisTS'
 //     // methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //   },
 // })
-let rd = getRedisClient()
+const rd = getRedisClient()
 require("dotenv").config();
 
 // app.use(express.json())
@@ -27,7 +27,7 @@ require("dotenv").config();
 //   console.log(`${req.method} ${req.url} ${res.statusCode}`);
 //   next();
 // });
-let io = initServer.getIO()
+const io = initServer.getIO()
 
 connectDB();
 // initSocket();

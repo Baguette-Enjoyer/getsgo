@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var locationService_1 = require("../services/locationService");
 var connectRedisTS_1 = require("../config/connectRedisTS");
-// import {io} from '../services/initServer'
+var initServer_1 = require("../services/initServer");
 var driverServices_1 = require("../services/driverServices");
 var userService_1 = require("../services/userService");
 var tripService_1 = require("../services/tripService");
@@ -82,7 +82,7 @@ var notifyIfClose = function (io) {
     setTimeout(function () { return notifyIfClose(io); }, 15000);
 };
 var runSocketService = function (io) {
-    initSocket(io);
+    initSocket();
     initSocketService(io);
     console.log("socket service started");
 };
@@ -91,14 +91,14 @@ var initSocketService = function (io) {
     deleteTripExceeded(io);
     notifyIfClose(io);
 };
-var initSocket = function (io) {
-    io.on('connection', function (socket) {
+var initSocket = function () {
+    initServer_1.io.on('connection', function (socket) {
         console.log("socket " + socket.id + " connected");
         handleUserLogin(socket);
         handleDriverLogin(socket);
-        handleUserFindTrip(io, socket);
+        handleUserFindTrip(initServer_1.io, socket);
         //handleCallcenterFindTrip(socket)
-        handleDriverResponseBooking(io, socket);
+        handleDriverResponseBooking(initServer_1.io, socket);
         handleLocationUpdate(socket);
         handleDisconnect(socket);
     });
@@ -123,20 +123,22 @@ var handleDriverLogin = function (socket) {
             status: data.status,
             vehicle_type: data.vehicle_type
         });
+        console.log(data);
     });
 };
 var handleUserFindTrip = function (io, socket) {
     socket.on('user-find-trip', function (data) { return __awaiter(void 0, void 0, void 0, function () {
-        var trip_id, place1, user, user_id, userData, DataResponse, DataResponseStringified, possibleDrivers, isResponded, i, driver, d, driverData, responseData, stringifiedResponse, newTrip, dat, rdTripKey, TripDataStringified;
+        var trip_id, place1, userData, DataResponse, DataResponseStringified, possibleDrivers, isResponded, i, driver, d, driverData, responseData, stringifiedResponse, newTrip, dat, rdTripKey, TripDataStringified;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    trip_id = data.id;
+                    // const dat: TripValue = JSON.parse(data)
+                    console.log("okok");
+                    console.log(data);
+                    trip_id = data.trip_id;
                     place1 = data.start;
-                    user = getUserBySocket(socket);
-                    user_id = user === null || user === void 0 ? void 0 : user.user_id;
-                    return [4 /*yield*/, userService_1["default"].GetUserById(user_id)];
+                    return [4 /*yield*/, userService_1["default"].GetUserById(data.user_id)];
                 case 1:
                     userData = _b.sent();
                     DataResponse = {
@@ -184,7 +186,7 @@ var handleUserFindTrip = function (io, socket) {
                         message: "found driver"
                     };
                     stringifiedResponse = JSON.stringify(responseData);
-                    io["in"]("/user/".concat(user_id)).emit('found-driver', stringifiedResponse);
+                    io["in"]("/user/".concat(data.user_id)).emit('found-driver', stringifiedResponse);
                     newTrip = data;
                     newTrip.status = 'Confirmed';
                     newTrip.driver_id = driver.user_id;
@@ -256,7 +258,7 @@ var handleCallcenterFindTrip = function (io, socket) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    trip_id = data.id;
+                    trip_id = data.trip_id;
                     place1 = data.start;
                     DataResponse = {
                         trip_info: data
