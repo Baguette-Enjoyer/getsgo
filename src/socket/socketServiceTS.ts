@@ -1,8 +1,7 @@
 import { Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import locationServices from "../services/locationService"
-import { getRedisCon } from '../config/connectRedis'
-import getRedisClient from "../config/connectRedisTS"
+import initRedis from '../config/connectRedis'
 import { io } from '../services/initServer'
 import driverServices from "../services/driverServices"
 import userService from "../services/userService"
@@ -10,14 +9,14 @@ import tripService from "../services/tripService"
 // import delay from "delay"
 // let io = initServer.getIO()
 
-let rd = getRedisClient()
+let rd = initRedis()
 
-interface User {
+export interface User {
     user_id: number
     hasCancelled?: boolean
 }
 
-interface Driver {
+export interface Driver {
     user_id: number
     lat: number
     lng: number
@@ -27,7 +26,7 @@ interface Driver {
     response?: 'Accept' | 'Deny' | string
 }
 
-interface TripValue {
+export interface TripValue {
     trip_id: number
     user_id?: number
     driver_id?: number

@@ -6,8 +6,8 @@ import listEndpoints from "express-list-endpoints";
 import socket2 from './socket/socketServiceTS.js'
 import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
-import { getRedisCon } from './config/connectRedis'
-import getRedisClient from './config/connectRedisTS'
+// import { rd } from '../config/connectRedis'
+// import getRedisClient from './config/connectRedisTS'
 // const app = express()
 // const server = http.createServer(app)
 
@@ -17,7 +17,7 @@ import getRedisClient from './config/connectRedisTS'
 //     // methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //   },
 // })
-const rd = getRedisClient()
+// const rd = getRedisClient()
 require("dotenv").config();
 
 // app.use(express.json())

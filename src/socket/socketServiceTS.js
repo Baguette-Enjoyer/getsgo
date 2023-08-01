@@ -37,14 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var locationService_1 = require("../services/locationService");
-var connectRedisTS_1 = require("../config/connectRedisTS");
+var connectRedis_1 = require("../config/connectRedis");
 var initServer_1 = require("../services/initServer");
 var driverServices_1 = require("../services/driverServices");
 var userService_1 = require("../services/userService");
 var tripService_1 = require("../services/tripService");
 // import delay from "delay"
 // let io = initServer.getIO()
-var rd = (0, connectRedisTS_1["default"])();
+var rd = (0, connectRedis_1["default"])();
 var users = new Map();
 var drivers = new Map();
 var trips = new Map();
