@@ -38,8 +38,8 @@ const findPossibleDriver = (drivers, place) => {
 
 const getFiveNearestDriver = (drivers, targetLocation, driversInBroadcast) => {
     console.log(targetLocation)
-    const targetLat = targetLocation.lat
-    const targetLng = targetLocation.lng
+    const targetLat = parseInt(targetLocation.lat)
+    const targetLng = parseInt(targetLocation.lng)
 
     const idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId, { lat, lng, user_id, status }]) => ({
         socketId,

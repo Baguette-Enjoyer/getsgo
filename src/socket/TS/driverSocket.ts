@@ -59,12 +59,14 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
 }
 
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('driver-response-booking', async (data: { trip_id: number, status: 'Agree' | 'Deny' }) => {
+    socket.on('driver-response-booking', async (data: { trip_id: number, status: 'Accept' | 'Deny' }) => {
+        console.log(data)
         let driver = DriverMap.getMap().get(socket.id)
         if (driver == undefined) return
         let driver_id = driver?.user_id
         let trip_id = data.trip_id
         setDriverResponseStatus(driver_id, data.status)
+        console.log(DriverMap.getMap().get(socket.id))
         // if (data.status == 'Deny' ) return 
 
         // driver.status = 'Driving'

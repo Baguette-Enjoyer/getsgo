@@ -11,6 +11,7 @@ let rd = initRedis()
 interface User {
     user_id: number
 }
+const io2:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> = io
 interface TripValue {
     trip_id: number
     user_id?: number

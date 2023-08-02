@@ -39,9 +39,10 @@ const GetDriverStatics = (trips) => {
     trips.forEach(item => {
         item.start = JSON.parse(item.start)
         item.end = JSON.parse(item.end)
-        stars += item.Rate.star
-        if (item.status == 'Done') success++;
-        else if (item.status == 'Cancelled') cancelled++;
+        if (item.status != 'Done' || item.status != 'Cancelled') {
+            if (item.status == 'Done') { success++; stars += item.Rate.star }
+            else if (item.status == 'Cancelled') cancelled++;
+        }
     })
     const starResult = stars / (success + cancelled)
     const successResult = Math.floor(success * 100 / (success + cancelled))

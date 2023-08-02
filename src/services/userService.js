@@ -30,19 +30,19 @@ const RegisterUser = async (data) => {
       active: true,
       type: "User"
     })
-    const token = await jwtService.GenerateAccessToken(newuser.id, phone, "User")
-    await db.User.update({
-      accessToken: token
-    }, {
-      where: {
-        id: newuser.id
-      }
-    })
+    // const token = await jwtService.GenerateAccessToken(newuser.id, phone, "User")
+    // await db.User.update({
+    //   accessToken: token
+    // }, {
+    //   where: {
+    //     id: newuser.id
+    //   }
+    // })
     return {
       user_id: newuser.id,
       message: "User created",
       phone: phone,
-      accessToken: token,
+      // accessToken: token,
     }
   } catch (error) {
     throw new Error("error registering")
@@ -62,23 +62,40 @@ const LoginUser = async (data) => {
   if (user == null) throw new Error("Couldnt find phone")
   if (user.password == null) throw new Error("Require password")
 
-  const hashPassword = user.password
-  let result = await comparePassword(password, hashPassword)
+  let result = await comparePassword(password, user.password)
   if (!result) {
     throw new Error("Wrong password")
   }
   let token = user.accessToken
   const verifyToken = await jwtService.VerifyToken(token)
   if (verifyToken.result == false || token == null) {
-    token = await jwtService.GenerateAccessToken(user.id, user.phone, user.type)
-    await db.User.update({
-      accessToken: token
-    },
-      {
-        where: {
-          id: user.id
-        }
+    if (verifyToken.type != 'Driver') {
+      token = await jwtService.GenerateAccessToken(user.id, user.phone, user.type)
+      await db.User.update({
+        accessToken: token
+      },
+        {
+          where: {
+            id: user.id
+          }
+        })
+    }
+    else {
+      const v_type = db.Vehicle.findOne({
+        where: { driver_id: user.id }
       })
+      const v_type_id = v_type.vehicle_type_id
+      token = jwtService.GenerateAccessTokenForDriver(user.id, user.phone, user.type, v_type_id)
+      await db.User.update({
+        accessToken: token
+      },
+        {
+          where: {
+            id: user.id
+          }
+        })
+    }
+
   }
   return {
     user_id: user.id,

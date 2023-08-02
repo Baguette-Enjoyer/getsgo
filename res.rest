@@ -3,9 +3,11 @@ POST http://localhost:3000/v1/users/signup
 Content-Type: application/json
 
 {
-    "phone":"+84555555113",
+    "phone":"+84321123321",
     "password":"123456"
 }
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwOTYzNDM1LCJleHAiOjE2OTIwNDM0MzV9.sM7gAkx0Gl7043NJu3r97BqbvQD9tWdG3ZOoT2ZK-AE
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTA5NjM0NzksImV4cCI6MTY5MjA0MzQ3OX0.o0kfUy4iiG5kyYoB3ea8URXpISHenDkopQdlKvwtNeU
 
 ###
 POST http://localhost:3000/v1/users/login
@@ -82,7 +84,7 @@ GET http://188.166.250.160:8080/v1/phone?phone=+84111111111
 GET http://localhost:3000/v1/phone?phone=+8412312312
 
 ###
-GET http://localhost:3000/v1/driver/3
+GET http://localhost:3000/v1/driver/2
 
 ###
 GET http://localhost:3000/v1/history/user/4
