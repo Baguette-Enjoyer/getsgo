@@ -4,12 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetDriversAround3KM = exports.runSocketService = void 0;
+// @ts-ignore
 const initServer_1 = require("../../services/initServer");
 const userSocket_1 = require("./userSocket");
 const driverSocket_1 = require("./driverSocket");
 const storage_1 = require("./storage");
 const locationService_1 = __importDefault(require("../../services/locationService"));
 const runSocketService = () => {
+    // io.use(authSocket)
     initSocket();
     initSocketService();
     console.log("socket service running");
@@ -27,6 +29,40 @@ const initSocket = () => {
         handleDisconnect(socket);
     });
 };
+// const authSocket = (socket:Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,next: (err?: Error) => void) => {
+//     const token = socket.handshake.query.token
+//     if (!token) {
+//         return next(new Error('token missing'))
+//     }
+//     jwtService.VerifyToken(token)
+//     .then((decoded: any) => {
+//       if (!decoded.result) {
+//         return next(new Error('Authentication failed: ' + decoded.message));
+//       }
+//       socket.data = {
+//         user: decoded.id
+//       };
+//       if (decoded.type == "User" || decoded.type == "User_vip") {
+//         socket.join(`/user/${decoded.id}`)
+//         UserMap.getMap().set(socket.id,decoded.id)
+//       } else if (decoded.type == "Driver"){
+//         socket.join(`/driver/${decoded.id}`)
+//         socket.join('/drivers')
+//           DriverMap.getMap().set(socket.id,{
+//             user_id: decoded.id,
+//             lat:0,
+//             lng: 0,
+//             status: "Idle",
+//             vehicle_type: decoded.vehicle_type
+//         })
+//       }
+//       console.log(socket.data)
+//       next();
+//     })
+//     .catch((err:Error) => {
+//       return next(new Error('Authentication error: ' + err.message));
+//     });
+// }
 const initSocketService = () => {
     updateLocationLoop();
 };

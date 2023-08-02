@@ -2,7 +2,6 @@
 
 export interface User {
     user_id: number
-    hasCancelled?: boolean
 }
 
 export interface Driver {

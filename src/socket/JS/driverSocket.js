@@ -28,12 +28,14 @@ const handleDriverLogin = (socket) => {
 exports.handleDriverLogin = handleDriverLogin;
 const handleDriverResponseBooking = (socket) => {
     socket.on('driver-response-booking', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(data);
         let driver = storage_1.DriverMap.getMap().get(socket.id);
         if (driver == undefined)
             return;
         let driver_id = driver === null || driver === void 0 ? void 0 : driver.user_id;
         let trip_id = data.trip_id;
         (0, exports.setDriverResponseStatus)(driver_id, data.status);
+        console.log(storage_1.DriverMap.getMap().get(socket.id));
         // if (data.status == 'Deny' ) return 
         // driver.status = 'Driving'
         // drivers.set(socket.id,driver)

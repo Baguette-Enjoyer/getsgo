@@ -21,6 +21,7 @@ const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
 const connectRedis_1 = __importDefault(require("../../config/connectRedis"));
 let rd = (0, connectRedis_1.default)();
+const io2 = initServer_1.io;
 // const users = new Map<string, User>()
 const handleUserLogin = (socket) => {
     socket.on('user-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -189,4 +190,7 @@ const UserCancelTrip = (id) => {
             return;
         }
     });
+};
+const GetSocketInRoom = (id) => {
+    const room = initServer_1.io.sockets.adapter.rooms.get("/users");
 };
