@@ -9,10 +9,11 @@ let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
   dialect: "mysql",
   "port": process.env.DB_PORT,
   "dialectOptions": {
-    "ssl": {
-      "required": true,
-      "rejectUnauthorized": false
-    }
+    // "ssl": {
+    //   "required": false,
+    //   "rejectUnauthorized": false
+    // }
+    "ssl": false
   },
 
 });
@@ -26,6 +27,7 @@ const connectDB = async () => {
     await sequelize.authenticate()
     console.log("Connected to db")
   } catch (error) {
+    console.log(error)
     console.log("Failed to connect")
   }
 

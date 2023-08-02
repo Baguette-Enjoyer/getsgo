@@ -6,7 +6,7 @@ import initServerRoutes from "../routes/serverRoutes";
 const app = express()
 const server = http.createServer(app)
 
-let io = new Server(server, {
+export const io = new Server(server, {
     cors: {
         origin: '*',
         // methods: ['GET', 'POST', 'PUT', 'DELETE'],

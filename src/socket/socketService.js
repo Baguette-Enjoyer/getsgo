@@ -96,6 +96,8 @@ let handleDriverLogin = (socket) => {
 
 let handleUserFindTrip = (socket) => {
     socket.on('user-find-trip', async (data) => {
+        console.log('dataddđ');
+        console.log(data);
         //get user data first
         let trip_id = data.trip_id
         let place1 = data.start
@@ -235,6 +237,7 @@ let getTripIfDisconnected = (id) => {
 }
 
 let getUserBySocket = (socket) => {
+    
     let id = socket.id
     let socket_value = users.get(id)
     return socket_value

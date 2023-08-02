@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var locationService_1 = require("../services/locationService");
 var connectRedisTS_1 = require("../config/connectRedisTS");
 var driverServices_1 = require("../services/driverServices");
@@ -43,7 +43,7 @@ var userService_1 = require("../services/userService");
 var tripService_1 = require("../services/tripService");
 // import delay from "delay"
 // let io = initServer.getIO()
-var rd = (0, connectRedisTS_1["default"])();
+var rd = (0, connectRedisTS_1.default)();
 var users = new Map();
 var drivers = new Map();
 var trips = new Map();
@@ -58,7 +58,7 @@ var updateLocationLoop = function (io) {
         // let socketDriver = GetSocketByDriverId(driver_id)
         var driver_info = getCurrentDriverInfoById(driver_id);
         var stringifiedResponse = JSON.stringify(driver_info);
-        io["in"]("/user/".concat(trip_value.user_id)).emit('location-update', stringifiedResponse);
+        io.in("/user/".concat(trip_value.user_id)).emit('location-update', stringifiedResponse);
     });
     setTimeout(function () { return updateLocationLoop(io); }, 60000);
 };
@@ -67,15 +67,15 @@ var deleteTripExceeded = function (io) {
         var now = new Date().getTime();
         trips.forEach(function (trip_value, trip_id) {
             if (now - trip_value.createdAt.getTime() >= 300000 && trip_value.status === 'Pending' && trip_value.driver_id == null) {
-                io["in"]("/user/".concat(trip_value.user_id)).emit('trip-cancelled', { message: "trip cancelled due to lack of driver" });
+                io.in("/user/".concat(trip_value.user_id)).emit('trip-cancelled', { message: "trip cancelled due to lack of driver" });
             }
         });
     }, 300000);
 }; //3-4phut khong co tai xe thi emit them
 var notifyIfClose = function (io) {
     trips.forEach(function (trip_value, trip_id) {
-        if (locationService_1["default"].getDistance(trip_value.start.lat, trip_value.start.lng, trip_value.end.lat, trip_value.end.lng) <= 1) {
-            io["in"]("/user/".concat(trip_value.user_id)).emit('driver-close', { message: "driver is close" });
+        if (locationService_1.default.getDistance(trip_value.start.lat, trip_value.start.lng, trip_value.end.lat, trip_value.end.lng) <= 1) {
+            io.in("/user/".concat(trip_value.user_id)).emit('driver-close', { message: "driver is close" });
         }
     });
     setTimeout(function () { return notifyIfClose(io); }, 15000);
@@ -107,7 +107,7 @@ var handleUserLogin = function (socket) {
         var user_id = data.user_id;
         socket.join("/user/".concat(user_id));
         users.set(socket.id, {
-            user_id: user_id
+            user_id: user_id,
         });
     });
 };
@@ -120,29 +120,35 @@ var handleDriverLogin = function (socket) {
             lat: data.lat,
             lng: data.lng,
             status: data.status,
-            vehicle_type: data.vehicle_type
+            vehicle_type: data.vehicle_type,
         });
     });
 };
 var handleUserFindTrip = function (io, socket) {
-    socket.on('user-find-trip', function (data) { return __awaiter(void 0, void 0, void 0, function () {
-        var trip_id, place1, user, user_id, userData, DataResponse, DataResponseStringified, possibleDrivers, isResponded, i, driver, d, driverData, responseData, stringifiedResponse, newTrip, dat, rdTripKey, TripDataStringified;
+    socket.on('user-find-trip', function (data1) { return __awaiter(void 0, void 0, void 0, function () {
+        var data, trip_id, place1, userData, DataResponse, DataResponseStringified, possibleDrivers, isResponded, i, driver, d, driverData, responseData, stringifiedResponse, newTrip, dat, rdTripKey, TripDataStringified;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    console.log('wwwwwwwwwww');
+                    data = data1['trip_info'];
+                    console.log(data);
+                    console.log('wwwwwwwwwww');
                     trip_id = data.trip_id;
+                    console.log('wwwwwwwwwww');
                     place1 = data.start;
-                    user = getUserBySocket(socket);
-                    user_id = user === null || user === void 0 ? void 0 : user.user_id;
-                    return [4 /*yield*/, userService_1["default"].GetUserById(user_id)];
+                    // let user = getUserBySocket(socket)
+                    console.log('wwwwwwwwwww0');
+                    return [4 /*yield*/, userService_1.default.GetUserById(data.user_id)];
                 case 1:
                     userData = _a.sent();
+                    console.log('wwwwwwwwwww1');
                     DataResponse = {
                         user_info: userData,
                         trip_info: data
                     };
                     DataResponseStringified = JSON.stringify(DataResponse);
-                    possibleDrivers = locationService_1["default"].getFiveNearestDriver(drivers, place1, driversInBroadcast);
+                    possibleDrivers = locationService_1.default.getFiveNearestDriver(drivers, place1, driversInBroadcast);
                     console.log(possibleDrivers);
                     isResponded = false;
                     i = 0;
@@ -160,10 +166,10 @@ var handleUserFindTrip = function (io, socket) {
                     if (!(d === null || d === void 0 ? void 0 : d.hasResponded)) return [3 /*break*/, 8];
                     if (!(d.response == 'Accept')) return [3 /*break*/, 6];
                     isResponded = true;
-                    return [4 /*yield*/, tripService_1["default"].UpdateTrip({ trip_id: trip_id, status: "Confirmed", driver_id: driver.user_id })];
+                    return [4 /*yield*/, tripService_1.default.UpdateTrip({ trip_id: trip_id, status: "Confirmed", driver_id: driver.user_id })];
                 case 4:
                     _a.sent();
-                    return [4 /*yield*/, driverServices_1["default"].GetDriverInfoById(driver.user_id)];
+                    return [4 /*yield*/, driverServices_1.default.GetDriverInfoById(driver.user_id)];
                 case 5:
                     driverData = _a.sent();
                     responseData = {
@@ -172,8 +178,9 @@ var handleUserFindTrip = function (io, socket) {
                         message: "found driver"
                     };
                     stringifiedResponse = JSON.stringify(responseData);
-                    io["in"]("/user/".concat(user_id)).emit('found-driver', stringifiedResponse);
+                    io.in("/user/".concat(data.user_id)).emit('found-driver', stringifiedResponse);
                     newTrip = data;
+                    newTrip.status = 'Confirmed';
                     newTrip.driver_id = driver.user_id;
                     trips.set(trip_id, newTrip);
                     isResponded = true;
@@ -197,7 +204,7 @@ var handleUserFindTrip = function (io, socket) {
                         trip_id: trip_id,
                         status: "Waiting"
                     };
-                    return [4 /*yield*/, tripService_1["default"].UpdateTrip(dat)];
+                    return [4 /*yield*/, tripService_1.default.UpdateTrip(dat)];
                 case 11:
                     _a.sent();
                     _a.label = 12;
@@ -249,7 +256,7 @@ var handleCallcenterFindTrip = function (io, socket) {
                         trip_info: data
                     };
                     DataResponseStringified = JSON.stringify(DataResponse);
-                    possibleDrivers = locationService_1["default"].getFiveNearestDriver(drivers, place1, driversInBroadcast);
+                    possibleDrivers = locationService_1.default.getFiveNearestDriver(drivers, place1, driversInBroadcast);
                     console.log(possibleDrivers);
                     for (i = 0; i < possibleDrivers.length; i++) {
                         driver = possibleDrivers[i];
@@ -262,7 +269,7 @@ var handleCallcenterFindTrip = function (io, socket) {
                         trip_id: trip_id,
                         status: "Waiting"
                     };
-                    return [4 /*yield*/, tripService_1["default"].UpdateTrip(dat)
+                    return [4 /*yield*/, tripService_1.default.UpdateTrip(dat)
                         // let possibleDrivers = locationServices.getFiveNearestDriver(drivers,place1,driversInBroadcast)
                         // AddDriverToBroadCast(possibleDrivers[0].user_id)
                         // broadCastToDriver(io,possibleDrivers[0][0], "callcenter-trip", DataResponseStringified)
@@ -357,7 +364,7 @@ var broadCastToUser = function (io, socketid, event, data) {
         throw new Error("user socket error");
     }
     var user_id = socket_value.user_id;
-    io["in"]("/user/".concat(user_id)).emit(event, data);
+    io.in("/user/".concat(user_id)).emit(event, data);
 };
 var broadCastToDriver = function (io, socketid, event, data) {
     var socket_value = drivers.get(socketid) || undefined;
@@ -368,7 +375,7 @@ var broadCastToDriver = function (io, socketid, event, data) {
         throw new Error("driver socket error");
     }
     var driver_id = socket_value.user_id;
-    io["in"]("/driver/".concat(driver_id)).emit(event, data);
+    io.in("/driver/".concat(driver_id)).emit(event, data);
 };
 var GetSocketByUserId = function (user_id) {
     var socketArr = [];
@@ -437,7 +444,7 @@ var GetDriversAround3KM = function (data) {
     //     }
     // }
     drivers.forEach(function (driver_value, driver_id) {
-        if (locationService_1["default"].getDistance(lat1, lng1, driver_value.lat, driver_value.lng) <= 3) {
+        if (locationService_1.default.getDistance(lat1, lng1, driver_value.lat, driver_value.lng) <= 3) {
             posDrivers.push({ lat: driver_value.lat, lng: driver_value.lng });
         }
     });
@@ -462,10 +469,10 @@ var GetTripInfoById = function (id) {
 var handleDisconnect = function (socket) {
     socket.on('disconnect', function () {
         if (users.get(socket.id)) {
-            users["delete"](socket.id);
+            users.delete(socket.id);
         }
         else {
-            drivers["delete"](socket.id);
+            drivers.delete(socket.id);
         }
         // users.delete(socket.id)
         console.log("client disconnected " + socket.id);
@@ -495,7 +502,7 @@ var setDriverResponseStatus = function (driver_id, status) {
 var test = function () {
     console.log(1);
 };
-exports["default"] = {
+exports.default = {
     runSocketService: runSocketService,
     GetDriversAround3KM: GetDriversAround3KM,
     GetTripInfoById: GetTripInfoById

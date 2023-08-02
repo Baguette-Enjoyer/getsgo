@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var ioredis_1 = require("ioredis");
 require('dotenv').config();
 var rd;
@@ -9,8 +9,8 @@ function getRedisClient() {
         var connStr = process.env.REDIS_CONN_STR;
         if (connStr == null)
             throw new Error("redis connection failed");
-        rd = new ioredis_1["default"](connStr);
+        rd = new ioredis_1.default(connStr);
     }
     return rd;
 }
-exports["default"] = getRedisClient;
+exports.default = getRedisClient;

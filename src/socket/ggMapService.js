@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 var GGMAP_KEY = process.env.GGMAP_KEY;
 var getRoute = function (lat1, lng1, lat2, lng2) { return __awaiter(void 0, void 0, void 0, function () {
@@ -66,11 +66,11 @@ var getRoute = function (lat1, lng1, lat2, lng2) { return __awaiter(void 0, void
                         start_location: x.start_location,
                         end_location: x.end_location,
                         polyline: x.polyline,
-                        travel_mode: x.travel_mode
+                        travel_mode: x.travel_mode,
                     });
                 }
                 return [2 /*return*/, RouteDat];
         }
     });
 }); };
-exports["default"] = getRoute;
+exports.default = getRoute;
