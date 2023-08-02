@@ -1,38 +1,12 @@
-// import express from "express";
-// import http from "http";
-// import { Server } from "socket.io";
 import listEndpoints from "express-list-endpoints";
-// import initServerRoutes from "./routes/serverRoutes";
-import initSocket from './socket/socketService';
-import socket2 from './socket/socketServiceTS.js'
+import { runSocketService } from './socket/JS/socketService.js'
 import initServer from "./services/initServer";
 import connectDB from "./config/connectDB";
-import { getRedisCon } from './config/connectRedis'
-import getRedisClient from './config/connectRedisTS'
-// const app = express()
-// const server = http.createServer(app)
 
-// let io = new Server(server, {
-//   cors: {
-//     origin: '*',
-//     // methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   },
-// })
-let rd = getRedisClient()
 require("dotenv").config();
 
-// app.use(express.json())
-// app.use(express.urlencoded({ extended: true }))
-
-// app.use((req, res, next) => {
-//   console.log(`${req.method} ${req.url} ${res.statusCode}`);
-//   next();
-// });
-let io = initServer.getIO()
-
 connectDB();
-// initSocket();
-socket2.runSocketService(io)
+runSocketService()
 
 console.log(listEndpoints(initServer.getApp()))
 

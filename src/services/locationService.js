@@ -16,7 +16,7 @@ function toRad(value) {
     return value * Math.PI / 180;
 }
 
-let findPossibleDriver = (drivers, place) => {
+const findPossibleDriver = (drivers, place) => {
     let lat = place.lat;
     let lng = place.lng;
     let possibleDriver = Array.from(drivers)
@@ -36,9 +36,10 @@ let findPossibleDriver = (drivers, place) => {
     return possibleDriver
 }
 
-let getFiveNearestDriver = (drivers, targetLocation, driversInBroadcast) => {
-    let targetLat = targetLocation.lat
-    let targetLng = targetLocation.lng
+const getFiveNearestDriver = (drivers, targetLocation, driversInBroadcast) => {
+    console.log(targetLocation)
+    const targetLat = targetLocation.lat
+    const targetLng = targetLocation.lng
 
     const idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId, { lat, lng, user_id, status }]) => ({
         socketId,

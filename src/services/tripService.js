@@ -1,28 +1,28 @@
 import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
-import socketServiceTS from '../socket/socketServiceTS.js'
-let CreateTrip = async (data) => {
+// import socketServiceTS from '../socket/socketServiceTS.js'
+const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location
-        let lat1 = data.start.lat
-        let lng1 = data.start.lng
-        let place1 = data.start.place
-        let lat2 = data.end.lat
-        let lng2 = data.end.lng
-        let place2 = data.end.place
-        let now = new Date()
+        const lat1 = data.start.lat
+        const lng1 = data.start.lng
+        const place1 = data.start.place
+        const lat2 = data.end.lat
+        const lng2 = data.end.lng
+        const place2 = data.end.place
+        const now = new Date()
 
         //user_info
-        let user_id = data.user_id
-        let is_scheduled = data.is_scheduled
-        let scheduled_time = is_scheduled ? data.schedule_time : now
+        const user_id = data.user_id
+        const is_scheduled = data.is_scheduled
+        const scheduled_time = is_scheduled ? data.schedule_time : now
         //Check user role here
-        let status = "Pending"
-        let paymentMethod = data.paymentMethod
-        let is_paid = false
-        let price = data.price
-        let trip = {
+        const status = "Pending"
+        const paymentMethod = data.paymentMethod
+        const is_paid = false
+        const price = data.price
+        const trip = {
             start: JSON.stringify({
                 name: place1,
                 lat: lat1,
@@ -42,7 +42,7 @@ let CreateTrip = async (data) => {
             price: price,
         }
         // console.log(trip)
-        let newTrip = await db.Trip.create(
+        const newTrip = await db.Trip.create(
             trip
         )
         trip.trip_id = newTrip.id
@@ -61,26 +61,26 @@ let CreateTrip = async (data) => {
     })
 }
 
-let CreateTripForCallCenter = async (data) => {
+const CreateTripForCallCenter = async (data) => {
     return new Promise(async (resolve, reject) => {
         // let lat1 = data.start.lat
         // let lng1 = data.start.lng
-        let place1 = data.start
+        const place1 = data.start
         // let lat2 = data.end.lat
         // let lng2 = data.end.lng
-        let place2 = data.end
-        let now = new Date()
-        let phone = data.phone
+        const place2 = data.end
+        const now = new Date()
+        const phone = data.phone
 
-        let is_scheduled = data.is_scheduled
-        let scheduled_time = is_scheduled ? data.schedule_time : now
-        let status = "Pending"
-        let paymentMethod = data.paymentMethod
-        let is_paid = false
-        let price = data.price
+        const is_scheduled = data.is_scheduled
+        const scheduled_time = is_scheduled ? data.schedule_time : now
+        const status = "Pending"
+        const paymentMethod = data.paymentMethod
+        const is_paid = false
+        const price = data.price
 
-        let user = await userService.CreateUserIfNotExist(phone);
-        let user_id = user.id;
+        const user = await userService.CreateUserIfNotExist(phone);
+        const user_id = user.id;
 
         console.log(user_id)
 
@@ -100,7 +100,7 @@ let CreateTripForCallCenter = async (data) => {
             price: price,
         }
         // console.log(trip)
-        let newTrip = await db.Trip.create(
+        const newTrip = await db.Trip.create(
             trip
         )
         trip.trip_id = newTrip.id
@@ -118,9 +118,9 @@ let CreateTripForCallCenter = async (data) => {
     })
 }
 
-let GetAvailableTrip = async () => {
+const GetAvailableTrip = async () => {
     return new Promise(async (resolve, reject) => {
-        let trips = await db.Trip.findAll(
+        const trips = await db.Trip.findAll(
             {
                 where: {
                     status:
@@ -155,7 +155,7 @@ let GetAvailableTrip = async () => {
 }
 
 let GetTripById = async (trip_id) => {
-    let trips = await db.Trip.findOne(
+    const trips = await db.Trip.findOne(
         {
             where: { id: trip_id },
             include: [
@@ -180,10 +180,10 @@ let GetTripById = async (trip_id) => {
     return (trips)
 }
 
-let AcceptTrip = async (data) => {
+const AcceptTrip = async (data) => {
     try {
 
-        let trip = await GetTripById(data.trip_id)
+        const trip = await GetTripById(data.trip_id)
         // let driver_id = data.driver_id
         // if (trip.trips.id == null) throw new Error("Couldn't find trip")
         if (trip.status == "Cancelled") throw new Error("Trip has been cancelled")
@@ -193,7 +193,7 @@ let AcceptTrip = async (data) => {
     } catch (error) {
         throw error
     }
-    let result = await db.Trip.update(
+    const result = await db.Trip.update(
         { status: 'Confirmed', driver_id: data.driver_id },
         {
             where: {
@@ -204,11 +204,11 @@ let AcceptTrip = async (data) => {
     if (result != 1) {
         throw new Error("Something went wrong")
     }
-    let newTrip = await GetTripById(data.trip_id)
+    const newTrip = await GetTripById(data.trip_id)
     return newTrip
 }
 
-let CancelTrip = async (trip_id) => {
+const CancelTrip = async (trip_id) => {
     try {
         let trip = await GetTripById(trip_id)
         // if (trip.id == null) throw new Error("Couldn't find trip")
@@ -236,7 +236,7 @@ let CancelTrip = async (trip_id) => {
     return newTrip
 }
 
-let UpdateTrip = async (data) => {
+const UpdateTrip = async (data) => {
     let updateObj = {}
     if (data.driver_id != null) {
         updateObj.driver_id = data.driver_id
@@ -250,7 +250,7 @@ let UpdateTrip = async (data) => {
     // console.log(updateObj)
     // console.log(data.trip_id)
     try {
-        let res = await db.Trip.update(updateObj, {
+        const res = await db.Trip.update(updateObj, {
             where: { id: data.trip_id }
         })
         console.log(res)
@@ -264,7 +264,7 @@ let UpdateTrip = async (data) => {
     }
 }
 
-let DeleteTrip = async (trip_id) => {
+const DeleteTrip = async (trip_id) => {
     try {
         await db.Trip.destroy({
             where: { id: trip_id }
@@ -274,7 +274,7 @@ let DeleteTrip = async (trip_id) => {
     }
 
 }
-let GetAppointmentTrip = async () => {
+const GetAppointmentTrip = async () => {
     return new Promise((resolve, reject) => {
 
     })

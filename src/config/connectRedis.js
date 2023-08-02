@@ -1,9 +1,9 @@
 import ioredis from 'ioredis';
 
-let rd = null
 require('dotenv').config()
-let initRedis = () => {
-    rd = new ioredis(process.env.REDIS_CONN_STR)
+
+const initRedis = () => {
+    let rd = new ioredis(process.env.REDIS_CONN_STR)
     rd.on('connect', () => {
         console.log("connect redis")
     })
@@ -11,25 +11,26 @@ let initRedis = () => {
     rd.on('error', () => {
         console.log("error")
     })
+    return rd
 }
 
+export default initRedis
 
+// export const getRedisCon = () => {
+//     if (!rd) {
+//         initRedis()
+//         rd.set("test", "ok")
 
-export const getRedisCon = () => {
-    if (!rd) {
-        initRedis()
-        rd.set("test", "ok")
+//         // rd.on("connect", () => {
+//         //     console.log("Kết nối thành công tới Redis");
+//         // });
 
-        // rd.on("connect", () => {
-        //     console.log("Kết nối thành công tới Redis");
-        // });
-
-        // // Xử lý sự kiện khi gặp lỗi kết nối
-        // rd.on("error", (error) => {
-        //     console.error("Lỗi kết nối Redis:", error);
-        // });
-    } else {
-        return rd;
-    }
-}
+//         // // Xử lý sự kiện khi gặp lỗi kết nối
+//         // rd.on("error", (error) => {
+//         //     console.error("Lỗi kết nối Redis:", error);
+//         // });
+//     } else {
+//         return rd;
+//     }
+// }
 

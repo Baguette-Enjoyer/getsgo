@@ -4,13 +4,13 @@ import { resolve } from "path";
 import jwtService from './jwtService';
 import { Op, where } from 'sequelize'
 import initServer from './initServer';
-import { test } from '../socket/socketServiceTS'
+// import { test } from '../socket/socketServiceTS'
 const salt = bcrypt.genSaltSync(10);
 
 
-let RegisterUser = async (data) => {
-  let phone = data.phone
-  let user = await db.User.findOne({
+const RegisterUser = async (data) => {
+  const phone = data.phone
+  const user = await db.User.findOne({
     where: {
       phone: {
         [Op.eq]: phone,
@@ -19,10 +19,10 @@ let RegisterUser = async (data) => {
   })
   if (user != null) throw new Error("Phone existed")
 
-  let pwd = data.password
-  let hash = await hashUserPassword(pwd)
+  const pwd = data.password
+  const hash = await hashUserPassword(pwd)
   try {
-    let user = await db.User.create({
+    let newuser = await db.User.create({
       // name: data.name,
       phone: phone,
       password: hash,
@@ -30,16 +30,16 @@ let RegisterUser = async (data) => {
       active: true,
       type: "User"
     })
-    let token = await jwtService.GenerateAccessToken(user.id, phone, "User")
+    const token = await jwtService.GenerateAccessToken(newuser.id, phone, "User")
     await db.User.update({
       accessToken: token
     }, {
       where: {
-        id: user.id
+        id: newuser.id
       }
     })
     return {
-      user_id: user.id,
+      user_id: newuser.id,
       message: "User created",
       phone: phone,
       accessToken: token,
@@ -49,10 +49,10 @@ let RegisterUser = async (data) => {
   }
 }
 
-let LoginUser = async (data) => {
-  let phone = data.phone
-  let password = data.password
-  let user = await db.User.findOne({
+const LoginUser = async (data) => {
+  const phone = data.phone
+  const password = data.password
+  const user = await db.User.findOne({
     where: {
       phone: {
         [Op.eq]: phone,
@@ -62,21 +62,21 @@ let LoginUser = async (data) => {
   if (user == null) throw new Error("Couldnt find phone")
   if (user.password == null) throw new Error("Require password")
 
-  let hashPassword = user.password
+  const hashPassword = user.password
   let result = await comparePassword(password, hashPassword)
   if (!result) {
     throw new Error("Wrong password")
   }
   let token = user.accessToken
-  let verifyToken = await jwtService.VerifyToken(token)
+  const verifyToken = await jwtService.VerifyToken(token)
   if (verifyToken.result == false || token == null) {
-    token = await jwtService.GenerateAccessToken(checkUser.id, checkUser.phone, checkUser.type)
+    token = await jwtService.GenerateAccessToken(user.id, user.phone, user.type)
     await db.User.update({
       accessToken: token
     },
       {
         where: {
-          id: checkUser.id
+          id: user.id
         }
       })
   }
@@ -88,8 +88,8 @@ let LoginUser = async (data) => {
   }
 }
 
-let GetUserByPhone = async (phone) => {
-  let user = await db.User.findOne({
+const GetUserByPhone = async (phone) => {
+  const user = await db.User.findOne({
     where: {
       phone: {
         [Op.eq]: phone,
@@ -100,23 +100,17 @@ let GetUserByPhone = async (phone) => {
     return user
   }
   else if (user != null && user.password == null) {
-    // resolve({
-    //   error: "Require Register"
-    // })
     throw new Error("Require Register")
   }
   else {
-    // return resolve({
-    //   error: "Phone Number Not Found"
-    // })
     throw new Error("Phone Number Not Found")
   }
 }
 
-let CreateUserIfNotExist = async (phone) => {
+const CreateUserIfNotExist = async (phone) => {
   return new Promise(async (resolve, reject) => {
     // let phone = data.phone
-    let existedUser = await db.User.findOne({
+    const existedUser = await db.User.findOne({
       where: {
         phone: phone
       }
@@ -124,7 +118,7 @@ let CreateUserIfNotExist = async (phone) => {
     if (existedUser != undefined) {
       return resolve(existedUser)
     }
-    let user = await db.User.create({
+    const user = await db.User.create({
       phone: phone,
       active: true,
       type: "User"
@@ -134,15 +128,15 @@ let CreateUserIfNotExist = async (phone) => {
   })
 }
 
-let UpdatePassword = async (data) => {
+const UpdatePassword = async (data) => {
   return new Promise(async (resolve, reject) => {
-    let id = data.user_id
-    let phone = data.phone
-    let type = data.type
-    let newPassword = data.password
+    const id = data.user_id
+    const phone = data.phone
+    const type = data.type
+    const newPassword = data.password
     // let user = await GetUserByPhone(phone)
-    let token = await jwtService.GenerateAccessToken(id, phone, type)
-    let hashPwd = await hashUserPassword(newPassword)
+    const token = await jwtService.GenerateAccessToken(id, phone, type)
+    const hashPwd = await hashUserPassword(newPassword)
 
     await db.User.update(
       {
@@ -167,8 +161,8 @@ let UpdatePassword = async (data) => {
   })
 }
 
-let GetUserById = async (user_id) => {
-  let user = await db.User.findOne({
+const GetUserById = async (user_id) => {
+  const user = await db.User.findOne({
     where: {
       id: user_id,
     }
@@ -180,10 +174,10 @@ let GetUserById = async (user_id) => {
 }
 
 
-let hashUserPassword = (password) => {
+const hashUserPassword = (password) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let hashPassWord = await bcrypt.hashSync(password, salt);
+      const hashPassWord = await bcrypt.hashSync(password, salt);
       resolve(hashPassWord);
     } catch (e) {
       reject(e);
@@ -191,9 +185,9 @@ let hashUserPassword = (password) => {
   });
 };
 
-let comparePassword = (password, hash) => {
+const comparePassword = (password, hash) => {
   return new Promise(async (resolve, reject) => {
-    let result = await bcrypt.compare(password, hash)
+    const result = await bcrypt.compare(password, hash)
     resolve(result)
   })
 }

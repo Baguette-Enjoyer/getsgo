@@ -2,8 +2,10 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import initServerRoutes from "../routes/serverRoutes";
+var cors = require('cors')
 
 const app = express()
+app.use(cors())
 const server = http.createServer(app)
 
 export const io = new Server(server, {
@@ -38,6 +40,7 @@ let getApp = () => {
 let getIO = () => {
     return io
 }
+
 
 export default {
     getServer, getApp, getIO

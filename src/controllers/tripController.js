@@ -3,6 +3,7 @@ import tripService from "../services/tripService";
 let BookTrip = async (req, res) => {
 
     let data = req.body
+    // console.log(req.body)
     let credential = JSON.parse(req.decodedToken)
     let user_id = credential.id
     data.user_id = user_id
