@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.handleDriverLogin = void 0;
+const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const handleDriverLogin = (socket) => {
     socket.on('driver-login', (data) => {
@@ -20,7 +21,9 @@ const handleDriverLogin = (socket) => {
             lat: data.lat,
             lng: data.lng,
             status: data.status,
+            heading: data.heading,
             vehicle_type: data.vehicle_type,
+            client_id: undefined,
         });
         console.log(data);
     });
@@ -103,15 +106,22 @@ const handleLocationUpdate = (socket) => {
         let driver = storage_1.DriverMap.getMap().get(socket.id);
         if (driver == undefined)
             return;
-        let driver_id = driver === null || driver === void 0 ? void 0 : driver.user_id;
-        let socket_ids = GetSocketByDriverId(driver_id);
-        for (let i = 0; i < socket_ids.length; i++) {
-            let driver = storage_1.DriverMap.getMap().get(socket_ids[i]);
-            if (driver == undefined)
-                return;
-            driver.lat = data.lat;
-            driver.lng = data.lng;
-            storage_1.DriverMap.getMap().set(socket_ids[i], driver);
+        // let driver_id = driver?.user_id
+        // let socket_ids = GetSocketByDriverId(driver_id)
+        // for (let i = 0; i < socket_ids.length; i++) {
+        //     let driver = DriverMap.getMap().get(socket_ids[i])
+        //     if (driver == undefined) return
+        //     driver!.lat = data.lat
+        //     driver!.lng = data.lng
+        //     driver!.heading = data.heading
+        //     DriverMap.getMap().set(socket_ids[i], driver)
+        // } 
+        driver.lat = data.lat;
+        driver.lng = data.lng;
+        console.log('update location driver');
+        driver.heading = data.heading;
+        if (driver.client_id !== undefined) {
+            initServer_1.io.in(`/user/${driver.client_id}`).emit('get-location-driver', data);
         }
     });
 };

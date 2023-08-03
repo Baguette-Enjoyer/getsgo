@@ -19,6 +19,7 @@ const runSocketService = () => {
 exports.runSocketService = runSocketService;
 const initSocket = () => {
     initServer_1.io.on('connection', (socket) => {
+        socket.emit('test', 'oke nha');
         console.log("socket " + socket.id + " connected");
         (0, userSocket_1.handleUserLogin)(socket);
         (0, driverSocket_1.handleDriverLogin)(socket);

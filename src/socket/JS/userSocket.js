@@ -34,15 +34,11 @@ const handleUserLogin = (socket) => {
 };
 exports.handleUserLogin = handleUserLogin;
 const handleUserFindTrip = (socket) => {
-    socket.on('user-find-trip', (data1) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on('user-find-trip', (data) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
-        const data = data1['trip_info'];
         // const dat: TripValue = JSON.parse(data)
-        console.log("okok");
-        console.log(data);
         const trip_id = data.trip_id;
         const place1 = data.start;
-        console.log("okok");
         // let user = getUserBySocket(socket)
         // let user_id = user?.user_id
         let userData = yield userService_1.default.GetUserById(data.user_id);
@@ -51,16 +47,24 @@ const handleUserFindTrip = (socket) => {
             trip_info: data
         };
         let DataResponseStringified = JSON.stringify(DataResponse);
-        console.log("all drivers");
-        console.log(storage_1.DriverMap.getMap());
         let possibleDrivers = locationService_1.default.getFiveNearestDriver(storage_1.DriverMap.getMap(), place1, storage_1.DriverInBroadcast.getDriverInBroadcast());
         console.log(possibleDrivers);
         let isResponded = false;
+        // điều kiện thứ 1 thằng đó  k bosh
+        // điều kiện rảnh
+        // điều kiện phạm vị 3 km
+        // điều kiện thứ 4 là đó nãy k hủy
+        // 5 đứa đang trong vòng ưu điểm được gửi
+        // 5 đứa k chấp nhận
+        //tìm lại tròng phạm vi đó có bao nhiêu người => 5 đứa+ 1 đứa mới chạy xe vô
+        // đứa lên đầu và 4 đứa còn lại // 5 đứa
         for (let i = 0; i < possibleDrivers.length; i++) {
+            console.log('driver');
+            console.log(DataResponseStringified);
             const driver = possibleDrivers[i];
             AddDriverToBroadCast(driver.user_id);
+            //
             broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
-            console.log(`broadcasting to driver ${driver.user_id}`);
             yield new Promise((resolve) => setTimeout(resolve, 15000));
             // await delay(15000)
             let d = storage_1.DriverMap.getMap().get(driver.socketId);
@@ -88,26 +92,29 @@ const handleUserFindTrip = (socket) => {
                     newTrip.status = 'Confirmed';
                     newTrip.driver_id = driver.user_id;
                     storage_1.TripMap.getMap().set(trip_id, newTrip);
+                    // khi driver chấp nhận thì set lại client_id cho tài xế đó
+                    d.client_id = data.user_id;
+                    storage_1.DriverMap.getMap().set(driver.socketId, d);
                     isResponded = true;
                     break;
                     //handle
                 }
                 else if (d.response == 'Deny') {
-                    console.log(`driver ${driver.user_id} has denied trip ${trip_id}`);
                     continue;
                 }
             }
             else {
-                console.log(`driver ${driver.user_id} didnt respond to ${trip_id}`);
+                console.log('ko vô');
             }
         }
-        if (isResponded == false) {
-            let dat = {
-                trip_id,
-                status: "Waiting"
-            };
-            yield tripService_1.default.UpdateTrip(dat);
-        }
+        // if (isResponded == false) {
+        //     let dat = {
+        //         trip_id,
+        //         status: "Waiting"
+        //     }
+        //     //
+        //     await tripService.UpdateTrip(dat)
+        // }
         let rdTripKey = `trip_id:${trip_id}`;
         storage_1.TripMap.getMap().set(trip_id, data);
         let TripDataStringified = JSON.stringify(data);
@@ -130,7 +137,6 @@ const handleUserFindTrip = (socket) => {
         //     else {
         //         AddDriverToBroadCast(possibleDrivers[i].user_id)
         //         broadCastToDriver(io,possibleDrivers[i][0], "user-trip", DataResponseStringified)
-        //         console.log(`broadcasting to driver ${possibleDrivers[i].user_id}`)
         //         i++
         //     }
         // }, 15000)
@@ -144,6 +150,11 @@ const handleUserCancelTrip = (socket) => {
     });
 };
 exports.handleUserCancelTrip = handleUserCancelTrip;
+// export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+//     socket.on('user-cancel-trip', (data: { trip_id: number }) => {
+//         UserCancelTrip(data.trip_id)
+//     })
+// }
 const getTripIfDisconnected = (id) => {
     storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.user_id == id || trip_value.driver_id == id) {
@@ -173,7 +184,6 @@ const broadCastToDriver = (socketid, event, data) => {
     initServer_1.io.in(`/driver/${driver_id}`).emit(event, data);
 };
 const AddDriverToBroadCast = (driver_id) => {
-    console.log(`add ${driver_id} to broadcast`);
     storage_1.DriverInBroadcast.getDriverInBroadcast().push(driver_id);
     setTimeout(() => {
         const index = storage_1.DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);

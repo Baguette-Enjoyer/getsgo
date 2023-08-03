@@ -17,6 +17,7 @@ export const runSocketService = () => {
 
 const initSocket = () => {
     io.on('connection', (socket) => {
+        socket.emit('test', 'oke nha')
         console.log("socket " + socket.id + " connected")
         handleUserLogin(socket)
         handleDriverLogin(socket)

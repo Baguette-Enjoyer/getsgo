@@ -11,7 +11,9 @@ export interface Driver {
     status: string
     vehicle_type: string
     hasResponded?: boolean
+    heading: number
     response?: 'Accept' | 'Deny' | string
+    client_id?:number
 }
 
 export interface TripValue {

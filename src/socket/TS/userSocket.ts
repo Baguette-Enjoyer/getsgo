@@ -11,7 +11,7 @@ let rd = initRedis()
 interface User {
     user_id: number
 }
-const io2:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> = io
+const io2: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> = io
 interface TripValue {
     trip_id: number
     user_id?: number
@@ -53,11 +53,8 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('user-find-trip', async (data: TripValue) => {
         // const dat: TripValue = JSON.parse(data)
-        console.log("okok")
-        console.log(data)
         const trip_id = data.trip_id
         const place1 = data.start
-        console.log("okok")
         // let user = getUserBySocket(socket)
         // let user_id = user?.user_id
 
@@ -69,20 +66,27 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         }
         let DataResponseStringified = JSON.stringify(DataResponse)
 
-        console.log("all drivers")
-        console.log(DriverMap.getMap())
         let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
-
-        console.log(possibleDrivers)
+        console.log(possibleDrivers);
 
         let isResponded = false
+        // điều kiện thứ 1 thằng đó  k bosh
+        // điều kiện rảnh
+        // điều kiện phạm vị 3 km
+        // điều kiện thứ 4 là đó nãy k hủy
 
+        // 5 đứa đang trong vòng ưu điểm được gửi
+        // 5 đứa k chấp nhận
+        //tìm lại tròng phạm vi đó có bao nhiêu người => 5 đứa+ 1 đứa mới chạy xe vô
+        // đứa lên đầu và 4 đứa còn lại // 5 đứa
         for (let i = 0; i < possibleDrivers.length; i++) {
+            console.log('driver');
+            console.log(DataResponseStringified);
             const driver = possibleDrivers[i];
             AddDriverToBroadCast(driver.user_id);
+            //
             broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
 
-            console.log(`broadcasting to driver ${driver.user_id}`);
 
             await new Promise((resolve) => setTimeout(resolve, 15000));
             // await delay(15000)
@@ -104,39 +108,43 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
 
                     await tripService.UpdateTrip({ trip_id: trip_id, status: "Confirmed", driver_id: driver.user_id })
                     let driverData = await driverServices.GetDriverInfoById(driver.user_id);
-
                     let responseData = {
                         trip_id: trip_id,
                         driver_info: driverData,
                         message: "found driver"
                     }
-                    const stringifiedResponse = JSON.stringify(responseData)
+                    const stringifiedResponse = JSON.stringify(responseData);
+                   
                     io.in(`/user/${data.user_id}`).emit('found-driver', stringifiedResponse)
                     let newTrip = data
                     newTrip.status = 'Confirmed'
                     newTrip.driver_id = driver.user_id
                     TripMap.getMap().set(trip_id, newTrip)
+                    
+                    // khi driver chấp nhận thì set lại client_id cho tài xế đó
+                    d.client_id=data.user_id
+                    DriverMap.getMap().set(driver.socketId,d)
                     isResponded = true
                     break
 
                     //handle
 
                 } else if (d.response == 'Deny') {
-                    console.log(`driver ${driver.user_id} has denied trip ${trip_id}`)
                     continue;
                 }
             } else {
-                console.log(`driver ${driver.user_id} didnt respond to ${trip_id}`)
+                console.log('ko vô');
             }
 
         }
-        if (isResponded == false) {
-            let dat = {
-                trip_id,
-                status: "Waiting"
-            }
-            await tripService.UpdateTrip(dat)
-        }
+        // if (isResponded == false) {
+        //     let dat = {
+        //         trip_id,
+        //         status: "Waiting"
+        //     }
+        //     //
+        //     await tripService.UpdateTrip(dat)
+        // }
 
         let rdTripKey = `trip_id:${trip_id}`
         TripMap.getMap().set(trip_id, data)
@@ -164,7 +172,6 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         //     else {
         //         AddDriverToBroadCast(possibleDrivers[i].user_id)
         //         broadCastToDriver(io,possibleDrivers[i][0], "user-trip", DataResponseStringified)
-        //         console.log(`broadcasting to driver ${possibleDrivers[i].user_id}`)
         //         i++
         //     }
         // }, 15000)
@@ -180,6 +187,11 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
     })
 }
 
+// export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+//     socket.on('user-cancel-trip', (data: { trip_id: number }) => {
+//         UserCancelTrip(data.trip_id)
+//     })
+// }
 const getTripIfDisconnected = (id: number) => {
     TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.user_id == id || trip_value.driver_id == id) {
@@ -210,7 +222,6 @@ const broadCastToDriver = (socketid: string, event: string, data: string) => {
 }
 
 const AddDriverToBroadCast = (driver_id: number) => {
-    console.log(`add ${driver_id} to broadcast`)
     DriverInBroadcast.getDriverInBroadcast().push(driver_id)
     setTimeout(() => {
         const index = DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
@@ -233,5 +244,5 @@ const UserCancelTrip = (id: number) => {
 
 const GetSocketInRoom = (id: number) => {
     const room = io.sockets.adapter.rooms.get("/users")
-    
+
 }

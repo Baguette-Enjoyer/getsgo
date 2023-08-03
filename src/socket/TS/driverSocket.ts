@@ -12,6 +12,7 @@ interface Driver {
     user_id: number
     lat: number
     lng: number
+    heading: number
     status: string
     vehicle_type: string
     hasResponded?: boolean
@@ -52,7 +53,9 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             lat: data.lat,
             lng: data.lng,
             status: data.status,
+            heading: data.heading,
             vehicle_type: data.vehicle_type,
+            client_id: undefined,
         })
         console.log(data)
     })
@@ -134,18 +137,26 @@ export const getCurrentDriverInfoById = (id: number): { lat: number, lng: number
 }
 
 export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('driver-location-update', (data: { lat: number, lng: number }) => {
+    socket.on('driver-location-update', (data: { lat: number, lng: number, heading: number }) => {
         let driver = DriverMap.getMap().get(socket.id)
         if (driver == undefined) return
-        let driver_id = driver?.user_id
-        let socket_ids = GetSocketByDriverId(driver_id)
+        // let driver_id = driver?.user_id
+        // let socket_ids = GetSocketByDriverId(driver_id)
 
-        for (let i = 0; i < socket_ids.length; i++) {
-            let driver = DriverMap.getMap().get(socket_ids[i])
-            if (driver == undefined) return
-            driver!.lat = data.lat
-            driver!.lng = data.lng
-            DriverMap.getMap().set(socket_ids[i], driver)
+        // for (let i = 0; i < socket_ids.length; i++) {
+        //     let driver = DriverMap.getMap().get(socket_ids[i])
+        //     if (driver == undefined) return
+        //     driver!.lat = data.lat
+        //     driver!.lng = data.lng
+        //     driver!.heading = data.heading
+        //     DriverMap.getMap().set(socket_ids[i], driver)
+        // } 
+        driver!.lat = data.lat
+        driver!.lng = data.lng
+        console.log('update location driver')
+        driver!.heading = data.heading
+        if (driver.client_id !== undefined) {
+            io.in(`/user/${driver.client_id}`).emit('get-location-driver', data)
         }
     })
 }
