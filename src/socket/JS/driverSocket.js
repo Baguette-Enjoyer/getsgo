@@ -8,10 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
+const tripService_1 = __importDefault(require("../../services/tripService"));
+const driverServices_1 = __importDefault(require("../../services/driverServices"));
 const handleDriverLogin = (socket) => {
     socket.on('driver-login', (data) => {
         const user_id = data.user_id;
@@ -23,22 +28,61 @@ const handleDriverLogin = (socket) => {
             status: data.status,
             heading: data.heading,
             vehicle_type: data.vehicle_type,
+            // rating: data.rating,
             client_id: undefined,
         });
         console.log(data);
     });
 };
 exports.handleDriverLogin = handleDriverLogin;
+const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield tripService_1.default.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed", driver_id: driver.user_id });
+    let driverData = yield driverServices_1.default.GetDriverInfoById(driver.user_id);
+    let responseData = {
+        trip_id: trip.trip_id,
+        driver_info: driverData,
+        lat: driver.lat,
+        lng: driver.lng,
+        heading: driver.heading,
+        message: "coming"
+    };
+    // const stringifiedResponse = JSON.stringify(responseData);
+    initServer_1.io.in(`/user/${trip.user_id}`).emit('found-driver', responseData);
+    // khi driver chấp nhận thì set lại client_id cho tài xế đó
+    driver.client_id = trip.user_id;
+    storage_1.DriverMap.getMap().set(socket_id, driver);
+});
 const handleDriverResponseBooking = (socket) => {
     socket.on('driver-response-booking', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log(data);
-        let driver = storage_1.DriverMap.getMap().get(socket.id);
+        // console.log(data)
+        const driver = storage_1.DriverMap.getMap().get(socket.id);
         if (driver == undefined)
             return;
-        let driver_id = driver === null || driver === void 0 ? void 0 : driver.user_id;
-        let trip_id = data.trip_id;
-        (0, exports.setDriverResponseStatus)(driver_id, data.status);
-        console.log(storage_1.DriverMap.getMap().get(socket.id));
+        if (data.status == "Accept") {
+            const trip = storage_1.TripMap.getMap().get(data.trip.trip_id);
+            if (trip !== undefined && trip.driver_id === undefined) {
+                trip.driver_id = driver.user_id;
+                trip.status = 'Confirmed';
+                // const newTrip = trip
+                // trip.status = 'Confirmed'
+                // trip.driver_id = driver.user_id
+                console.log(trip);
+                storage_1.TripMap.getMap().set(trip.trip_id, trip);
+                senDriver(trip, driver, socket.id);
+            }
+        }
+        // let driver_id = driver?.user_id
+        // let trip_id = data.trip_id
+        // setDriverResponseStatus(driver_id, data.status)
+        // console.log(DriverMap.getMap().get(socket.id))
+        //long
+        // console.log(data)
+        // let driver = DriverMap.getMap().get(socket.id)
+        // if (driver == undefined) return
+        // let driver_id = driver?.user_id
+        // let trip_id = data.trip_id
+        // setDriverResponseStatus(driver_id, data.status)
+        // console.log(DriverMap.getMap().get(socket.id))
         // if (data.status == 'Deny' ) return 
         // driver.status = 'Driving'
         // drivers.set(socket.id,driver)
@@ -78,11 +122,11 @@ const setDriverResponseStatus = (driver_id, status) => {
         return;
     storage_1.DriverMap.getMap().forEach((driver_value, socketid) => {
         if (driver_value.user_id === driver_id) {
-            driver_value.hasResponded = true;
+            // driver_value.hasResponded = true
             driver_value.response = status;
             setTimeout(() => {
-                driver_value.hasResponded = false,
-                    driver_value.response = undefined;
+                // driver_value.hasResponded = false,
+                driver_value.response = undefined;
             }, 30000);
             return;
         }

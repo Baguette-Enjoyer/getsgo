@@ -14,7 +14,7 @@ interface User {
 const io2: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> = io
 interface TripValue {
     trip_id: number
-    user_id?: number
+    user_id: number
     driver_id?: number
     start: {
         lat: number
@@ -59,17 +59,36 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         // let user_id = user?.user_id
 
         let userData = await userService.GetUserById(data.user_id)
-
+        TripMap.getMap().set(data.trip_id, data);
         let DataResponse = {
             user_info: userData,
             trip_info: data
         }
         let DataResponseStringified = JSON.stringify(DataResponse)
 
-        let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
-        console.log(possibleDrivers);
+        while (true) {
+            const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
+            console.log(possibleDrivers.length);
+            for (let i = 0; i < possibleDrivers.length; i++) {
+                console.log('driver');
+                console.log(DataResponseStringified);
+                const driver = possibleDrivers[i];
+                console.log(driver.socketId)
+                AddDriverToBroadCast(driver.user_id);
+                //
+                broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 11000));
+            const trip = TripMap.getMap().get(trip_id);
+            if (trip !== undefined && trip.driver_id !== undefined) {
+                break;
+            }
+        }
 
-        let isResponded = false
+        // let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
+        // console.log(possibleDrivers);
+
+        // let isResponded = false
         // điều kiện thứ 1 thằng đó  k bosh
         // điều kiện rảnh
         // điều kiện phạm vị 3 km
@@ -79,64 +98,66 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         // 5 đứa k chấp nhận
         //tìm lại tròng phạm vi đó có bao nhiêu người => 5 đứa+ 1 đứa mới chạy xe vô
         // đứa lên đầu và 4 đứa còn lại // 5 đứa
-        for (let i = 0; i < possibleDrivers.length; i++) {
-            console.log('driver');
-            console.log(DataResponseStringified);
-            const driver = possibleDrivers[i];
-            AddDriverToBroadCast(driver.user_id);
-            //
-            broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
+
+        //long ======
+        // for (let i = 0; i < possibleDrivers.length; i++) {
+        //     console.log('driver');
+        //     console.log(DataResponseStringified);
+        //     const driver = possibleDrivers[i];
+        //     AddDriverToBroadCast(driver.user_id);
+        //     //
+        //     broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
 
 
-            await new Promise((resolve) => setTimeout(resolve, 15000));
-            // await delay(15000)
+        //     await new Promise((resolve) => setTimeout(resolve, 15000));
+        //     // await delay(15000)
 
-            let d = DriverMap.getMap().get(driver.socketId);
-            if (TripMap.getMap().get(trip_id)?.status == 'Cancelled') {
-                if (d?.hasResponded && d?.status == 'Accept') {
-                    broadCastToDriver(driver.socketId, 'trip-cancelled', "User has canceled")
-                }
-                await tripService.CancelTrip(trip_id)
-                TripMap.getMap().delete(trip_id)
+        //     let d = DriverMap.getMap().get(driver.socketId);
+        //     if (TripMap.getMap().get(trip_id)?.status == 'Cancelled') {
+        //         if (d?.hasResponded && d?.status == 'Accept') {
+        //             broadCastToDriver(driver.socketId, 'trip-cancelled', "User has canceled")
+        //         }
+        //         await tripService.CancelTrip(trip_id)
+        //         TripMap.getMap().delete(trip_id)
 
-                break;
-            }
+        //         break;
+        //     }
 
-            if (d?.hasResponded) {
-                if (d.response == 'Accept') {
-                    isResponded = true
+        //     if (d?.hasResponded) {
+        //         if (d.response == 'Accept') {
+        //             isResponded = true
 
-                    await tripService.UpdateTrip({ trip_id: trip_id, status: "Confirmed", driver_id: driver.user_id })
-                    let driverData = await driverServices.GetDriverInfoById(driver.user_id);
-                    let responseData = {
-                        trip_id: trip_id,
-                        driver_info: driverData,
-                        message: "found driver"
-                    }
-                    const stringifiedResponse = JSON.stringify(responseData);
-                   
-                    io.in(`/user/${data.user_id}`).emit('found-driver', stringifiedResponse)
-                    let newTrip = data
-                    newTrip.status = 'Confirmed'
-                    newTrip.driver_id = driver.user_id
-                    TripMap.getMap().set(trip_id, newTrip)
-                    
-                    // khi driver chấp nhận thì set lại client_id cho tài xế đó
-                    d.client_id=data.user_id
-                    DriverMap.getMap().set(driver.socketId,d)
-                    isResponded = true
-                    break
+        //             await tripService.UpdateTrip({ trip_id: trip_id, status: "Confirmed", driver_id: driver.user_id })
+        //             let driverData = await driverServices.GetDriverInfoById(driver.user_id);
+        //             let responseData = {
+        //                 trip_id: trip_id,
+        //                 driver_info: driverData,
+        //                 message: "found driver"
+        //             }
+        //             const stringifiedResponse = JSON.stringify(responseData);
 
-                    //handle
+        //             io.in(`/user/${data.user_id}`).emit('found-driver', stringifiedResponse)
+        //             let newTrip = data
+        //             newTrip.status = 'Confirmed'
+        //             newTrip.driver_id = driver.user_id
+        //             TripMap.getMap().set(trip_id, newTrip)
 
-                } else if (d.response == 'Deny') {
-                    continue;
-                }
-            } else {
-                console.log('ko vô');
-            }
+        //             // khi driver chấp nhận thì set lại client_id cho tài xế đó
+        //             d.client_id = data.user_id
+        //             DriverMap.getMap().set(driver.socketId, d)
+        //             isResponded = true
+        //             break
 
-        }
+        //             //handle
+
+        //         } else if (d.response == 'Deny') {
+        //             continue;
+        //         }
+        //     } else {
+        //         console.log('ko vô');
+        //     }
+
+        // }
         // if (isResponded == false) {
         //     let dat = {
         //         trip_id,
@@ -218,6 +239,7 @@ const broadCastToDriver = (socketid: string, event: string, data: string) => {
         throw new Error("driver socket error")
     }
     let driver_id = socket_value.user_id
+    console.log('/driver/${driver_id}');
     io.in(`/driver/${driver_id}`).emit(event, data)
 }
 

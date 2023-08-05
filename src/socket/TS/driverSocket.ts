@@ -16,6 +16,8 @@ interface Driver {
     status: string
     vehicle_type: string
     hasResponded?: boolean
+    client_id?: number
+    // rating: number,
     response?: 'Accept' | 'Deny' | string
 }
 
@@ -55,21 +57,68 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             status: data.status,
             heading: data.heading,
             vehicle_type: data.vehicle_type,
+            // rating: data.rating,
             client_id: undefined,
         })
         console.log(data)
     })
 }
+const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
+    await tripService.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed", driver_id: driver.user_id })
+    let driverData = await driverServices.GetDriverInfoById(driver.user_id);
+    let responseData = {
+        trip_id: trip.trip_id,
+        driver_info: driverData,
+        lat:driver.lat,
+        lng:driver.lng,
+        heading:driver.heading,
+        message: "coming"
+    }
+    // const stringifiedResponse = JSON.stringify(responseData);
 
+    io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
+
+
+    // khi driver chấp nhận thì set lại client_id cho tài xế đó
+    driver.client_id = trip.user_id
+    DriverMap.getMap().set(socket_id, driver)
+}
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('driver-response-booking', async (data: { trip_id: number, status: 'Accept' | 'Deny' }) => {
-        console.log(data)
-        let driver = DriverMap.getMap().get(socket.id)
+    socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
+        // console.log(data)
+        const driver = DriverMap.getMap().get(socket.id)
         if (driver == undefined) return
-        let driver_id = driver?.user_id
-        let trip_id = data.trip_id
-        setDriverResponseStatus(driver_id, data.status)
-        console.log(DriverMap.getMap().get(socket.id))
+        if (data.status == "Accept") {
+            const trip = TripMap.getMap().get(data.trip.trip_id)
+            if (trip !== undefined && trip.driver_id === undefined) {
+                trip.driver_id = driver.user_id
+                trip.status = 'Confirmed'
+
+                // const newTrip = trip
+                // trip.status = 'Confirmed'
+                // trip.driver_id = driver.user_id
+                console.log(trip)
+                TripMap.getMap().set(trip.trip_id, trip)
+
+                senDriver(trip, driver, socket.id);
+            }
+            
+        }
+        // let driver_id = driver?.user_id
+        // let trip_id = data.trip_id
+        // setDriverResponseStatus(driver_id, data.status)
+        // console.log(DriverMap.getMap().get(socket.id))
+
+        //long
+        // console.log(data)
+        // let driver = DriverMap.getMap().get(socket.id)
+        // if (driver == undefined) return
+        // let driver_id = driver?.user_id
+        // let trip_id = data.trip_id
+        // setDriverResponseStatus(driver_id, data.status)
+        // console.log(DriverMap.getMap().get(socket.id))
+
+
         // if (data.status == 'Deny' ) return 
 
         // driver.status = 'Driving'
@@ -112,12 +161,12 @@ export const setDriverResponseStatus = (driver_id: number, status: string) => {
     if (status == undefined) return
     DriverMap.getMap().forEach((driver_value, socketid) => {
         if (driver_value.user_id === driver_id) {
-            driver_value.hasResponded = true
+            // driver_value.hasResponded = true
             driver_value.response = status
 
             setTimeout(() => {
-                driver_value.hasResponded = false,
-                    driver_value.response = undefined
+                // driver_value.hasResponded = false,
+                driver_value.response = undefined
             }, 30000)
             return
         }

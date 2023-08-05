@@ -10,15 +10,16 @@ export interface Driver {
     lng: number
     status: string
     vehicle_type: string
-    hasResponded?: boolean
+    // hasResponded?: boolean
     heading: number
+    // rating: number
     response?: 'Accept' | 'Deny' | string
-    client_id?:number
+    client_id?:number 
 }
 
 export interface TripValue {
     trip_id: number
-    user_id?: number
+    user_id: number
     driver_id?: number
     start: {
         lat: number

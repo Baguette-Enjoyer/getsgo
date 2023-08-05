@@ -57,10 +57,53 @@ const getFiveNearestDriver = (drivers, targetLocation, driversInBroadcast) => {
     return maxFiveIdleDrivers;
 }
 
+const RatingStrategy = (drivers, number) => {
+    drivers.sort((a, b) => a.rating - b.rating)
+    const check = drivers[number - 1].rating;
+    // 54333333
+    const selectedDrivers = drivers.filter(driver => driver.rating >= check);
+    const firstIndex = selectedDrivers.findIndex(driver => driver.rating === check);
+    return selectedDrivers, firstIndex;
+}
+const NoCancellationStrategy = (drivers, firstIndex, number) => {
+
+}
+
+
+ const requestRide = (drivers, targetLocation, driversInBroadcast) => {
+    console.log(targetLocation)
+    const targetLat = parseInt(targetLocation.lat)
+    const targetLng = parseInt(targetLocation.lng)
+
+    let idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId, 
+        { lat, lng, user_id, status }]) => ({
+        socketId,
+        lat,
+        lng,
+        user_id,
+        status,
+        distance: getDistance(lat, lng, targetLat, targetLng),
+    })).filter(driver => driver.status === 'Idle' && driversInBroadcast.includes(driver.user_id) == false);
+
+    // idleDriversWithDistance.sort((a, b) => a.distance - b.distance);
+    // // console.log(idleDriversWithDistance);
+    // const maxFiveIdleDrivers = idleDriversWithDistance.slice(0, 5);
+    const number = 5;
+    let firstIndex = 0;
+    // if (idleDriversWithDistance.length > 5) {
+    //     const [idleDriversWithDistance, firstIndex] = RatingStrategy(idleDriversWithDistance, number);
+    // }
+    // if(idleDriversWithDistance.length>5){
+    //     const [idleDriversWithDistance, firstIndex]=NoCancellationStrategy(idleDriversWithDistance,firstIndex,number);
+    // }
+
+    return idleDriversWithDistance;
+}
 
 export default {
     getDistance,
     toRad,
     findPossibleDriver,
-    getFiveNearestDriver
+    getFiveNearestDriver,
+    requestRide
 }
