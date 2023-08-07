@@ -26,7 +26,7 @@ interface TripValue {
         lng: number
         place: string
     }
-    status?: "Pending" | "Waiting" | "Confirmed" | "Driving" | "Arrived" | "Done" | "Cancelled" | string
+    status?: "Pending" | "Waiting" | "Confirmed" | "Arrived" | "Driving" | "Done" | "Cancelled" | string
     price: number
     is_paid: boolean
     paymentMethod: string
@@ -84,7 +84,9 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
                 break;
             }
         }
+        // 1 phút không có emit (no-driver-found)
 
+        
         // let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
         // console.log(possibleDrivers);
 
@@ -220,13 +222,14 @@ export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, Default
 // }
 
 export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('trip-update',(data:{trip_id:number,status:string})=>{
+    socket.on('trip-update', (data:{trip_id:number,status:string})=>{
         const trip = TripMap.getMap().get(data.trip_id)
         if (data.status != null && trip != null) {
             trip.status = data.status
             io.in(`/user/${trip.user_id}`).emit('trip-update',{status:trip.status})
         }
     })
+    
 }
 
 const getTripIfDisconnected = (id: number) => {

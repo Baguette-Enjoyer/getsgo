@@ -132,6 +132,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
         }
         else {
             driver.response = "Deny"
+            DriverMap.getMap().set(socket.id, driver)
         }
         // let driver_id = driver?.user_id
         // let trip_id = data.trip_id
