@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleTripUpdate = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
+exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const userService_1 = __importDefault(require("../../services/userService"));
 const locationService_1 = __importDefault(require("../../services/locationService"));
@@ -165,6 +165,12 @@ const handleUserCancelTrip = (socket) => {
     });
 };
 exports.handleUserCancelTrip = handleUserCancelTrip;
+const handleMessageFromDriver = (socket) => {
+    socket.on("driver-message", (data) => {
+        socket.to(`/user/${data.user_id}`).emit("message-to-user", data.message);
+    });
+};
+exports.handleMessageFromDriver = handleMessageFromDriver;
 // export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
 //     socket.on('user-cancel-trip', (data: { trip_id: number }) => {
 //         UserCancelTrip(data.trip_id)

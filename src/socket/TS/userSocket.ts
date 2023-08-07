@@ -208,6 +208,11 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
     })
 }
 
+export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on("driver-message",(data:{conversation_id:number,user_id:number,message:string})=>{
+        socket.to(`/user/${data.user_id}`).emit("message-to-user",data.message)
+    })
+}
 // export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
 //     socket.on('user-cancel-trip', (data: { trip_id: number }) => {
 //         UserCancelTrip(data.trip_id)

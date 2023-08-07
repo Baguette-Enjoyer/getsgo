@@ -3,6 +3,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { io } from "../../services/initServer"
 import userService from "../../services/userService"
 import locationServices from "../../services/locationService"
+import {initConvo,addChatMessage,dropConvo} from "../../services/chatService"
 import { DriverInBroadcast, DriverMap, TripMap, UserMap } from './storage'
 import tripService from "../../services/tripService"
 import driverServices from "../../services/driverServices"
@@ -49,6 +50,7 @@ interface TripValue {
 export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-login', async (data: Driver) => {
         const user_id = data.user_id
+        
         const driver_info = await driverServices.GetDriverInfoById(user_id)
 
         const driver_data:Driver = {
@@ -103,6 +105,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id
     DriverMap.getMap().set(socket_id, driver)
+    await initConvo(trip.trip_id,trip.user_id,driver.user_id)
 }
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
@@ -119,6 +122,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 // const newTrip = trip
                 // trip.status = 'Confirmed'
                 // trip.driver_id = driver.user_id
+                
                 console.log(trip)
                 TripMap.getMap().set(trip.trip_id, trip)
                 DriverMap.getMap().set(socket.id, driver)
@@ -235,10 +239,9 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
     })
 }
 
-export const handleGettingUserChat = async (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('user-chat',(message:string)=>{
-        // await sendtoqueue
-
+export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on("user-message",(data:{conversation_id:number,user_id:number,message:string})=>{
+        socket.to(`/driver/${data.user_id}`).emit("message-to-driver",data.message)
     })
 }
 

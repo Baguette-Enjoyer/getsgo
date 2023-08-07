@@ -24,9 +24,13 @@ const initSocket = () => {
         (0, userSocket_1.handleUserLogin)(socket);
         (0, driverSocket_1.handleDriverLogin)(socket);
         (0, userSocket_1.handleUserFindTrip)(socket);
+        (0, userSocket_1.handleTripUpdate)(socket);
+        (0, userSocket_1.handleUserCancelTrip)(socket);
         //handleCallcenterFindTrip(socket)
         (0, driverSocket_1.handleDriverResponseBooking)(socket);
         (0, driverSocket_1.handleLocationUpdate)(socket);
+        (0, driverSocket_1.handleMessageFromUser)(socket);
+        (0, userSocket_1.handleMessageFromDriver)(socket);
         handleDisconnect(socket);
     });
 };

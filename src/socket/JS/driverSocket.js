@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.handleDriverLogin = void 0;
+exports.handleMessageFromUser = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
+const chatService_1 = require("../../services/chatService");
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
@@ -66,6 +67,7 @@ const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0,
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id;
     storage_1.DriverMap.getMap().set(socket_id, driver);
+    yield (0, chatService_1.initConvo)(trip.trip_id, trip.user_id, driver.user_id);
 });
 const handleDriverResponseBooking = (socket) => {
     socket.on('driver-response-booking', (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -78,13 +80,19 @@ const handleDriverResponseBooking = (socket) => {
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id;
                 trip.status = 'Confirmed';
+                driver.response = "Accept";
+                driver.status = "Driving";
                 // const newTrip = trip
                 // trip.status = 'Confirmed'
                 // trip.driver_id = driver.user_id
                 console.log(trip);
                 storage_1.TripMap.getMap().set(trip.trip_id, trip);
+                storage_1.DriverMap.getMap().set(socket.id, driver);
                 senDriver(trip, driver, socket.id);
             }
+        }
+        else {
+            driver.response = "Deny";
         }
         // let driver_id = driver?.user_id
         // let trip_id = data.trip_id
@@ -185,6 +193,12 @@ const handleLocationUpdate = (socket) => {
     });
 };
 exports.handleLocationUpdate = handleLocationUpdate;
+const handleMessageFromUser = (socket) => {
+    socket.on("user-message", (data) => {
+        socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message);
+    });
+};
+exports.handleMessageFromUser = handleMessageFromUser;
 const GetSocketByDriverId = (driver_id) => {
     let socketArr = [];
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
