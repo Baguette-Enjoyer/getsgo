@@ -1,7 +1,7 @@
 // @ts-ignore
 import { io } from '../../services/initServer'
-import { handleUserLogin, handleUserFindTrip, handleUserCancelTrip } from './userSocket'
-import { getCurrentDriverInfoById, handleDriverLogin, handleDriverResponseBooking, handleLocationUpdate } from './driverSocket'
+import { handleUserLogin, handleUserFindTrip, handleUserCancelTrip, handleMessageFromDriver, handleTripUpdate } from './userSocket'
+import { getCurrentDriverInfoById, handleDriverLogin, handleDriverResponseBooking, handleLocationUpdate, handleMessageFromUser } from './driverSocket'
 import { Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 import { DriverMap, TripMap, UserMap } from './storage'
@@ -22,9 +22,13 @@ const initSocket = () => {
         handleUserLogin(socket)
         handleDriverLogin(socket)
         handleUserFindTrip(socket)
+        handleTripUpdate(socket)
+        handleUserCancelTrip(socket)
         //handleCallcenterFindTrip(socket)
         handleDriverResponseBooking(socket)
         handleLocationUpdate(socket)
+        handleMessageFromUser(socket)
+        handleMessageFromDriver(socket)
         handleDisconnect(socket)
     })
 }

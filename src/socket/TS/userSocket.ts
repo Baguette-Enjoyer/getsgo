@@ -169,10 +169,10 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         //     await tripService.UpdateTrip(dat)
         // }
 
-        let rdTripKey = `trip_id:${trip_id}`
-        TripMap.getMap().set(trip_id, data)
-        let TripDataStringified = JSON.stringify(data)
-        await rd.set(rdTripKey, TripDataStringified)
+        // let rdTripKey = `trip_id:${trip_id}`
+        // TripMap.getMap().set(trip_id, data)
+        // let TripDataStringified = JSON.stringify(data)
+        // await rd.set(rdTripKey, TripDataStringified)
 
         // AddDriverToBroadCast(possibleDrivers[0].user_id)
         // broadCastToDriver(io,possibleDrivers[0].socketId, "user-trip", DataResponseStringified)
@@ -210,11 +210,27 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
     })
 }
 
+export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on("driver-message",(data:{conversation_id:number,user_id:number,message:string})=>{
+        socket.to(`/user/${data.user_id}`).emit("message-to-user",data.message)
+    })
+}
 // export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
 //     socket.on('user-cancel-trip', (data: { trip_id: number }) => {
 //         UserCancelTrip(data.trip_id)
 //     })
 // }
+
+export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on('trip-update',(data:{trip_id:number,status:string})=>{
+        const trip = TripMap.getMap().get(data.trip_id)
+        if (data.status != null && trip != null) {
+            trip.status = data.status
+            io.in(`/user/${trip.user_id}`).emit('trip-update',{status:trip.status})
+        }
+    })
+}
+
 const getTripIfDisconnected = (id: number) => {
     TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.user_id == id || trip_value.driver_id == id) {

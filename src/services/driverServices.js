@@ -53,7 +53,10 @@ const GetDriverInfoById = async (driver_id) => {
         }
         const trips = await historyService.GetHistoryOfDriver(driver.id)
         const stats = historyService.GetDriverStatics(trips)
-
+        console.log({
+            "driver_info": driver,
+            "statics": stats
+        })
         return resolve({
             "driver_info": driver,
             "statics": stats

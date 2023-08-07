@@ -3,6 +3,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { io } from "../../services/initServer"
 import userService from "../../services/userService"
 import locationServices from "../../services/locationService"
+import {initConvo,addChatMessage,dropConvo} from "../../services/chatService"
 import { DriverInBroadcast, DriverMap, TripMap, UserMap } from './storage'
 import tripService from "../../services/tripService"
 import driverServices from "../../services/driverServices"
@@ -16,8 +17,8 @@ interface Driver {
     status: string
     vehicle_type: string
     hasResponded?: boolean
-    client_id?: number
-    // rating: number,
+    client_id?: number | undefined
+    rating: number | 0
     response?: 'Accept' | 'Deny' | string
 }
 
@@ -47,22 +48,43 @@ interface TripValue {
 }
 
 export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('driver-login', (data: Driver) => {
+    socket.on('driver-login', async (data: Driver) => {
         const user_id = data.user_id
-        socket.join(`/driver/${user_id}`)
-        DriverMap.getMap().set(socket.id, {
+        
+        const driver_info = await driverServices.GetDriverInfoById(user_id)
+
+        const driver_data:Driver = {
             user_id: user_id,
             lat: data.lat,
             lng: data.lng,
             status: data.status,
             heading: data.heading,
-            vehicle_type: data.vehicle_type,
-            // rating: data.rating,
+            vehicle_type: driver_info.driver_info.driver_vehicle.id,
+            rating: driver_info.statics.starResult,
             client_id: undefined,
-        })
+        }
+
+        const currentTrip = getDriverCurrentTrip(user_id)
+
+        if (currentTrip != null) {
+           driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
+        }
+        
+        socket.join(`/driver/${user_id}`)
+        DriverMap.getMap().set(socket.id, driver_data)
         console.log(data)
     })
 }
+
+const getDriverCurrentTrip = (driver_id:number) :number|null => {
+    TripMap.getMap().forEach((trip_value,trip_id) => {
+        if (trip_value.driver_id == driver_id) {
+            return trip_id
+        }
+    })
+    return null
+}
+
 const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     await tripService.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed", driver_id: driver.user_id })
     let driverData = await driverServices.GetDriverInfoById(driver.user_id);
@@ -72,6 +94,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
         lat:driver.lat,
         lng:driver.lng,
         heading:driver.heading,
+        
         message: "coming"
     }
     // const stringifiedResponse = JSON.stringify(responseData);
@@ -82,6 +105,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id
     DriverMap.getMap().set(socket_id, driver)
+    await initConvo(trip.trip_id,trip.user_id,driver.user_id)
 }
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
@@ -93,16 +117,21 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id
                 trip.status = 'Confirmed'
-
+                driver.response = "Accept"
+                driver.status = "Driving"
                 // const newTrip = trip
                 // trip.status = 'Confirmed'
                 // trip.driver_id = driver.user_id
+                
                 console.log(trip)
                 TripMap.getMap().set(trip.trip_id, trip)
+                DriverMap.getMap().set(socket.id, driver)
 
                 senDriver(trip, driver, socket.id);
             }
-            
+        }
+        else {
+            driver.response = "Deny"
         }
         // let driver_id = driver?.user_id
         // let trip_id = data.trip_id
@@ -207,6 +236,12 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
         if (driver.client_id !== undefined) {
             io.in(`/user/${driver.client_id}`).emit('get-location-driver', data)
         }
+    })
+}
+
+export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on("user-message",(data:{conversation_id:number,user_id:number,message:string})=>{
+        socket.to(`/driver/${data.user_id}`).emit("message-to-driver",data.message)
     })
 }
 

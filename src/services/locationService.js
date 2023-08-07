@@ -66,36 +66,51 @@ const RatingStrategy = (drivers, number) => {
     return selectedDrivers, firstIndex;
 }
 const NoCancellationStrategy = (drivers, firstIndex, number) => {
+    const newDrivers = drivers.slice(firstIndex)
+    newDrivers.sort((a, b) => {
+        if (a.response != "Deny" && b.response == "Deny") {
+            return 1
+        }
+        else if (a.response == "Deny" && b.response != "Deny") {
+            return 1
+        }
+        else {
+            return 0;
+        }
+    })
+    const selectedDrivers = drivers.slice(0, firstIndex).concat(newDrivers.slice(0, number - firstIndex));
+
+    return selectedDrivers, firstIndex
 
 }
 
 
- const requestRide = (drivers, targetLocation, driversInBroadcast) => {
+const requestRide = (drivers, targetLocation, driversInBroadcast) => {
     console.log(targetLocation)
     const targetLat = parseInt(targetLocation.lat)
     const targetLng = parseInt(targetLocation.lng)
 
-    let idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId, 
+    let idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId,
         { lat, lng, user_id, status }]) => ({
-        socketId,
-        lat,
-        lng,
-        user_id,
-        status,
-        distance: getDistance(lat, lng, targetLat, targetLng),
-    })).filter(driver => driver.status === 'Idle' && driversInBroadcast.includes(driver.user_id) == false);
+            socketId,
+            lat,
+            lng,
+            user_id,
+            status,
+            distance: getDistance(lat, lng, targetLat, targetLng),
+        })).filter(driver => driver.status === 'Idle' && driversInBroadcast.includes(driver.user_id) == false && driver.distance <= 3);
 
     // idleDriversWithDistance.sort((a, b) => a.distance - b.distance);
     // // console.log(idleDriversWithDistance);
     // const maxFiveIdleDrivers = idleDriversWithDistance.slice(0, 5);
     const number = 5;
     let firstIndex = 0;
-    // if (idleDriversWithDistance.length > 5) {
-    //     const [idleDriversWithDistance, firstIndex] = RatingStrategy(idleDriversWithDistance, number);
-    // }
-    // if(idleDriversWithDistance.length>5){
-    //     const [idleDriversWithDistance, firstIndex]=NoCancellationStrategy(idleDriversWithDistance,firstIndex,number);
-    // }
+    if (idleDriversWithDistance.length > 5) {
+        [idleDriversWithDistance, firstIndex] = RatingStrategy(idleDriversWithDistance, number);
+    }
+    if (idleDriversWithDistance.length > 5) {
+        [idleDriversWithDistance, firstIndex] = NoCancellationStrategy(idleDriversWithDistance, firstIndex, number);
+    }
 
     return idleDriversWithDistance;
 }
