@@ -12,9 +12,9 @@ export interface Driver {
     vehicle_type: string
     // hasResponded?: boolean
     heading: number
-    // rating: number
+    rating: number | 0
     response?: 'Accept' | 'Deny' | string
-    client_id?:number 
+    client_id?:number | undefined
 }
 
 export interface TripValue {

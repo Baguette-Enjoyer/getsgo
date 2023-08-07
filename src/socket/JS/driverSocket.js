@@ -18,23 +18,38 @@ const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
 const handleDriverLogin = (socket) => {
-    socket.on('driver-login', (data) => {
+    socket.on('driver-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         const user_id = data.user_id;
-        socket.join(`/driver/${user_id}`);
-        storage_1.DriverMap.getMap().set(socket.id, {
+        const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
+        const driver_data = {
             user_id: user_id,
             lat: data.lat,
             lng: data.lng,
             status: data.status,
             heading: data.heading,
-            vehicle_type: data.vehicle_type,
-            // rating: data.rating,
+            vehicle_type: driver_info.driver_info.driver_vehicle.id,
+            rating: driver_info.statics.starResult,
             client_id: undefined,
-        });
+        };
+        const currentTrip = getDriverCurrentTrip(user_id);
+        if (currentTrip != null) {
+            driver_data.client_id = (_a = storage_1.TripMap.getMap().get(currentTrip)) === null || _a === void 0 ? void 0 : _a.user_id;
+        }
+        socket.join(`/driver/${user_id}`);
+        storage_1.DriverMap.getMap().set(socket.id, driver_data);
         console.log(data);
-    });
+    }));
 };
 exports.handleDriverLogin = handleDriverLogin;
+const getDriverCurrentTrip = (driver_id) => {
+    storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
+        if (trip_value.driver_id == driver_id) {
+            return trip_id;
+        }
+    });
+    return null;
+};
 const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0, function* () {
     yield tripService_1.default.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed", driver_id: driver.user_id });
     let driverData = yield driverServices_1.default.GetDriverInfoById(driver.user_id);

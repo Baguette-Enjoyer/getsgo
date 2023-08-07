@@ -14,13 +14,13 @@ POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"+84333333333",
+    "phone":"+84555555555",
     "password":"000000"
 }
 
 ###
 POST http://localhost:3000/v1/booking/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIrODQxMTExMTExMTEiLCJ0eXBlIjoiQWRtaW4iLCJpYXQiOjE2OTA4MTg0NTksImV4cCI6MTY5MTg5ODQ1OX0.2w2ktXsKdAIvcl_Cp-73-ft9RbDAgr3QQ7VHBVKVdik
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwOTYzNDM1LCJleHAiOjE2OTIwNDM0MzV9.sM7gAkx0Gl7043NJu3r97BqbvQD9tWdG3ZOoT2ZK-AE
 Content-Type: application/json
 
 {
@@ -55,7 +55,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/v1/drivers/trips
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwOTYzNDM1LCJleHAiOjE2OTIwNDM0MzV9.sM7gAkx0Gl7043NJu3r97BqbvQD9tWdG3ZOoT2ZK-AE
 
 ###
 GET http://localhost:3000/v1/trips/7

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
+exports.handleTripUpdate = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const userService_1 = __importDefault(require("../../services/userService"));
 const locationService_1 = __importDefault(require("../../services/locationService"));
@@ -130,10 +130,10 @@ const handleUserFindTrip = (socket) => {
         //     //
         //     await tripService.UpdateTrip(dat)
         // }
-        let rdTripKey = `trip_id:${trip_id}`;
-        storage_1.TripMap.getMap().set(trip_id, data);
-        let TripDataStringified = JSON.stringify(data);
-        yield rd.set(rdTripKey, TripDataStringified);
+        // let rdTripKey = `trip_id:${trip_id}`
+        // TripMap.getMap().set(trip_id, data)
+        // let TripDataStringified = JSON.stringify(data)
+        // await rd.set(rdTripKey, TripDataStringified)
         // AddDriverToBroadCast(possibleDrivers[0].user_id)
         // broadCastToDriver(io,possibleDrivers[0].socketId, "user-trip", DataResponseStringified)
         // console.log(`broadcasting to driver ${possibleDrivers[0].user_id}`)
@@ -170,6 +170,16 @@ exports.handleUserCancelTrip = handleUserCancelTrip;
 //         UserCancelTrip(data.trip_id)
 //     })
 // }
+const handleTripUpdate = (socket) => {
+    socket.on('trip-update', (data) => {
+        const trip = storage_1.TripMap.getMap().get(data.trip_id);
+        if (data.status != null && trip != null) {
+            trip.status = data.status;
+            initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
+        }
+    });
+};
+exports.handleTripUpdate = handleTripUpdate;
 const getTripIfDisconnected = (id) => {
     storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.user_id == id || trip_value.driver_id == id) {

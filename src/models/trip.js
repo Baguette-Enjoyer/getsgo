@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         as: "driver",
         foreignKey: "driver_id"
       })
+      Trip.hasOne(models.Conversation, {
+        foreignKey: "trip_id"
+      })
     }
   }
   Trip.init({

@@ -167,10 +167,10 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         //     await tripService.UpdateTrip(dat)
         // }
 
-        let rdTripKey = `trip_id:${trip_id}`
-        TripMap.getMap().set(trip_id, data)
-        let TripDataStringified = JSON.stringify(data)
-        await rd.set(rdTripKey, TripDataStringified)
+        // let rdTripKey = `trip_id:${trip_id}`
+        // TripMap.getMap().set(trip_id, data)
+        // let TripDataStringified = JSON.stringify(data)
+        // await rd.set(rdTripKey, TripDataStringified)
 
         // AddDriverToBroadCast(possibleDrivers[0].user_id)
         // broadCastToDriver(io,possibleDrivers[0].socketId, "user-trip", DataResponseStringified)
@@ -213,6 +213,17 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
 //         UserCancelTrip(data.trip_id)
 //     })
 // }
+
+export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on('trip-update',(data:{trip_id:number,status:string})=>{
+        const trip = TripMap.getMap().get(data.trip_id)
+        if (data.status != null && trip != null) {
+            trip.status = data.status
+            io.in(`/user/${trip.user_id}`).emit('trip-update',{status:trip.status})
+        }
+    })
+}
+
 const getTripIfDisconnected = (id: number) => {
     TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.user_id == id || trip_value.driver_id == id) {
