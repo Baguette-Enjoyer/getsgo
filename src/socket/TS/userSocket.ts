@@ -80,6 +80,8 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             }
             await new Promise((resolve) => setTimeout(resolve, 11000));
             const trip = TripMap.getMap().get(trip_id);
+            console.log('11111111111')
+            console.log(trip)
             if (trip !== undefined && trip.driver_id !== undefined) {
                 break;
             }
