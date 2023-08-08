@@ -89,10 +89,21 @@ const handleDriverResponseBooking = (socket) => {
                 storage_1.TripMap.getMap().set(trip.trip_id, trip);
                 storage_1.DriverMap.getMap().set(socket.id, driver);
                 senDriver(trip, driver, socket.id);
+                //thông báo cho driver nhận chuyến ok
+                initServer_1.io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip");
             }
+            else {
+                //thông báo driver user đã có chuyến
+                initServer_1.io.in(`/driver/${driver.user_id}`).emit("received-trip-fail", "user in another trip");
+            }
+        }
+        else if (data.status == "Deny") {
+            driver.response = "Deny";
+            storage_1.DriverMap.getMap().set(socket.id, driver);
         }
         else {
             driver.response = "Deny";
+            storage_1.DriverMap.getMap().set(socket.id, driver);
         }
         // let driver_id = driver?.user_id
         // let trip_id = data.trip_id

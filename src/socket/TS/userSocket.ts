@@ -65,8 +65,14 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             trip_info: data
         }
         let DataResponseStringified = JSON.stringify(DataResponse)
-
-        while (true) {
+        let timesUp = false
+        let loopsBroken = false
+        setTimeout(()=>{
+            if (!loopsBroken) {
+                timesUp = true
+            }
+        }, 60000)
+        while (timesUp == false) {
             const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
             console.log(possibleDrivers.length);
             for (let i = 0; i < possibleDrivers.length; i++) {
@@ -81,6 +87,7 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             await new Promise((resolve) => setTimeout(resolve, 11000));
             const trip = TripMap.getMap().get(trip_id);
             if (trip !== undefined && trip.driver_id !== undefined) {
+                loopsBroken = true
                 break;
             }
         }

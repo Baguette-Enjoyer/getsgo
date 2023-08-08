@@ -128,9 +128,19 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 DriverMap.getMap().set(socket.id, driver)
 
                 senDriver(trip, driver, socket.id);
+
+                //thông báo cho driver nhận chuyến ok
+                io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
+            }
+            else {
+                //thông báo driver user đã có chuyến
+                io.in(`/driver/${driver.user_id}`).emit("received-trip-fail", "user in another trip")
             }
         }
-        else {
+        else if (data.status == "Deny"){
+            driver.response = "Deny"
+            DriverMap.getMap().set(socket.id, driver)
+        } else {
             driver.response = "Deny"
             DriverMap.getMap().set(socket.id, driver)
         }

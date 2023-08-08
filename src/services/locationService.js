@@ -79,6 +79,8 @@ const NoCancellationStrategy = (drivers, firstIndex, number) => {
         }
     })
     const selectedDrivers = drivers.slice(0, firstIndex).concat(newDrivers.slice(0, number - firstIndex));
+    //54adddddd
+    // firstIndex == 3
 
     return selectedDrivers, firstIndex
 
