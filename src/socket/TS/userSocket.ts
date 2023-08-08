@@ -64,7 +64,7 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             user_info: userData,
             trip_info: data
         }
-        let DataResponseStringified = JSON.stringify(DataResponse)
+        // let DataResponseStringified = JSON.stringify(DataResponse)
         let timesUp = false
         let loopsBroken = false
         setTimeout(()=>{
@@ -78,12 +78,12 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             console.log(possibleDrivers.length);
             for (let i = 0; i < possibleDrivers.length; i++) {
                 console.log('driver');
-                console.log(DataResponseStringified);
+                console.log(DataResponse);
                 const driver = possibleDrivers[i];
                 console.log(driver.socketId)
                 AddDriverToBroadCast(driver.user_id);
                 //
-                broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
+                broadCastToDriver(driver.socketId, "user-trip", DataResponse);
             }
             await new Promise((resolve) => setTimeout(resolve, 11000));
             const trip = TripMap.getMap().get(trip_id);
@@ -259,7 +259,7 @@ const GetSocketByUserId = (user_id: number) => {
     return socketArr
 }
 
-const broadCastToDriver = (socketid: string, event: string, data: string) => {
+const broadCastToDriver = (socketid: string, event: string, data: Object) => {
     let socket_value = DriverMap.getMap().get(socketid) || undefined
     if (socket_value === undefined) { return }
     if (socket_value === null) {
