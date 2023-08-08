@@ -131,6 +131,8 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
 
                 //thông báo cho driver nhận chuyến ok
                 io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
+
+                //ádasdasdada
             }
             else {
                 //thông báo driver user đã có chuyến
