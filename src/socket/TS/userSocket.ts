@@ -66,10 +66,15 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             trip_info: data
         }
         let DataResponseStringified = JSON.stringify(DataResponse)
-
-        while (true) {
-            console.log(DriverMap.getMap());
-            console.log('DriverMap.getMap()');
+        let timesUp = false
+        let loopsBroken = false
+        setTimeout(()=>{
+            if (!loopsBroken) {
+                timesUp = true
+                io.in(`/user/${data.user_id}`).emit("no-driver-found","no drivers have been found")
+            }
+        }, 60000)
+        while (timesUp == false) {
             const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
             console.log(possibleDrivers);
             for (let i = 0; i < possibleDrivers.length; i++) {
@@ -86,6 +91,7 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             console.log('11111111111')
             console.log(trip)
             if (trip !== undefined && trip.driver_id !== undefined) {
+                loopsBroken = true
                 break;
             }
         }

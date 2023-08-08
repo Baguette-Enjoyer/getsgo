@@ -45,7 +45,15 @@ const handleUserFindTrip = (socket) => {
             trip_info: data
         };
         let DataResponseStringified = JSON.stringify(DataResponse);
-        while (true) {
+        let timesUp = false;
+        let loopsBroken = false;
+        setTimeout(() => {
+            if (!loopsBroken) {
+                timesUp = true;
+                initServer_1.io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found");
+            }
+        }, 60000);
+        while (timesUp == false) {
             const possibleDrivers = locationService_1.default.requestRide(storage_1.DriverMap.getMap(), place1, storage_1.DriverInBroadcast.getDriverInBroadcast());
             console.log(possibleDrivers.length);
             for (let i = 0; i < possibleDrivers.length; i++) {
@@ -62,9 +70,11 @@ const handleUserFindTrip = (socket) => {
             console.log('11111111111');
             console.log(trip);
             if (trip !== undefined && trip.driver_id !== undefined) {
+                loopsBroken = true;
                 break;
             }
         }
+        // 1 phút không có emit (no-driver-found)
         // let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
         // console.log(possibleDrivers);
         // let isResponded = false

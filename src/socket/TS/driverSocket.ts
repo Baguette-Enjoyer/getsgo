@@ -100,7 +100,6 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
     console.log(user);
-    io.in(`/user/${driver.user_id}`).emit('success', responseData)
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
 
 
