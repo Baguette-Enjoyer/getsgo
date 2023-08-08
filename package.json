@@ -5,10 +5,12 @@
     "@babel/core": "^7.22.5",
     "@babel/node": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
-    "babel-cli": "^6.26.0"
+    "babel-cli": "^6.26.0",
+    "typescript": "^5.1.6"
   },
   "scripts": {
     "start": "nodemon --exec babel-node src/socket/index.js --ext *",
+    "buildJS": "cd src/socket/ts && tsc.cmd --outDir ../JS && npm run dev",
     "build": "babel src -d workspace",
     "postbuild": "cp src/config/config.json workspace/config/",
     "dev": "nodemon --exec babel-node src/index.js --ext *"
@@ -35,7 +37,6 @@
     "redis": "^4.6.7",
     "sequelize": "^6.32.1",
     "socket.io": "^4.7.1",
-    "tsc": "^2.0.4",
     "ws": "^8.13.0"
   }
 }

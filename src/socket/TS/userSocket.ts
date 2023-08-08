@@ -53,6 +53,7 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('user-find-trip', async (data: TripValue) => {
         // const dat: TripValue = JSON.parse(data)
+        console.log(data);
         const trip_id = data.trip_id
         const place1 = data.start
         // let user = getUserBySocket(socket)
@@ -67,8 +68,10 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         let DataResponseStringified = JSON.stringify(DataResponse)
 
         while (true) {
+            console.log(DriverMap.getMap());
+            console.log('DriverMap.getMap()');
             const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
-            console.log(possibleDrivers.length);
+            console.log(possibleDrivers);
             for (let i = 0; i < possibleDrivers.length; i++) {
                 console.log('driver');
                 console.log(DataResponseStringified);
@@ -88,7 +91,7 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         }
         // 1 phút không có emit (no-driver-found)
 
-        
+
         // let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
         // console.log(possibleDrivers);
 
@@ -213,8 +216,8 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on("driver-message",(data:{conversation_id:number,user_id:number,message:string})=>{
-        socket.to(`/user/${data.user_id}`).emit("message-to-user",data.message)
+    socket.on("driver-message", (data: { conversation_id: number, user_id: number, message: string }) => {
+        socket.to(`/user/${data.user_id}`).emit("message-to-user", data.message)
     })
 }
 // export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -224,14 +227,14 @@ export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, Default
 // }
 
 export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('trip-update', (data:{trip_id:number,status:string})=>{
+    socket.on('trip-update', (data: { trip_id: number, status: string }) => {
         const trip = TripMap.getMap().get(data.trip_id)
         if (data.status != null && trip != null) {
             trip.status = data.status
-            io.in(`/user/${trip.user_id}`).emit('trip-update',{status:trip.status})
+            io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status })
         }
     })
-    
+
 }
 
 const getTripIfDisconnected = (id: number) => {

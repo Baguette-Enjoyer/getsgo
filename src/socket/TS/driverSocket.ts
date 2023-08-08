@@ -3,7 +3,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { io } from "../../services/initServer"
 import userService from "../../services/userService"
 import locationServices from "../../services/locationService"
-import {initConvo,addChatMessage,dropConvo} from "../../services/chatService"
+import { initConvo, addChatMessage, dropConvo } from "../../services/chatService"
 import { DriverInBroadcast, DriverMap, TripMap, UserMap } from './storage'
 import tripService from "../../services/tripService"
 import driverServices from "../../services/driverServices"
@@ -50,10 +50,10 @@ interface TripValue {
 export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-login', async (data: Driver) => {
         const user_id = data.user_id
-        
+
         const driver_info = await driverServices.GetDriverInfoById(user_id)
 
-        const driver_data:Driver = {
+        const driver_data: Driver = {
             user_id: user_id,
             lat: data.lat,
             lng: data.lng,
@@ -67,17 +67,17 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
         const currentTrip = getDriverCurrentTrip(user_id)
 
         if (currentTrip != null) {
-           driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
+            driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
         }
-        
+
         socket.join(`/driver/${user_id}`)
         DriverMap.getMap().set(socket.id, driver_data)
         console.log(data)
     })
 }
 
-const getDriverCurrentTrip = (driver_id:number) :number|null => {
-    TripMap.getMap().forEach((trip_value,trip_id) => {
+const getDriverCurrentTrip = (driver_id: number): number | null => {
+    TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.driver_id == driver_id) {
             return trip_id
         }
@@ -91,21 +91,23 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     let responseData = {
         trip_id: trip.trip_id,
         driver_info: driverData,
-        lat:driver.lat,
-        lng:driver.lng,
-        heading:driver.heading,
-        
+        lat: driver.lat,
+        lng: driver.lng,
+        heading: driver.heading,
+
         message: "coming"
     }
+    const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
-
+    console.log(user);
+    io.in(`/user/${driver.user_id}`).emit('success', responseData)
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
 
 
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id
     DriverMap.getMap().set(socket_id, driver)
-    await initConvo(trip.trip_id,trip.user_id,driver.user_id)
+    await initConvo(trip.trip_id, trip.user_id, driver.user_id)
 }
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
@@ -122,7 +124,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 // const newTrip = trip
                 // trip.status = 'Confirmed'
                 // trip.driver_id = driver.user_id
-                
+
                 console.log(trip)
                 TripMap.getMap().set(trip.trip_id, trip)
                 DriverMap.getMap().set(socket.id, driver)
@@ -241,8 +243,8 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on("user-message",(data:{conversation_id:number,user_id:number,message:string})=>{
-        socket.to(`/driver/${data.user_id}`).emit("message-to-driver",data.message)
+    socket.on("user-message", (data: { conversation_id: number, user_id: number, message: string }) => {
+        socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message)
     })
 }
 
