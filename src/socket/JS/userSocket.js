@@ -50,6 +50,7 @@ const handleUserFindTrip = (socket) => {
         setTimeout(() => {
             if (!loopsBroken) {
                 timesUp = true;
+                initServer_1.io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found");
             }
         }, 60000);
         while (timesUp == false) {

@@ -70,6 +70,7 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
         setTimeout(()=>{
             if (!loopsBroken) {
                 timesUp = true
+                io.in(`/user/${data.user_id}`).emit("no-driver-found","no drivers have been found")
             }
         }, 60000)
         while (timesUp == false) {
