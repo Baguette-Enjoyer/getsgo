@@ -69,10 +69,10 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
         if (currentTrip != null) {
             driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
         }
-
+        console.log(driver_data);
         socket.join(`/driver/${user_id}`)
         DriverMap.getMap().set(socket.id, driver_data)
-        console.log(data)
+        // console.log(data)
     })
 }
 
@@ -94,12 +94,11 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
         lat: driver.lat,
         lng: driver.lng,
         heading: driver.heading,
-
         message: "coming"
     }
-    const user = userService.getUserBySocket(trip.user_id);
+    // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
-    console.log(user);
+    // console.log(user);
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
 
 
@@ -129,6 +128,15 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 DriverMap.getMap().set(socket.id, driver)
 
                 senDriver(trip, driver, socket.id);
+
+                //thông báo cho driver nhận chuyến ok
+                io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
+
+                //ádasdasdada
+            }
+            else {
+                //thông báo driver user đã có chuyến
+                io.in(`/driver/${driver.user_id}`).emit("received-trip-fail", "user in another trip")
             }
         }
         else {

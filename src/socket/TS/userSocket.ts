@@ -65,26 +65,28 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
             user_info: userData,
             trip_info: data
         }
-        let DataResponseStringified = JSON.stringify(DataResponse)
+        // let DataResponseStringified = JSON.stringify(DataResponse)
         let timesUp = false
         let loopsBroken = false
-        setTimeout(()=>{
+        setTimeout(() => {
             if (!loopsBroken) {
                 timesUp = true
-                io.in(`/user/${data.user_id}`).emit("no-driver-found","no drivers have been found")
+                io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
             }
         }, 60000)
         while (timesUp == false) {
+            console.log(DriverMap.getMap());
+            console.log('hehehhehe');
             const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
             console.log(possibleDrivers);
             for (let i = 0; i < possibleDrivers.length; i++) {
                 console.log('driver');
-                console.log(DataResponseStringified);
+                console.log(DataResponse);
                 const driver = possibleDrivers[i];
                 console.log(driver.socketId)
                 AddDriverToBroadCast(driver.user_id);
                 //
-                broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
+                broadCastToDriver(driver.socketId, "user-trip", DataResponse);
             }
             await new Promise((resolve) => setTimeout(resolve, 11000));
             const trip = TripMap.getMap().get(trip_id);
@@ -262,14 +264,14 @@ const GetSocketByUserId = (user_id: number) => {
     return socketArr
 }
 
-const broadCastToDriver = (socketid: string, event: string, data: string) => {
+const broadCastToDriver = (socketid: string, event: string, data: Object) => {
     let socket_value = DriverMap.getMap().get(socketid) || undefined
     if (socket_value === undefined) { return }
     if (socket_value === null) {
         throw new Error("driver socket error")
     }
     let driver_id = socket_value.user_id
-    console.log('/driver/${driver_id}');
+    console.log(`/driver/${driver_id}`);
     io.in(`/driver/${driver_id}`).emit(event, data)
 }
 
