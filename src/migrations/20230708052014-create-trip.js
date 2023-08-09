@@ -12,6 +12,14 @@ module.exports = {
       status: {
         type: Sequelize.ENUM('Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled')
       },
+      type: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      note: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       start: {
         type: Sequelize.JSON
       },

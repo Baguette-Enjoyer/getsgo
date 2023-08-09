@@ -46,6 +46,8 @@ const CreateTrip = async (data) => {
             trip
         )
         trip.trip_id = newTrip.id
+        trip.createdAt = newTrip.createdAt
+
         // socketServiceTS.AddToTrips(trip)
         console.log(trip)
         if (newTrip.id == null) {
@@ -68,7 +70,7 @@ const CreateTripForCallCenter = async (data) => {
         const place1 = data.start
         // let lat2 = data.end.lat
         // let lng2 = data.end.lng
-        const place2 = data.end
+        // const place2 = data.end
         const now = new Date()
         const phone = data.phone
 
@@ -88,13 +90,10 @@ const CreateTripForCallCenter = async (data) => {
             start: {
                 name: place1
             },
-            end: {
-                name: place2
-            },
             user_id: user_id,
             is_scheduled: is_scheduled,
             scheduled_time: scheduled_time,
-            status: status,
+            status: "Callcenter",
             paymentMethod: paymentMethod,
             is_paid: is_paid,
             price: price,

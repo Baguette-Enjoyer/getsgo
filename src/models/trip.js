@@ -32,6 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     start: DataTypes.JSON,
     end: DataTypes.JSON,
     finished_date: DataTypes.DATE,
+    type: DataTypes.INTEGER,
+    note: DataTypes.TEXT,
     price: DataTypes.DECIMAL,
     is_paid: DataTypes.BOOLEAN,
     paymentMethod: DataTypes.ENUM('Cash', 'Momo', 'IE'),

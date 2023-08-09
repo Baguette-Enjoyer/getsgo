@@ -37,9 +37,10 @@ const handleDriverLogin = (socket) => {
         if (currentTrip != null) {
             driver_data.client_id = (_a = storage_1.TripMap.getMap().get(currentTrip)) === null || _a === void 0 ? void 0 : _a.user_id;
         }
+        console.log(driver_data);
         socket.join(`/driver/${user_id}`);
         storage_1.DriverMap.getMap().set(socket.id, driver_data);
-        console.log(data);
+        // console.log(data)
     }));
 };
 exports.handleDriverLogin = handleDriverLogin;
@@ -62,7 +63,9 @@ const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0,
         heading: driver.heading,
         message: "coming"
     };
+    // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
+    // console.log(user);
     initServer_1.io.in(`/user/${trip.user_id}`).emit('found-driver', responseData);
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id;
@@ -91,15 +94,12 @@ const handleDriverResponseBooking = (socket) => {
                 senDriver(trip, driver, socket.id);
                 //thông báo cho driver nhận chuyến ok
                 initServer_1.io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip");
+                //ádasdasdada
             }
             else {
                 //thông báo driver user đã có chuyến
                 initServer_1.io.in(`/driver/${driver.user_id}`).emit("received-trip-fail", "user in another trip");
             }
-        }
-        else if (data.status == "Deny") {
-            driver.response = "Deny";
-            storage_1.DriverMap.getMap().set(socket.id, driver);
         }
         else {
             driver.response = "Deny";

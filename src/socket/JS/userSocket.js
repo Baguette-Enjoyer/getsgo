@@ -34,6 +34,7 @@ exports.handleUserLogin = handleUserLogin;
 const handleUserFindTrip = (socket) => {
     socket.on('user-find-trip', (data) => __awaiter(void 0, void 0, void 0, function* () {
         // const dat: TripValue = JSON.parse(data)
+        console.log(data);
         const trip_id = data.trip_id;
         const place1 = data.start;
         // let user = getUserBySocket(socket)
@@ -44,7 +45,7 @@ const handleUserFindTrip = (socket) => {
             user_info: userData,
             trip_info: data
         };
-        let DataResponseStringified = JSON.stringify(DataResponse);
+        // let DataResponseStringified = JSON.stringify(DataResponse)
         let timesUp = false;
         let loopsBroken = false;
         setTimeout(() => {
@@ -54,16 +55,18 @@ const handleUserFindTrip = (socket) => {
             }
         }, 60000);
         while (timesUp == false) {
+            console.log(storage_1.DriverMap.getMap());
+            console.log('hehehhehe');
             const possibleDrivers = locationService_1.default.requestRide(storage_1.DriverMap.getMap(), place1, storage_1.DriverInBroadcast.getDriverInBroadcast());
-            console.log(possibleDrivers.length);
+            console.log(possibleDrivers);
             for (let i = 0; i < possibleDrivers.length; i++) {
                 console.log('driver');
-                console.log(DataResponseStringified);
+                console.log(DataResponse);
                 const driver = possibleDrivers[i];
                 console.log(driver.socketId);
                 AddDriverToBroadCast(driver.user_id);
                 //
-                broadCastToDriver(driver.socketId, "user-trip", DataResponseStringified);
+                broadCastToDriver(driver.socketId, "user-trip", DataResponse);
             }
             yield new Promise((resolve) => setTimeout(resolve, 11000));
             const trip = storage_1.TripMap.getMap().get(trip_id);
@@ -174,6 +177,19 @@ exports.handleUserFindTrip = handleUserFindTrip;
 const handleUserCancelTrip = (socket) => {
     socket.on('user-cancel-trip', (data) => {
         UserCancelTrip(data.trip_id);
+        const tripDat = storage_1.TripMap.getMap().get(data.trip_id);
+        const driver_id = tripDat === null || tripDat === void 0 ? void 0 : tripDat.driver_id;
+        const socketid = GetDriverInfoById(driver_id);
+        if (socketid === null) {
+            return;
+        }
+        const driverData = storage_1.DriverMap.getMap().get(socketid);
+        if (driverData === undefined) {
+            return;
+        }
+        driverData.status = "Idle";
+        driverData.client_id = undefined;
+        storage_1.DriverMap.getMap().set(socketid, driverData);
     });
 };
 exports.handleUserCancelTrip = handleUserCancelTrip;
@@ -191,8 +207,29 @@ exports.handleMessageFromDriver = handleMessageFromDriver;
 const handleTripUpdate = (socket) => {
     socket.on('trip-update', (data) => {
         const trip = storage_1.TripMap.getMap().get(data.trip_id);
+        if (data.status === "Done") {
+            const tripDat = storage_1.TripMap.getMap().get(data.trip_id);
+            const driver_id = tripDat === null || tripDat === void 0 ? void 0 : tripDat.driver_id;
+            const socketid = GetDriverInfoById(driver_id);
+            if (socketid === null) {
+                return;
+            }
+            const driverData = storage_1.DriverMap.getMap().get(socketid);
+            if (driverData === undefined) {
+                return;
+            }
+            driverData.status = "Idle";
+            driverData.client_id = undefined;
+            storage_1.DriverMap.getMap().set(socketid, driverData);
+            if (data.status != null && trip != null) {
+                trip.status = data.status;
+                storage_1.TripMap.getMap().set(trip.trip_id, trip);
+                initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
+            }
+        }
         if (data.status != null && trip != null) {
             trip.status = data.status;
+            storage_1.TripMap.getMap().set(trip.trip_id, trip);
             initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
         }
     });
@@ -215,6 +252,14 @@ const GetSocketByUserId = (user_id) => {
     });
     return socketArr;
 };
+const GetDriverInfoById = (driver_id) => {
+    storage_1.DriverMap.getMap().forEach((driverData, socketId) => {
+        if (driverData.user_id === driver_id) {
+            return socketId;
+        }
+    });
+    return null;
+};
 const broadCastToDriver = (socketid, event, data) => {
     let socket_value = storage_1.DriverMap.getMap().get(socketid) || undefined;
     if (socket_value === undefined) {
@@ -224,17 +269,38 @@ const broadCastToDriver = (socketid, event, data) => {
         throw new Error("driver socket error");
     }
     let driver_id = socket_value.user_id;
-    console.log('/driver/${driver_id}');
+    console.log(`/driver/${driver_id}`);
     initServer_1.io.in(`/driver/${driver_id}`).emit(event, data);
 };
 const AddDriverToBroadCast = (driver_id) => {
-    storage_1.DriverInBroadcast.getDriverInBroadcast().push(driver_id);
+    const socketid = GetDriverInfoById(driver_id);
+    if (socketid === null) {
+        return;
+    }
+    const driverData = storage_1.DriverMap.getMap().get(socketid);
+    if (driverData === undefined) {
+        return;
+    }
+    driverData.status = "Broadcasting";
+    storage_1.DriverMap.getMap().set(socketid, driverData);
     setTimeout(() => {
-        const index = storage_1.DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
-        if (index !== -1) {
-            storage_1.DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
+        // const index = DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
+        // if (index !== -1) {
+        //     DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
+        // }
+        const socketid = GetDriverInfoById(driver_id);
+        if (socketid === null) {
+            return;
         }
-    }, 15000);
+        const driverData = storage_1.DriverMap.getMap().get(socketid);
+        if (driverData === undefined) {
+            return;
+        }
+        if (driverData.client_id == null) {
+            driverData.status = "Idle";
+            storage_1.DriverMap.getMap().set(socketid, driverData);
+        }
+    }, 13000);
 };
 const UserCancelTrip = (id) => {
     // if (status == undefined) return

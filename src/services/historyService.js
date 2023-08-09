@@ -16,6 +16,18 @@ const GetHistoryOfUser = async (user_id) => {
     return trips
 }
 
+export const GetHistoryOfUserByPhone = async (phone) => {
+    const trips = await db.Trip.findAll({
+        where: {
+            phone: {
+                [Op.eq]: phone,
+            },
+        },
+        attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
+    })
+    return trips
+}
+
 const GetHistoryOfDriver = async (driver_id) => {
     const trips = await db.Trip.findAll({
         where: { driver_id: driver_id },
