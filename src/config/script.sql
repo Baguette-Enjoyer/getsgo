@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 07, 2023 lúc 10:15 AM
+-- Thời gian đã tạo: Th8 09, 2023 lúc 06:15 PM
 -- Phiên bản máy phục vụ: 10.4.27-MariaDB
 -- Phiên bản PHP: 8.0.25
 
@@ -71,12 +71,12 @@ CREATE TABLE `rates` (
 --
 
 INSERT INTO `rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id`) VALUES
-(1, 4, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 1),
-(2, 5, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 2),
-(3, 2, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 3),
-(4, 5, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 4),
-(5, 1, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 5),
-(6, 4, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 6);
+(1, 4, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 1),
+(2, 5, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 2),
+(3, 2, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 3),
+(4, 5, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4),
+(5, 1, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 5),
+(6, 4, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 6);
 
 -- --------------------------------------------------------
 
@@ -104,6 +104,8 @@ CREATE TABLE `trips` (
   `start` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`start`)),
   `end` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`end`)),
   `finished_date` datetime DEFAULT NULL,
+  `type` int(11) DEFAULT NULL,
+  `note` text DEFAULT NULL,
   `price` decimal(10,0) DEFAULT NULL,
   `is_paid` tinyint(1) DEFAULT NULL,
   `paymentMethod` enum('Cash','Momo','IE') DEFAULT NULL,
@@ -119,13 +121,13 @@ CREATE TABLE `trips` (
 -- Đang đổ dữ liệu cho bảng `trips`
 --
 
-INSERT INTO `trips` (`id`, `status`, `start`, `end`, `finished_date`, `price`, `is_paid`, `paymentMethod`, `is_scheduled`, `schedule_time`, `createdAt`, `updatedAt`, `user_id`, `driver_id`) VALUES
-(1, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 4, 2),
-(2, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 4, 2),
-(3, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 5, 2),
-(4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 4, 3),
-(5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 4, 3),
-(6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 5, 3);
+INSERT INTO `trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `note`, `price`, `is_paid`, `paymentMethod`, `is_scheduled`, `schedule_time`, `createdAt`, `updatedAt`, `user_id`, `driver_id`) VALUES
+(1, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 2),
+(2, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 2),
+(3, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 5, 2),
+(4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 3),
+(5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 3),
+(6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 5, 3);
 
 -- --------------------------------------------------------
 
@@ -154,12 +156,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birthday`, `avatar`, `type`, `active`, `accessToken`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin', '+84111111111', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, NULL, 'Admin', NULL, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40'),
-(2, 'Driver', '+84222222222', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, NULL, 'Driver', NULL, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40'),
-(3, 'Driver', '+84333333333', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, NULL, 'Driver', NULL, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40'),
-(4, 'User_vip', '+84444444444', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, NULL, 'User_Vip', NULL, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40'),
-(5, 'User', '+84555555555', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, NULL, 'User', NULL, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40'),
-(6, 'CallCenter', '+84666666666', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, NULL, 'CallCenter', NULL, NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40');
+(1, 'Admin', '+84111111111', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Admin', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(2, 'Driver', '+84222222222', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(3, 'Driver', '+84333333333', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(4, 'User_vip', '+84444444444', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User_Vip', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(5, 'User', '+84555555555', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(6, 'CallCenter', '+84666666666', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenter', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48');
 
 -- --------------------------------------------------------
 
@@ -185,8 +187,8 @@ CREATE TABLE `vehicles` (
 --
 
 INSERT INTO `vehicles` (`id`, `driver_license`, `vehicle_registration`, `license_plate`, `name`, `description`, `createdAt`, `updatedAt`, `driver_id`, `vehicle_type_id`) VALUES
-(1, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 2, 1),
-(2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-07 08:13:40', '2023-08-07 08:13:40', 3, 2);
+(1, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 2, 1),
+(2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -206,8 +208,8 @@ CREATE TABLE `vehicle_types` (
 --
 
 INSERT INTO `vehicle_types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
-(1, 'Xe 4 Chỗ', '2023-08-07 08:13:40', '2023-08-07 08:13:40'),
-(2, 'Xe 7 Chỗ', '2023-08-07 08:13:40', '2023-08-07 08:13:40');
+(1, 'Xe 4 Chỗ', '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(2, 'Xe 7 Chỗ', '2023-08-09 16:14:48', '2023-08-09 16:14:48');
 
 --
 -- Chỉ mục cho các bảng đã đổ
