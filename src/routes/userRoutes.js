@@ -14,6 +14,7 @@ const initUserRoutes = (app) => {
     Routes.get('/v1/driver/:driver_id', driverController.GetDriverInfoById)
     Routes.get('/v1/history/driver/:driver_id', driverController.GetProfitPlusTrip)
     Routes.get('/v1/history/user/:user_id', historyController.GetHistoryOfUser)
+    Routes.get('/v1/history/phone', userControllers.GetHistoryByPhone)
     Routes.post('/v1/location/localdriver', userControllers.GetDriverAround3KM)
     return app.use(Routes)
 }

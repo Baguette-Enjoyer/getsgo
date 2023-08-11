@@ -1,5 +1,5 @@
 import db from '../models/index'
-
+import { Op, where } from 'sequelize'
 const GetHistoryOfUser = async (user_id) => {
     const trips = await db.Trip.findAll({
         where: { user_id: user_id },
@@ -17,11 +17,17 @@ const GetHistoryOfUser = async (user_id) => {
 }
 
 export const GetHistoryOfUserByPhone = async (phone) => {
-    const trips = await db.Trip.findAll({
+    const user = await db.User.findOne({
         where: {
             phone: {
                 [Op.eq]: phone,
             },
+        },
+        attributes: ['id']
+    })
+    const trips = await db.Trip.findAll({
+        where: {
+            id: user.id
         },
         attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
     })

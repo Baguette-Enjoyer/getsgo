@@ -1,5 +1,6 @@
 import jwtService from '../services/jwtService'
 import userService from '../services/userService'
+import { GetHistoryOfUserByPhone } from '../services/historyService'
 // import socketService from '../socket/socketServiceTS'
 import { GetDriversAround3KM } from '../socket/JS/socketService'
 let LoginUser = async (req, res) => {
@@ -109,6 +110,32 @@ let UpdateUserInfo = async (data) => {
     })
 }
 
+const GetHistoryByPhone = async (req, res) => {
+    const phone = req.query.phone
+    const phoneNormalized = '+' + phone.trim();
+    if (phoneNormalized.length != 12) {
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Invalid phone number"
+        })
+    }
+    try {
+        const result = await GetHistoryOfUserByPhone(phoneNormalized)
+        return res.status(200).json(
+            {
+                statusCode: 200,
+                trips: result
+            }
+        )
+    } catch (error) {
+        return res.status(500).json({
+            statusCode: 500,
+            message: error.message
+        })
+    }
+
+}
+
 let GetDriverAround3KM = async (req, res) => {
     let dat = req.body
     let result = GetDriversAround3KM(dat)
@@ -128,5 +155,6 @@ export default {
     LoginUser,
     UpdatePassword,
     GetUserByPhone,
-    GetDriverAround3KM
+    GetDriverAround3KM,
+    GetHistoryByPhone
 }
