@@ -128,7 +128,18 @@ INSERT INTO `trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `n
 (4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3),
 (5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3),
 (6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 3),
-(7, 'Pending', '\"{\\\"name\\\":\\\"random places\\\",\\\"lat\\\":10.1,\\\"lng\\\":10.2}\"', '\"{\\\"name\\\":\\\"2nd random places\\\",\\\"lat\\\":10.3,\\\"lng\\\":10.4}\"', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 4, NULL);
+(7, 'Done', '{\"place\":\"2 Nguyễn Bỉnh Khiêm, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7877783,\"lng\":106.705055}', '{\"name\":\"Quận 1, Ho Chi Minh City, Vietnam\",\"lat\":10.7756587,\"lng\":106.7004238}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9),
+(8, 'Done', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9),
+(9, 'Done', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9),
+(10, 'Done', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9),
+(11, 'Done', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9),
+(12, 'Callcenter', '{\"place\":\"2 Nguyễn Bỉnh Khiêm, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7877783,\"lng\":106.705055}', '{\"name\":\"Quận 1, Ho Chi Minh City, Vietnam\",\"lat\":10.7756587,\"lng\":106.7004238}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9),
+(13, 'Pending', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9),
+(14, 'Waiting', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9),
+(15, 'Confirmed', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9),
+(16, 'Driving', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9);
+
+
 
 -- --------------------------------------------------------
 
@@ -164,7 +175,11 @@ INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birt
 (5, 'User', '+84555555555', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
 (6, 'CallCenterS1', '+84666666666', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS1', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
 (7, 'CallCenterS2', '+84777777777', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS2', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
-(8, 'CallCenterS3', '+84888888888', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS3', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46');
+(8, 'CallCenterS3', '+84888888888', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS3', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(9, 'Doan Huu Loc', '+84941544569', 'lapdoan.010102@gmail.com', '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', 'male', NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(10, 'Nguyen Dang Manh Tu', '+84974220702', 'manhtu22702@gmail.com', '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', 'male', NULL, 'https://picsum.photos/200/300', 'User_Vip', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(11, 'Le Nguyen Lan Vy', '+84777063550', 'lanvy@gmail.com', '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', 'female', NULL, 'https://picsum.photos/200/300', 'Callcenter', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
+(12, 'Tang Kim Long', '+84974649123', 'kimlong@gmail.com', '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', 'male', NULL, 'https://picsum.photos/200/300', 'User', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48');
 
 -- --------------------------------------------------------
 
@@ -191,7 +206,8 @@ CREATE TABLE `vehicles` (
 
 INSERT INTO `vehicles` (`id`, `driver_license`, `vehicle_registration`, `license_plate`, `name`, `description`, `createdAt`, `updatedAt`, `driver_id`, `vehicle_type_id`) VALUES
 (1, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 2, 1),
-(2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 3, 2);
+(2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 3, 2),
+(3, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 9, 1);
 
 -- --------------------------------------------------------
 
