@@ -10,6 +10,8 @@ const initTripRoutes = (app) => {
     AuthRoutes.put('/v1/trips/cancel/:trip_id', tripController.CancelTrip)
     AuthRoutes.put('/v1/trips/accept/:trip_id', tripController.AcceptTrip)
     Routes.post('/v1/booking/callcenter', tripController.CallCenterBookTrip)
+    Routes.post('v1/booking/callcenters1', tripController.BookS1)
+    Routes.post('v1/booking/callcenters2', tripController.BookS2)
     Routes.get('/v1/trips/:trip_id', tripController.GetTripById)
     Routes.put('/v1/trips/:trip_id', tripController.UpdateTrip)
     Routes.delete('/v1/trips/:trip_id', tripController.DeleteTrip)

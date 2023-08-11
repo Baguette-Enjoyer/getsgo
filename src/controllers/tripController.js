@@ -1,5 +1,5 @@
 import tripService from "../services/tripService";
-
+import { initTripCallCenterS1, initTripForCallcenter } from '../services/tripService'
 let BookTrip = async (req, res) => {
 
     let data = req.body
@@ -125,7 +125,38 @@ let DeleteTrip = async (req, res) => {
         })
     }
 }
+export const BookS1 = async (req, res) => {
+    const data = req.body
+    try {
+        const result = await initTripCallCenterS1(data)
+        return res.status(200).json({
+            "statusCode": 200,
+            "trip_info": result
+        })
+    } catch (error) {
+        return res.status(500).json({
+            "statusCode": 500,
+            "message": error.message
+        })
+    }
+}
 
+export const BookS2 = async (req, res) => {
+    const data = req.body
+    try {
+        const result = await initTripForCallcenter(data)
+        return res.status(200).json({
+            "statusCode": 200,
+            "trip_info": result
+        })
+    } catch (error) {
+        return res.status(500).json({
+            "statusCode": 500,
+            "message": error.message
+        })
+    }
+
+}
 export default {
     BookTrip,
     CallCenterBookTrip,
@@ -134,5 +165,7 @@ export default {
     AcceptTrip,
     UpdateTrip,
     CancelTrip,
-    DeleteTrip
+    DeleteTrip,
+    BookS1,
+    BookS2
 }

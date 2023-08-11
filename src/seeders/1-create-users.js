@@ -50,10 +50,24 @@ module.exports = {
 
       },
       {
-        name: "CallCenter",
+        name: "CallCenterS1",
         phone: "+84666666666",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
-        type: "CallCenter",
+        type: "CallCenterS1",
+        avatar: "https://picsum.photos/200/300"
+      },
+      {
+        name: "CallCenterS2",
+        phone: "+84777777777",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
+        type: "CallCenterS2",
+        avatar: "https://picsum.photos/200/300"
+      },
+      {
+        name: "CallCenterS3",
+        phone: "+84888888888",
+        password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
+        type: "CallCenterS3",
         avatar: "https://picsum.photos/200/300"
       },
     ]

@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     gender: DataTypes.ENUM('Male', 'Female'),
     birthday: DataTypes.DATE,
     avatar: DataTypes.STRING,
-    type: DataTypes.ENUM('Admin', 'User', 'User_Vip', 'Driver', 'CallCenter'),
+    type: DataTypes.ENUM('Admin', 'User', 'User_Vip', 'Driver', 'CallCenterS1', 'CallCenterS2', 'CallCenterS3'),
     active: DataTypes.BOOLEAN,
     accessToken: DataTypes.STRING
   }, {

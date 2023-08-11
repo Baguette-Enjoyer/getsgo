@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       status: {
-        type: Sequelize.ENUM('Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled')
+        type: Sequelize.ENUM('Callcenter', 'Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled')
       },
       type: {
         type: Sequelize.INTEGER,

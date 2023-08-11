@@ -12,10 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
+exports.AddDriverToBroadCast = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
-const userService_1 = __importDefault(require("../../services/userService"));
-const locationService_1 = __importDefault(require("../../services/locationService"));
 const storage_1 = require("./storage");
 const connectRedis_1 = __importDefault(require("../../config/connectRedis"));
 let rd = (0, connectRedis_1.default)();
@@ -33,50 +31,52 @@ const handleUserLogin = (socket) => {
 exports.handleUserLogin = handleUserLogin;
 const handleUserFindTrip = (socket) => {
     socket.on('user-find-trip', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("t chuyển này qua cái mq luôn r nha, có gì lỗi kiu t sửa");
         // const dat: TripValue = JSON.parse(data)
-        console.log(data);
-        const trip_id = data.trip_id;
-        const place1 = data.start;
-        // let user = getUserBySocket(socket)
-        // let user_id = user?.user_id
-        let userData = yield userService_1.default.GetUserById(data.user_id);
-        storage_1.TripMap.getMap().set(data.trip_id, data);
-        let DataResponse = {
-            user_info: userData,
-            trip_info: data
-        };
-        // let DataResponseStringified = JSON.stringify(DataResponse)
-        let timesUp = false;
-        let loopsBroken = false;
-        setTimeout(() => {
-            if (!loopsBroken) {
-                timesUp = true;
-                initServer_1.io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found");
-            }
-        }, 60000);
-        while (timesUp == false) {
-            console.log(storage_1.DriverMap.getMap());
-            console.log('hehehhehe');
-            const possibleDrivers = locationService_1.default.requestRide(storage_1.DriverMap.getMap(), place1, storage_1.DriverInBroadcast.getDriverInBroadcast());
-            console.log(possibleDrivers);
-            for (let i = 0; i < possibleDrivers.length; i++) {
-                console.log('driver');
-                console.log(DataResponse);
-                const driver = possibleDrivers[i];
-                console.log(driver.socketId);
-                AddDriverToBroadCast(driver.user_id);
-                //
-                broadCastToDriver(driver.socketId, "user-trip", DataResponse);
-            }
-            yield new Promise((resolve) => setTimeout(resolve, 11000));
-            const trip = storage_1.TripMap.getMap().get(trip_id);
-            console.log('11111111111');
-            console.log(trip);
-            if (trip !== undefined && trip.driver_id !== undefined) {
-                loopsBroken = true;
-                break;
-            }
-        }
+        // console.log(data);
+        // const trip_id = data.trip_id
+        // const place1 = data.start
+        // // let user = getUserBySocket(socket)
+        // // let user_id = user?.user_id
+        // let userData = await userService.GetUserById(data.user_id)
+        // TripMap.getMap().set(data.trip_id, data);
+        // let DataResponse = {
+        //     user_info: userData,
+        //     trip_info: data
+        // }
+        // // let DataResponseStringified = JSON.stringify(DataResponse)
+        // let timesUp = false
+        // let loopsBroken = false
+        // setTimeout(async () => {
+        //     if (!loopsBroken) {
+        //         timesUp = true
+        //         io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
+        //         await tripService.DeleteTrip(trip_id)
+        //     }
+        // }, 60000)
+        // while (timesUp == false) {
+        //     console.log(DriverMap.getMap());
+        //     console.log('hehehhehe');
+        //     const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
+        //     console.log(possibleDrivers);
+        //     for (let i = 0; i < possibleDrivers.length; i++) {
+        //         console.log('driver');
+        //         console.log(DataResponse);
+        //         const driver = possibleDrivers[i];
+        //         console.log(driver.socketId)
+        //         AddDriverToBroadCast(driver.user_id);
+        //         //
+        //         broadCastToDriver(driver.socketId, "user-trip", DataResponse);
+        //     }
+        //     await new Promise((resolve) => setTimeout(resolve, 11000));
+        //     const trip = TripMap.getMap().get(trip_id);
+        //     console.log('11111111111')
+        //     console.log(trip)
+        //     if (trip !== undefined && trip.driver_id !== undefined) {
+        //         loopsBroken = true
+        //         break;
+        //     }
+        // }
         // 1 phút không có emit (no-driver-found)
         // let possibleDrivers = locationServices.getFiveNearestDriver(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
         // console.log(possibleDrivers);
@@ -272,6 +272,7 @@ const broadCastToDriver = (socketid, event, data) => {
     console.log(`/driver/${driver_id}`);
     initServer_1.io.in(`/driver/${driver_id}`).emit(event, data);
 };
+exports.broadCastToDriver = broadCastToDriver;
 const AddDriverToBroadCast = (driver_id) => {
     const socketid = GetDriverInfoById(driver_id);
     if (socketid === null) {
@@ -302,6 +303,7 @@ const AddDriverToBroadCast = (driver_id) => {
         }
     }, 13000);
 };
+exports.AddDriverToBroadCast = AddDriverToBroadCast;
 const UserCancelTrip = (id) => {
     // if (status == undefined) return
     storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {

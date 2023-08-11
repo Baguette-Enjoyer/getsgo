@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 09, 2023 lúc 06:15 PM
+-- Thời gian đã tạo: Th8 11, 2023 lúc 02:22 PM
 -- Phiên bản máy phục vụ: 10.4.27-MariaDB
 -- Phiên bản PHP: 8.0.25
 
@@ -71,12 +71,12 @@ CREATE TABLE `rates` (
 --
 
 INSERT INTO `rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id`) VALUES
-(1, 4, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 1),
-(2, 5, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 2),
-(3, 2, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 3),
-(4, 5, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4),
-(5, 1, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 5),
-(6, 4, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 6);
+(1, 4, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 1),
+(2, 5, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 2),
+(3, 2, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 3),
+(4, 5, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4),
+(5, 1, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5),
+(6, 4, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 6);
 
 -- --------------------------------------------------------
 
@@ -100,7 +100,7 @@ CREATE TABLE `settings` (
 
 CREATE TABLE `trips` (
   `id` int(11) NOT NULL,
-  `status` enum('Pending','Waiting','Confirmed','Driving','Arrived','Done','Cancelled') DEFAULT NULL,
+  `status` enum('Callcenter','Pending','Waiting','Confirmed','Driving','Arrived','Done','Cancelled') DEFAULT NULL,
   `start` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`start`)),
   `end` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`end`)),
   `finished_date` datetime DEFAULT NULL,
@@ -122,12 +122,13 @@ CREATE TABLE `trips` (
 --
 
 INSERT INTO `trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `note`, `price`, `is_paid`, `paymentMethod`, `is_scheduled`, `schedule_time`, `createdAt`, `updatedAt`, `user_id`, `driver_id`) VALUES
-(1, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 2),
-(2, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 2),
-(3, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 5, 2),
-(4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 3),
-(5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 4, 3),
-(6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 5, 3);
+(1, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 2),
+(2, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 2),
+(3, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 2),
+(4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3),
+(5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3),
+(6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 3),
+(7, 'Pending', '\"{\\\"name\\\":\\\"random places\\\",\\\"lat\\\":10.1,\\\"lng\\\":10.2}\"', '\"{\\\"name\\\":\\\"2nd random places\\\",\\\"lat\\\":10.3,\\\"lng\\\":10.4}\"', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 4, NULL);
 
 -- --------------------------------------------------------
 
@@ -144,7 +145,7 @@ CREATE TABLE `users` (
   `gender` enum('Male','Female') DEFAULT NULL,
   `birthday` datetime DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
-  `type` enum('Admin','User','User_Vip','Driver','CallCenter') DEFAULT NULL,
+  `type` enum('Admin','User','User_Vip','Driver','CallCenterS1','CallCenterS2','CallCenterS3') DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   `accessToken` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -156,12 +157,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birthday`, `avatar`, `type`, `active`, `accessToken`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin', '+84111111111', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Admin', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
-(2, 'Driver', '+84222222222', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
-(3, 'Driver', '+84333333333', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
-(4, 'User_vip', '+84444444444', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User_Vip', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
-(5, 'User', '+84555555555', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
-(6, 'CallCenter', '+84666666666', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenter', NULL, NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48');
+(1, 'Admin', '+84111111111', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Admin', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(2, 'Driver', '+84222222222', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(3, 'Driver', '+84333333333', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(4, 'User_vip', '+84444444444', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User_Vip', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(5, 'User', '+84555555555', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'User', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(6, 'CallCenterS1', '+84666666666', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS1', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(7, 'CallCenterS2', '+84777777777', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS2', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(8, 'CallCenterS3', '+84888888888', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'CallCenterS3', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46');
 
 -- --------------------------------------------------------
 
@@ -187,8 +190,8 @@ CREATE TABLE `vehicles` (
 --
 
 INSERT INTO `vehicles` (`id`, `driver_license`, `vehicle_registration`, `license_plate`, `name`, `description`, `createdAt`, `updatedAt`, `driver_id`, `vehicle_type_id`) VALUES
-(1, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 2, 1),
-(2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-09 16:14:48', '2023-08-09 16:14:48', 3, 2);
+(1, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 2, 1),
+(2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -208,8 +211,8 @@ CREATE TABLE `vehicle_types` (
 --
 
 INSERT INTO `vehicle_types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
-(1, 'Xe 4 Chỗ', '2023-08-09 16:14:48', '2023-08-09 16:14:48'),
-(2, 'Xe 7 Chỗ', '2023-08-09 16:14:48', '2023-08-09 16:14:48');
+(1, 'Xe 4 Chỗ', '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
+(2, 'Xe 7 Chỗ', '2023-08-11 09:44:46', '2023-08-11 09:44:46');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -306,13 +309,13 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT cho bảng `trips`
 --
 ALTER TABLE `trips`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `vehicles`

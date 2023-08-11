@@ -52,51 +52,53 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 
 export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('user-find-trip', async (data: TripValue) => {
+        console.log("t chuyển này qua cái mq luôn r nha, có gì lỗi kiu t sửa")
         // const dat: TripValue = JSON.parse(data)
-        console.log(data);
-        const trip_id = data.trip_id
-        const place1 = data.start
-        // let user = getUserBySocket(socket)
-        // let user_id = user?.user_id
+        // console.log(data);
+        // const trip_id = data.trip_id
+        // const place1 = data.start
+        // // let user = getUserBySocket(socket)
+        // // let user_id = user?.user_id
 
-        let userData = await userService.GetUserById(data.user_id)
-        TripMap.getMap().set(data.trip_id, data);
-        let DataResponse = {
-            user_info: userData,
-            trip_info: data
-        }
-        // let DataResponseStringified = JSON.stringify(DataResponse)
-        let timesUp = false
-        let loopsBroken = false
-        setTimeout(() => {
-            if (!loopsBroken) {
-                timesUp = true
-                io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
-            }
-        }, 60000)
-        while (timesUp == false) {
-            console.log(DriverMap.getMap());
-            console.log('hehehhehe');
-            const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
-            console.log(possibleDrivers);
-            for (let i = 0; i < possibleDrivers.length; i++) {
-                console.log('driver');
-                console.log(DataResponse);
-                const driver = possibleDrivers[i];
-                console.log(driver.socketId)
-                AddDriverToBroadCast(driver.user_id);
-                //
-                broadCastToDriver(driver.socketId, "user-trip", DataResponse);
-            }
-            await new Promise((resolve) => setTimeout(resolve, 11000));
-            const trip = TripMap.getMap().get(trip_id);
-            console.log('11111111111')
-            console.log(trip)
-            if (trip !== undefined && trip.driver_id !== undefined) {
-                loopsBroken = true
-                break;
-            }
-        }
+        // let userData = await userService.GetUserById(data.user_id)
+        // TripMap.getMap().set(data.trip_id, data);
+        // let DataResponse = {
+        //     user_info: userData,
+        //     trip_info: data
+        // }
+        // // let DataResponseStringified = JSON.stringify(DataResponse)
+        // let timesUp = false
+        // let loopsBroken = false
+        // setTimeout(async () => {
+        //     if (!loopsBroken) {
+        //         timesUp = true
+        //         io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
+        //         await tripService.DeleteTrip(trip_id)
+        //     }
+        // }, 60000)
+        // while (timesUp == false) {
+        //     console.log(DriverMap.getMap());
+        //     console.log('hehehhehe');
+        //     const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
+        //     console.log(possibleDrivers);
+        //     for (let i = 0; i < possibleDrivers.length; i++) {
+        //         console.log('driver');
+        //         console.log(DataResponse);
+        //         const driver = possibleDrivers[i];
+        //         console.log(driver.socketId)
+        //         AddDriverToBroadCast(driver.user_id);
+        //         //
+        //         broadCastToDriver(driver.socketId, "user-trip", DataResponse);
+        //     }
+        //     await new Promise((resolve) => setTimeout(resolve, 11000));
+        //     const trip = TripMap.getMap().get(trip_id);
+        //     console.log('11111111111')
+        //     console.log(trip)
+        //     if (trip !== undefined && trip.driver_id !== undefined) {
+        //         loopsBroken = true
+        //         break;
+        //     }
+        // }
         // 1 phút không có emit (no-driver-found)
 
 
@@ -301,7 +303,7 @@ const GetDriverInfoById = (driver_id: number):string|null => {
     return null
 }
 
-const broadCastToDriver = (socketid: string, event: string, data: Object) => {
+export const broadCastToDriver = (socketid: string, event: string, data: Object) => {
     let socket_value = DriverMap.getMap().get(socketid) || undefined
     if (socket_value === undefined) { return }
     if (socket_value === null) {
@@ -312,7 +314,7 @@ const broadCastToDriver = (socketid: string, event: string, data: Object) => {
     io.in(`/driver/${driver_id}`).emit(event, data)
 }
 
-const AddDriverToBroadCast = (driver_id: number) => {
+export const AddDriverToBroadCast = (driver_id: number) => {
     const socketid = GetDriverInfoById(driver_id) 
     if (socketid === null) { return}
     const driverData = DriverMap.getMap().get(socketid)

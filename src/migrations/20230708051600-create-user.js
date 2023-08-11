@@ -32,7 +32,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       type: {
-        type: Sequelize.ENUM('Admin', 'User', 'User_Vip', 'Driver', 'CallCenter')
+        type: Sequelize.ENUM('Admin', 'User', 'User_Vip', 'Driver', 'CallCenterS1', 'CallCenterS2', 'CallCenterS3')
       },
       active: {
         type: Sequelize.BOOLEAN

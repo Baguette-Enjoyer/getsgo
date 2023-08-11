@@ -2,6 +2,7 @@ import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
 // import socketServiceTS from '../socket/socketServiceTS.js'
+import { SendMessageToQueue } from '../mq/createChannel'
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location
@@ -18,18 +19,19 @@ const CreateTrip = async (data) => {
         const is_scheduled = data.is_scheduled
         const scheduled_time = is_scheduled ? data.schedule_time : now
         //Check user role here
+        const carType = data.carType
         const status = "Pending"
         const paymentMethod = data.paymentMethod
         const is_paid = false
         const price = data.price
         const trip = {
             start: JSON.stringify({
-                name: place1,
+                place: place1,
                 lat: lat1,
                 lng: lng1
             }),
             end: JSON.stringify({
-                name: place2,
+                place: place2,
                 lat: lat2,
                 lng: lng2
             }),
@@ -37,6 +39,7 @@ const CreateTrip = async (data) => {
             is_scheduled: is_scheduled,
             scheduled_time: scheduled_time,
             status: status,
+            type: carType,
             paymentMethod: paymentMethod,
             is_paid: is_paid,
             price: price,
@@ -56,6 +59,8 @@ const CreateTrip = async (data) => {
                 error: new Error('error creating trip')
             })
         }
+        console.log("send trip to normal trip queue")
+        SendMessageToQueue("book-trip-queue", JSON.stringify(trip))
         return resolve({
             statusCode: 200,
             trip_info: trip,
@@ -88,7 +93,7 @@ const CreateTripForCallCenter = async (data) => {
 
         let trip = {
             start: {
-                name: place1
+                place: place1
             },
             user_id: user_id,
             is_scheduled: is_scheduled,
@@ -235,7 +240,7 @@ const CancelTrip = async (trip_id) => {
     return newTrip
 }
 
-const UpdateTrip = async (data) => {
+export const UpdateTrip = async (data) => {
     let updateObj = {}
     if (data.driver_id != null) {
         updateObj.driver_id = data.driver_id
@@ -263,7 +268,7 @@ const UpdateTrip = async (data) => {
     }
 }
 
-const DeleteTrip = async (trip_id) => {
+export const DeleteTrip = async (trip_id) => {
     try {
         await db.Trip.destroy({
             where: { id: trip_id }
@@ -273,11 +278,93 @@ const DeleteTrip = async (trip_id) => {
     }
 
 }
-const GetAppointmentTrip = async () => {
-    return new Promise((resolve, reject) => {
 
-    })
+export const initTripForCallcenter = async (data) => {
+    const phone = data.phone
+    const user = await CreateUserIfNotExist(phone)
+    console.log("cout<<userid")
+    console.log(user.id)
+    const start = {
+        place: data.start.place,
+        lat: data.start.lat,
+        lng: data.start.lng
+    }
+    const status = "Pending"
+    const carType = data.carType
+    const user_id = user.id
+    const trip = {
+        phone,
+        start,
+        user_id: user_id,
+        type: carType,
+        status
+    }
+    let newTrip = await db.Trip.create(trip)
+    console.log(newTrip)
+    trip.trip_id = newTrip.id
+
+    console.log("send trip to callcenter trip queue")
+    SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
+    return trip
+
 }
+
+export const initTripCallCenterS1 = async () => {
+    const phone = data.phone
+    const user = await CreateUserIfNotExist(phone)
+    console.log("cout<<userid")
+    console.log(user.id)
+    const start = {
+        place: data.start.place,
+        lat: data.start.lat,
+        lng: data.start.lng
+    }
+    const status = "Callcenter"
+    const carType = data.carType
+    const user_id = user.id
+    const trip = {
+        phone,
+        start,
+        user_id: user_id,
+        type: carType,
+        status
+    }
+    let newTrip = await db.Trip.create(trip)
+    console.log(newTrip)
+    trip.trip_id = newTrip.id
+
+    // console.log("send trip to callcenter trip queue")
+    // SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
+    return trip
+}
+
+export const getAppointmentTrip = async () => {
+    const data = await db.Trip.findAll(
+        {
+            where: {
+                is_scheduled: true,
+                driver_id: null,
+            },
+        },
+        {
+            include: {
+                model: db.User,
+                as: 'user',
+                attributes: ['name', 'phone']
+            }
+        },
+        {
+            order: [
+                ['createdAt', 'ASC'],
+            ]
+        }
+    )
+    if (data) {
+        return data
+    }
+    return []
+}
+
 
 export default {
     CreateTrip,
@@ -287,5 +374,5 @@ export default {
     AcceptTrip,
     CancelTrip,
     UpdateTrip,
-    DeleteTrip
+    DeleteTrip,
 }
