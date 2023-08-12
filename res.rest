@@ -158,7 +158,7 @@ POST http://localhost:3000/v1/booking/callcenters2
 Content-Type: application/json
 
 {
-    "trip_id": 25,
+    "trip_id": 27,
     "start": {
         "place": "random place",
         "lat":10.2,

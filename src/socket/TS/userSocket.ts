@@ -11,7 +11,7 @@ let rd = initRedis()
 interface User {
     user_id: number
 }
-const io2: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> = io
+
 interface TripValue {
     trip_id: number
     user_id: number
@@ -47,6 +47,18 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
         })
+    })
+}
+
+export const sendMessageToS2 = (data) => {
+    io.to("callcenter").emit("s2-trip",data)
+}
+
+export const handleCallCenterLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    socket.on('callcenter-login',async () => {
+        socket.join("callcenter")
+        const data = await tripService.GetTripS2()
+        socket.to("callcenter").emit("s2-trip",data)
     })
 }
 

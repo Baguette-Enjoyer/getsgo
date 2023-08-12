@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDriverToBroadCast = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleUserLogin = void 0;
+exports.AddDriverToBroadCast = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
+const tripService_1 = __importDefault(require("../../services/tripService"));
 const connectRedis_1 = __importDefault(require("../../config/connectRedis"));
 let rd = (0, connectRedis_1.default)();
-const io2 = initServer_1.io;
 // const users = new Map<string, User>()
 const handleUserLogin = (socket) => {
     socket.on('user-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,6 +29,18 @@ const handleUserLogin = (socket) => {
     }));
 };
 exports.handleUserLogin = handleUserLogin;
+const sendMessageToS2 = (data) => {
+    initServer_1.io.to("callcenter").emit("s2-trip", data);
+};
+exports.sendMessageToS2 = sendMessageToS2;
+const handleCallCenterLogin = (socket) => {
+    socket.on('callcenter-login', () => __awaiter(void 0, void 0, void 0, function* () {
+        socket.join("callcenter");
+        const data = yield tripService_1.default.GetTripS2();
+        socket.to("callcenter").emit("s2-trip", data);
+    }));
+};
+exports.handleCallCenterLogin = handleCallCenterLogin;
 const handleUserFindTrip = (socket) => {
     socket.on('user-find-trip', (data) => __awaiter(void 0, void 0, void 0, function* () {
         console.log("t chuyển này qua cái mq luôn r nha, có gì lỗi kiu t sửa");

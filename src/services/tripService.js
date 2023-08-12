@@ -5,6 +5,8 @@ import Sequelize from 'sequelize'
 // import socketServiceTS from '../socket/socketServiceTS.js'
 import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
+import { sendMessageToS2 } from '../socket/JS/userSocket.js'
+
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
         //location
@@ -346,6 +348,9 @@ export const initTripCallCenterS1 = async (data) => {
     if (lat != null && lng != null) {
         SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
     }
+    else {
+        sendMessageToS2(trip)
+    }
     return trip
 }
 
@@ -485,4 +490,5 @@ export default {
     CancelTrip,
     UpdateTrip,
     DeleteTrip,
+    GetTripS2
 }
