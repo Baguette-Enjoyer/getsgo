@@ -27,7 +27,7 @@ export const GetHistoryOfUserByPhone = async (phone) => {
     })
     const trips = await db.Trip.findAll({
         where: {
-            id: user.id
+            user_id: user.id
         },
         attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
     })
