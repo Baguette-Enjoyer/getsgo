@@ -442,6 +442,40 @@ export const GetTripS2 = async () => {
     return []
 }
 
+export const GetTripS3 = async () => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const tmr = new Date(today)
+    tmr.setDate(tmr.getDate() + 1);
+    const result = db.Trip.findAll({
+        where: {
+            createdAt: {
+                [Op.between]: [today, tmr]
+            }
+        },
+        include: [
+            {
+                model: db.User,
+                as: 'user',
+                attributes: ['name', 'phone'],
+                required: true,
+            },
+            {
+                model: db.User,
+                as: 'driver',
+                attributes: ['name', 'phone']
+            }
+        ],
+        order: [
+            ['createdAt', 'ASC'],
+        ]
+    })
+    if (result) {
+        return result
+    }
+    return []
+}
+
 export default {
     CreateTrip,
     CreateTripForCallCenter,

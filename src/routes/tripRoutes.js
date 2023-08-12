@@ -13,6 +13,7 @@ const initTripRoutes = (app) => {
     Routes.post('/v1/booking/callcenters1', tripController.BookS1)
     Routes.post('/v1/booking/callcenters2', tripController.BookS2)
     Routes.get('/v1/booking/callcenters2', tripController.GetTripForS2)
+    Routes.get('/v1/booking/callcenters3', tripController.GetTripForS3)
     Routes.get('/v1/trips/:trip_id', tripController.GetTripById)
     Routes.put('/v1/trips/:trip_id', tripController.UpdateTrip)
     Routes.delete('/v1/trips/:trip_id', tripController.DeleteTrip)

@@ -1,5 +1,5 @@
 import tripService from "../services/tripService";
-import { initTripCallCenterS1, initTripForCallcenter, initTripCallCenterS2, GetTripS2 } from '../services/tripService'
+import { initTripCallCenterS1, initTripForCallcenter, initTripCallCenterS2, GetTripS2, GetTripS3 } from '../services/tripService'
 let BookTrip = async (req, res) => {
 
     let data = req.body
@@ -182,6 +182,14 @@ export const GetTripForS2 = async (req, res) => {
         trips: data
     })
 }
+
+export const GetTripForS3 = async (req, res) => {
+    const result = await GetTripForS3()
+    return res.status(200).json({
+        statusCode: 200,
+        trips: result
+    })
+}
 export default {
     BookTrip,
     CallCenterBookTrip,
@@ -194,5 +202,6 @@ export default {
     BookS1,
     BookS2,
     BookCallCenter,
-    GetTripForS2
+    GetTripForS2,
+    GetTripForS3,
 }
