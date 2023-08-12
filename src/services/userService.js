@@ -124,7 +124,7 @@ const GetUserByPhone = async (phone) => {
   }
 }
 
-const CreateUserIfNotExist = async (phone) => {
+export const CreateUserIfNotExist = async (phone) => {
   return new Promise(async (resolve, reject) => {
     // let phone = data.phone
     const existedUser = await db.User.findOne({

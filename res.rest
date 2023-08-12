@@ -60,7 +60,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiO
 ###
 GET http://localhost:3000/v1/trips/7
 ###
-DELETE http://localhost:3000/v1/trips/7
+DELETE http://localhost:3000/v1/trips/25
 
 ###
 PUT http://localhost:3000/v1/trips/7
@@ -81,7 +81,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiO
 ###
 GET http://188.166.250.160:8080/v1/phone?phone=+84111111111
 ###
-GET http://localhost:3000/v1/phone?phone=+8412312312
+GET http://localhost:3000/v1/phone?phone=+84111111111
+
+###
+GET http://localhost:3000/v1/history/phone?phone=+841
 
 ###
 GET http://localhost:3000/v1/driver/2
@@ -118,3 +121,51 @@ GET http://localhost:3000/getallusers
 GET http://localhost:3000/getalltrips
 ###
 GET http://localhost:3000/getallvehicles
+
+###
+POST http://localhost:3000/v1/booking/callcenter
+Content-Type: application/json
+
+{
+    "start":{
+        "place": "random place",
+        "lat": 10.1,
+        "lng":10.2
+    },
+    "phone": "+84123123123",
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+###
+POST http://localhost:3000/v1/booking/callcenters1
+Content-Type: application/json
+
+{
+    "start":{
+        "place": "random place"
+    },
+    "phone": "+84123123123",
+    "carType":1,
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+###
+POST http://localhost:3000/v1/booking/callcenters2
+Content-Type: application/json
+
+{
+    "trip_id": 25,
+    "start": {
+        "place": "random place",
+        "lat":10.2,
+        "lng":10.3
+    }
+}
+###
+POST http://localhost:3000/v1/booking/callcenters1
+###
+GET http://localhost:3000/v1/booking/callcenters2

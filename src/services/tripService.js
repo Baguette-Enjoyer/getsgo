@@ -1,7 +1,9 @@
 import { Op } from 'sequelize'
 import db from '../models/index'
 import userService from './userService'
+import Sequelize from 'sequelize'
 // import socketServiceTS from '../socket/socketServiceTS.js'
+import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -125,12 +127,12 @@ const CreateTripForCallCenter = async (data) => {
 const GetAvailableTrip = async () => {
     return new Promise(async (resolve, reject) => {
         const trips = await db.Trip.findAll(
-            {
-                where: {
-                    status:
-                        { [Op.eq]: "Waiting" }
-                },
-            },
+            // {
+            //     where: {
+            //         status:
+            //             { [Op.eq]: "Waiting" }
+            //     },
+            // },
             {
                 include: {
                     model: db.User,
@@ -309,17 +311,24 @@ export const initTripForCallcenter = async (data) => {
 
 }
 
-export const initTripCallCenterS1 = async () => {
+export const initTripCallCenterS1 = async (data) => {
     const phone = data.phone
     const user = await CreateUserIfNotExist(phone)
     console.log("cout<<userid")
     console.log(user.id)
+    const lat = data.start.lat
+    const lng = data.start.lng
     const start = {
         place: data.start.place,
-        lat: data.start.lat,
-        lng: data.start.lng
+        lat: lat,
+        lng: lng
     }
-    const status = "Callcenter"
+    let status = "Callcenter"
+    if (lat != null && lng != null) {
+        status = "Pending"
+    } else {
+        status = "Callcenter"
+    }
     const carType = data.carType
     const user_id = user.id
     const trip = {
@@ -334,37 +343,104 @@ export const initTripCallCenterS1 = async () => {
     trip.trip_id = newTrip.id
 
     // console.log("send trip to callcenter trip queue")
-    // SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
+    if (lat != null && lng != null) {
+        SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
+    }
+    return trip
+}
+
+export const initTripCallCenterS2 = async (data) => {
+    const trip_id = data.trip_id
+    const user_id = data.user_id
+    // const user = await CreateUserIfNotExist(phone)
+    console.log("cout<<userid")
+    const start = {
+        place: data.start.place,
+        lat: data.start.lat,
+        lng: data.start.lng
+    }
+    const status = "Pending"
+
+    const updateObj = {
+        start,
+        status
+    }
+    await db.Trip.update(updateObj, {
+        where: { id: trip_id }
+    })
+    const trip = await db.Trip.findOne(
+        {
+            where: {
+                id: trip_id
+            },
+            include: {
+                model: db.User,
+                as: 'user',
+                attributes: ['name', 'phone'],
+                required: true,
+            }
+        }
+    )
+    console.log(trip)
+    const newTrip = {
+        trip_id: trip.id,
+        phone: trip.user.phone,
+        start: start,
+        // user_id: user_id,
+        type: trip.type,
+        status: trip.status
+    }
+    // trip.trip_id = newTrip.id
+
+    console.log("send trip to callcenter trip queue")
+    SendMessageToQueue("callcenter-trip-queue", JSON.stringify(newTrip))
     return trip
 }
 
 export const getAppointmentTrip = async () => {
-    const data = await db.Trip.findAll(
-        {
-            where: {
-                is_scheduled: true,
-                driver_id: null,
-            },
+    const result = await db.Trip.findAll({
+        where: {
+            is_scheduled: true,
+            driver_id: null,
         },
-        {
-            include: {
-                model: db.User,
-                as: 'user',
-                attributes: ['name', 'phone']
-            }
+        include: {
+            model: db.User,
+            as: 'user',
+            attributes: ['name', 'phone'],
+            required: true,
         },
-        {
-            order: [
-                ['createdAt', 'ASC'],
-            ]
-        }
+        order: [
+            ['createdAt', 'ASC'],
+        ]
+    }
     )
-    if (data) {
-        return data
+    if (result) {
+        return result
     }
     return []
 }
 
+export const GetTripS2 = async () => {
+    const result = await db.Trip.findAll({
+        where: {
+            status: "Callcenter"
+        },
+        include: {
+            model: db.User,
+            as: 'user',
+            attributes: ['name', 'phone'],
+            required: true,
+        },
+        order: [
+            ['createdAt', 'ASC'],
+        ]
+    }
+    )
+    if (result) {
+        return result
+    }
+    return []
+}
 
 export default {
     CreateTrip,

@@ -1,5 +1,5 @@
 import tripService from "../services/tripService";
-import { initTripCallCenterS1, initTripForCallcenter } from '../services/tripService'
+import { initTripCallCenterS1, initTripForCallcenter, initTripCallCenterS2, GetTripS2 } from '../services/tripService'
 let BookTrip = async (req, res) => {
 
     let data = req.body
@@ -26,7 +26,7 @@ let CallCenterBookTrip = async (req, res) => {
 let GetTrips = async (req, res) => {
     let credential = JSON.parse(req.decodedToken)
     if (credential.type == "User" || credential.type == "User_vip") {
-        return res.status(500).json({
+        return res.status(404).json({
             statusCode: 500,
             error: "not authorized",
         })
@@ -50,7 +50,7 @@ let GetTripById = async (req, res) => {
         })
     } catch (error) {
         return res.status(500).json({
-            statusCode: 500,
+            statusCode: 404,
             error: error.message,
         })
     }
@@ -60,7 +60,7 @@ let AcceptTrip = async (req, res) => {
     let credential = JSON.parse(req.decodedToken)
     if (credential.type == "User" || credential.type == "User_vip") {
         return res.status(500).json({
-            statusCode: 500,
+            statusCode: 404,
             error: "not authorized",
         })
     }
@@ -125,6 +125,23 @@ let DeleteTrip = async (req, res) => {
         })
     }
 }
+
+export const BookCallCenter = async (req, res) => {
+    const data = req.body
+    try {
+        const result = await initTripForCallcenter(data)
+        return res.status(200).json({
+            "statusCode": 200,
+            "trip_info": result
+        })
+    } catch (error) {
+        return res.status(500).json({
+            "statusCode": 500,
+            "message": error.message
+        })
+    }
+}
+
 export const BookS1 = async (req, res) => {
     const data = req.body
     try {
@@ -144,7 +161,7 @@ export const BookS1 = async (req, res) => {
 export const BookS2 = async (req, res) => {
     const data = req.body
     try {
-        const result = await initTripForCallcenter(data)
+        const result = await initTripCallCenterS2(data)
         return res.status(200).json({
             "statusCode": 200,
             "trip_info": result
@@ -157,6 +174,14 @@ export const BookS2 = async (req, res) => {
     }
 
 }
+
+export const GetTripForS2 = async (req, res) => {
+    const data = await GetTripS2()
+    return res.status(200).json({
+        statusCode: 200,
+        trips: data
+    })
+}
 export default {
     BookTrip,
     CallCenterBookTrip,
@@ -167,5 +192,7 @@ export default {
     CancelTrip,
     DeleteTrip,
     BookS1,
-    BookS2
+    BookS2,
+    BookCallCenter,
+    GetTripForS2
 }
