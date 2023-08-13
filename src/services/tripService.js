@@ -401,7 +401,7 @@ export const initTripCallCenterS1 = async (data) => {
     }
     else {
         const trip2 = {
-            id: trip.id,
+            id: trip.trip_id,
             user_phone: phone,
             startAddress: start.place,
             type: carType,
@@ -484,6 +484,7 @@ export const initTripCallCenterS2 = async (data) => {
     ///
     console.log(result)
     const newTrip = {
+        id: result.id,
         trip_id: result.id,
         phone: result.user.phone,
         start: result,
