@@ -351,7 +351,7 @@ export const initTripCallCenterS1 = async (data) => {
     if (lat != null && lng != null) {
         const result = await db.Trip.findOne({
             where: {
-                id: trip_id
+                id: newTrip.id
             },
             include: [
                 {
