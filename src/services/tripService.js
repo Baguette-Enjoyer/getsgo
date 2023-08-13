@@ -6,6 +6,7 @@ import Sequelize from 'sequelize'
 import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
 import { sendMessageToS2, sendMessageToS3 } from '../socket/JS/userSocket.js'
+import historyService from './historyService'
 
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -442,7 +443,7 @@ export const GetTripS2 = async () => {
             attributes: ['name', 'phone'],
             required: true,
         },
-        attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'address'],],
+        attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'startAddress'],],
         order: [
             ['createdAt', 'ASC'],
         ],
@@ -463,7 +464,7 @@ export const GetTripS3 = async () => {
     const tmr = new Date(today)
     tmr.setDate(tmr.getDate() + 1);
 
-    const result = db.Trip.findAll({
+    const result = await db.Trip.findAll({
         where: {
             status: {
                 [Op.ne]: "Callcenter"
@@ -483,6 +484,7 @@ export const GetTripS3 = async () => {
             {
                 model: db.User,
                 as: 'driver',
+                attributes: ['id'],
                 include: [
                     {
                         model: db.Vehicle,
@@ -502,16 +504,27 @@ export const GetTripS3 = async () => {
                         ]
                     },
                 ],
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt', 'password', 'accessToken']
-                }
             }
         ],
+        attributes: {
+            include: [[db.Sequelize.json('start.place'), 'startAddress'], [db.Sequelize.json('end.place'), 'endAddress']],
+            exclude: ['createdAt', 'updatedAt', 'accessToken', "start", "end", "driver"]
+        },
         order: [
             ['createdAt', 'ASC'],
-        ]
+        ],
+        raw: true,
+        nest: true,
     })
     if (result) {
+        // console.log(result)
+        for (const item of result) {
+            console.log(item.driver_id);
+            const data = await historyService.GetHistoryOfDriver(item.driver_id);
+            console.log("cout<<data");
+            console.log(data);
+            item["driver_stats"] = historyService.GetDriverStatics(data);
+        }
         return result
     }
     return []
