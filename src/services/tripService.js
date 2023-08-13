@@ -349,6 +349,7 @@ export const initTripCallCenterS1 = async (data) => {
     // console.log("send trip to callcenter trip queue")
     if (lat != null && lng != null) {
         SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
+        sendMessageToS3(trip)
     }
     else {
         sendMessageToS2(trip)
@@ -461,11 +462,15 @@ export const GetTripS3 = async () => {
     today.setHours(0, 0, 0, 0)
     const tmr = new Date(today)
     tmr.setDate(tmr.getDate() + 1);
+
     const result = db.Trip.findAll({
         where: {
-            createdAt: {
-                [Op.between]: [today, tmr]
+            status: {
+                [Op.ne]: "Callcenter"
             },
+            // createdAt: {
+            //     [Op.between]: [today, tmr]
+            // },
             is_callcenter: true
         },
         include: [
@@ -478,7 +483,28 @@ export const GetTripS3 = async () => {
             {
                 model: db.User,
                 as: 'driver',
-                attributes: ['name', 'phone']
+                include: [
+                    {
+                        model: db.Vehicle,
+                        as: "driver_vehicle",
+                        required: true,
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt', "driver_id", "vehicle_type_id"],
+                        },
+                        include: [
+                            {
+                                model: db.Vehicle_Type,
+                                as: "vehicle_type",
+                                attributes: {
+                                    exclude: ['createdAt', 'updatedAt', 'id'],
+                                },
+                            }
+                        ]
+                    },
+                ],
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt', 'password', 'accessToken']
+                }
             }
         ],
         order: [
