@@ -438,7 +438,9 @@ export const GetTripS2 = async () => {
         },
         order: [
             ['createdAt', 'ASC'],
-        ]
+        ],
+        raw: true,
+        nest: true,
     }
     )
     if (result) {

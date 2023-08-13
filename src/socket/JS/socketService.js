@@ -23,6 +23,7 @@ const initSocket = () => {
         console.log("socket " + socket.id + " connected");
         (0, userSocket_1.handleUserLogin)(socket);
         (0, driverSocket_1.handleDriverLogin)(socket);
+        (0, userSocket_1.handleCallCenterLogin)(socket);
         (0, userSocket_1.handleUserFindTrip)(socket);
         (0, userSocket_1.handleTripUpdate)(socket);
         (0, userSocket_1.handleUserCancelTrip)(socket);

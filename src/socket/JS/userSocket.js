@@ -35,7 +35,7 @@ const sendMessageToS2 = (data) => {
 exports.sendMessageToS2 = sendMessageToS2;
 const handleCallCenterLogin = (socket) => {
     socket.on('callcenter-login', () => __awaiter(void 0, void 0, void 0, function* () {
-        socket.join("callcenter");
+        socket.join(`callcenter`);
         const data = yield tripService_1.default.GetTripS2();
         socket.to("callcenter").emit("s2-trip", data);
     }));
