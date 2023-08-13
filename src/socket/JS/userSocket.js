@@ -37,7 +37,9 @@ const handleCallCenterLogin = (socket) => {
     socket.on('callcenter-login', () => __awaiter(void 0, void 0, void 0, function* () {
         socket.join("callcenter");
         const data = yield tripService_1.default.GetTripS2();
-        socket.to("callcenter").emit("s2-trip", data);
+        console.log(data);
+        console.log('eeeeeeeee');
+        socket.to("callcenter").emit("s2-trip", 'eeeeeeeee');
     }));
 };
 exports.handleCallCenterLogin = handleCallCenterLogin;
