@@ -56,7 +56,8 @@ export const sendMessageToS2 = (data) => {
 
 export const handleCallCenterLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('callcenter-login',async () => {
-        socket.join("callcenter")
+        socket.join(`callcenter`)
+
         const data = await tripService.GetTripS2()
         socket.to("callcenter").emit("s2-trip",data)
     })

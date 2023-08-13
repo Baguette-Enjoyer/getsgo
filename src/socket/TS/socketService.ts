@@ -1,6 +1,6 @@
 // @ts-ignore
 import { io } from '../../services/initServer'
-import { handleUserLogin, handleUserFindTrip, handleUserCancelTrip, handleMessageFromDriver, handleTripUpdate } from './userSocket'
+import { handleUserLogin, handleUserFindTrip, handleUserCancelTrip, handleMessageFromDriver, handleTripUpdate, handleCallCenterLogin } from './userSocket'
 import { getCurrentDriverInfoById, handleDriverLogin, handleDriverResponseBooking, handleLocationUpdate, handleMessageFromUser } from './driverSocket'
 import { Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
@@ -21,6 +21,7 @@ const initSocket = () => {
         console.log("socket " + socket.id + " connected")
         handleUserLogin(socket)
         handleDriverLogin(socket)
+        handleCallCenterLogin(socket)
         handleUserFindTrip(socket)
         handleTripUpdate(socket)
         handleUserCancelTrip(socket)
