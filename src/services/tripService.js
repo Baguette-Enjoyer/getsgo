@@ -475,6 +475,9 @@ export const initTripCallCenterS2 = async (data) => {
         raw: true,
         nest: true,
     })
+
+    console.log("cout<<data");
+
     const a = await historyService.GetHistoryOfDriver(result.driver_id);
     console.log("cout<<data");
     console.log(a);
