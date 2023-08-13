@@ -433,7 +433,7 @@ export const GetTripS2 = async () => {
     const result = await db.Trip.findAll({
         where: {
             status: "Callcenter",
-            is_callcenter: true,
+            // is_callcenter: true,
         },
         include: {
             model: db.User,
