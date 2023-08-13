@@ -270,6 +270,7 @@ export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsM
     socket.on('trip-update', (data: { trip_id: number, status: string }) => {
         const trip = TripMap.getMap().get(data.trip_id)
         if (data.status === "Done") {
+            
             const tripDat = TripMap.getMap().get(data.trip_id)
             const driver_id = tripDat?.driver_id!
             const socketid = GetDriverInfoById(driver_id)
