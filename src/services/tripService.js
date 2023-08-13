@@ -395,12 +395,13 @@ export const initTripCallCenterS1 = async (data) => {
         const a = await historyService.GetHistoryOfDriver(result.driver_id);
         console.log("cout<<data");
         console.log(a);
-        result["driver_stats"] = historyService.GetDriverStatics(a);
+        result.driver_stats = historyService.GetDriverStatics(a);
         SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
         sendMessageToS3(result)
     }
     else {
         const trip2 = {
+            id: trip.id,
             user_phone: phone,
             startAddress: start.place,
             type: carType,
@@ -481,7 +482,7 @@ export const initTripCallCenterS2 = async (data) => {
     const a = await historyService.GetHistoryOfDriver(result.driver_id);
     console.log("cout<<data");
     console.log(a);
-    result["driver_stats"] = historyService.GetDriverStatics(a);
+    result.driver_stats = historyService.GetDriverStatics(a);
 
     ///
     console.log(result)
