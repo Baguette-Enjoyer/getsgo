@@ -484,7 +484,7 @@ export const GetTripS3 = async () => {
             {
                 model: db.User,
                 as: 'driver',
-                attributes: ['id'],
+                attributes: ['id', 'phone'],
                 include: [
                     {
                         model: db.Vehicle,
