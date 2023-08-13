@@ -52,11 +52,11 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 }
 
 export const sendMessageToS2 = (data) => {
-    io.in("callcenter").emit("s2-trip",data)
+    io.in("callcenter").emit("s2-update-trip",data)
 }
 
 export const sendMessageToS3 = (data) => {
-    io.in("callcenter").emit("s3-trip",data)
+    io.in("callcenter").emit("s3-update-trip",data)
 }
 
 export const handleCallCenterLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

@@ -42,10 +42,13 @@ const GetHistoryOfDriver = async (driver_id) => {
                 model: db.Rate,
                 attributes: {
                     exclude: ['createdAt', 'updatedAt']
-                }
+                },
+                required: false,
             }
         ],
-        attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
+        attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status'],
+        raw: true,
+        nest: true,
     })
     return trips
 }
@@ -58,14 +61,15 @@ const GetDriverStatics = (trips) => {
         item.start = JSON.parse(item.start)
         item.end = JSON.parse(item.end)
         if (item.status != 'Done' || item.status != 'Cancelled') {
-            if (item.status == 'Done') { success++; stars += item.Rate.star }
+            if (item.status == 'Done') { success++; stars += item.Rate.star || 0 }
             else if (item.status == 'Cancelled') cancelled++;
         }
     })
-    const starResult = stars / (success + cancelled)
-    const successResult = Math.floor(success * 100 / (success + cancelled))
-    const cancelledResult = 100 - successResult
+    const starResult = stars / (success + cancelled) || 0
+    const successResult = Math.floor(success * 100 / (success + cancelled)) || 0
+    const cancelledResult = 100 - successResult || 0
     return {
+        number_of_trips: trips.length,
         starResult,
         successResult,
         cancelledResult,
