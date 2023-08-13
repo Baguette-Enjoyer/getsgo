@@ -30,11 +30,11 @@ const handleUserLogin = (socket) => {
 };
 exports.handleUserLogin = handleUserLogin;
 const sendMessageToS2 = (data) => {
-    initServer_1.io.in("callcenter").emit("s2-trip", data);
+    initServer_1.io.in("callcenter").emit("s2-update-trip", data);
 };
 exports.sendMessageToS2 = sendMessageToS2;
 const sendMessageToS3 = (data) => {
-    initServer_1.io.in("callcenter").emit("s3-trip", data);
+    initServer_1.io.in("callcenter").emit("s3-update-trip", data);
 };
 exports.sendMessageToS3 = sendMessageToS3;
 const handleCallCenterLogin = (socket) => {
