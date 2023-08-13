@@ -40,6 +40,7 @@ export interface TripValue {
     cancellable: boolean
     finished_date?: Date
     schedule_time?: Date
+    is_callcenter: boolean
 }
 
 const users = new Map<string, User>()

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDriverToBroadCast = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
+exports.AddDriverToBroadCast = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
@@ -33,12 +33,17 @@ const sendMessageToS2 = (data) => {
     initServer_1.io.in("callcenter").emit("s2-trip", data);
 };
 exports.sendMessageToS2 = sendMessageToS2;
+const sendMessageToS3 = (data) => {
+    initServer_1.io.in("callcenter").emit("s3-trip", data);
+};
+exports.sendMessageToS3 = sendMessageToS3;
 const handleCallCenterLogin = (socket) => {
     socket.on('callcenter-login', () => __awaiter(void 0, void 0, void 0, function* () {
         socket.join(`callcenter`);
         const data = yield tripService_1.default.GetTripS2();
         initServer_1.io.in("callcenter").emit("s2-trip", data);
-        // socket.to("callcenter").emit("s2-trip", data)
+        const data2 = yield tripService_1.default.GetTripS3();
+        initServer_1.io.in("callcenter").emit("s3-trip", data2);
     }));
 };
 exports.handleCallCenterLogin = handleCallCenterLogin;
@@ -238,12 +243,14 @@ const handleTripUpdate = (socket) => {
                 trip.status = data.status;
                 storage_1.TripMap.getMap().set(trip.trip_id, trip);
                 initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
+                initServer_1.io.in("callcenter").emit('trip-update', { status: trip.status, trip_id: data.trip_id });
             }
         }
-        if (data.status != null && trip != null) {
+        else if (data.status != null && trip != null) {
             trip.status = data.status;
             storage_1.TripMap.getMap().set(trip.trip_id, trip);
             initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
+            initServer_1.io.in("callcenter").emit('trip-update', { status: trip.status, trip_id: data.trip_id });
         }
     });
 };

@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleMessageFromUser = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
-const chatService_1 = require("../../services/chatService");
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
@@ -61,16 +60,18 @@ const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0,
         lat: driver.lat,
         lng: driver.lng,
         heading: driver.heading,
-        message: "coming"
+        message: "coming",
+        status: "Confirmed"
     };
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
     // console.log(user);
     initServer_1.io.in(`/user/${trip.user_id}`).emit('found-driver', responseData);
+    initServer_1.io.in("callcenter").emit('found-driver', responseData);
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id;
     storage_1.DriverMap.getMap().set(socket_id, driver);
-    yield (0, chatService_1.initConvo)(trip.trip_id, trip.user_id, driver.user_id);
+    // await initConvo(trip.trip_id, trip.user_id, driver.user_id)
 });
 const handleDriverResponseBooking = (socket) => {
     socket.on('driver-response-booking', (data) => __awaiter(void 0, void 0, void 0, function* () {

@@ -5,7 +5,7 @@ import Sequelize from 'sequelize'
 // import socketServiceTS from '../socket/socketServiceTS.js'
 import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
-import { sendMessageToS2 } from '../socket/JS/userSocket.js'
+import { sendMessageToS2, sendMessageToS3 } from '../socket/JS/userSocket.js'
 
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -47,6 +47,7 @@ const CreateTrip = async (data) => {
             paymentMethod: paymentMethod,
             is_paid: is_paid,
             price: price,
+            is_callcenter: false,
         }
         // console.log(trip)
         const newTrip = await db.Trip.create(
@@ -338,7 +339,8 @@ export const initTripCallCenterS1 = async (data) => {
         start,
         user_id: user_id,
         type: carType,
-        status
+        status,
+        is_callcenter: true
     }
     let newTrip = await db.Trip.create(trip)
     console.log(newTrip)
@@ -383,7 +385,9 @@ export const initTripCallCenterS2 = async (data) => {
                 as: 'user',
                 attributes: ['name', 'phone'],
                 required: true,
-            }
+            },
+            raw: true,
+            nest: true,
         }
     )
     console.log(trip)
@@ -395,8 +399,8 @@ export const initTripCallCenterS2 = async (data) => {
         type: trip.type,
         status: trip.status
     }
-    // trip.trip_id = newTrip.id
-
+    trip.trip_id = trip.id
+    sendMessageToS3(trip)
     console.log("send trip to callcenter trip queue")
     SendMessageToQueue("callcenter-trip-queue", JSON.stringify(newTrip))
     return trip
@@ -428,7 +432,8 @@ export const getAppointmentTrip = async () => {
 export const GetTripS2 = async () => {
     const result = await db.Trip.findAll({
         where: {
-            status: "Callcenter"
+            status: "Callcenter",
+            is_callcenter: true,
         },
         include: {
             model: db.User,
@@ -436,6 +441,7 @@ export const GetTripS2 = async () => {
             attributes: ['name', 'phone'],
             required: true,
         },
+        attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'address'],],
         order: [
             ['createdAt', 'ASC'],
         ],
@@ -447,6 +453,7 @@ export const GetTripS2 = async () => {
         return result
     }
     return []
+    //phone,place,carType,trip_id
 }
 
 export const GetTripS3 = async () => {
@@ -458,7 +465,8 @@ export const GetTripS3 = async () => {
         where: {
             createdAt: {
                 [Op.between]: [today, tmr]
-            }
+            },
+            is_callcenter: true
         },
         include: [
             {

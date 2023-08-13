@@ -8,6 +8,7 @@ import { DriverInBroadcast, DriverMap, TripMap, UserMap } from './storage'
 import tripService from "../../services/tripService"
 import driverServices from "../../services/driverServices"
 import initRedis from "../../config/connectRedis"
+import { sendMessageToS3 } from "./userSocket"
 
 interface Driver {
     user_id: number
@@ -45,6 +46,7 @@ interface TripValue {
     cancellable: boolean
     finished_date?: Date
     schedule_time?: Date
+    is_callcenter: boolean
 }
 
 export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -94,18 +96,18 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
         lat: driver.lat,
         lng: driver.lng,
         heading: driver.heading,
-        message: "coming"
+        message: "coming",
+        status: "Confirmed"
     }
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
     // console.log(user);
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
-
-
+    io.in("callcenter").emit('found-driver',responseData)
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id
     DriverMap.getMap().set(socket_id, driver)
-    await initConvo(trip.trip_id, trip.user_id, driver.user_id)
+    // await initConvo(trip.trip_id, trip.user_id, driver.user_id)
 }
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
@@ -128,7 +130,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 DriverMap.getMap().set(socket.id, driver)
 
                 senDriver(trip, driver, socket.id);
-
+                
                 //thông báo cho driver nhận chuyến ok
                 io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
 
