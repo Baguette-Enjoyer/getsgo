@@ -349,11 +349,65 @@ export const initTripCallCenterS1 = async (data) => {
 
     // console.log("send trip to callcenter trip queue")
     if (lat != null && lng != null) {
+        const result = await db.Trip.findOne({
+            where: {
+                id: trip_id
+            },
+            include: [
+                {
+                    model: db.User,
+                    as: 'user',
+                    attributes: ['name', 'phone'],
+                    required: true,
+                },
+                {
+                    model: db.User,
+                    as: 'driver',
+                    attributes: ['id', 'phone', 'email'],
+                    include: [
+                        {
+                            model: db.Vehicle,
+                            as: "driver_vehicle",
+                            required: true,
+                            attributes: {
+                                exclude: ['createdAt', 'updatedAt', "driver_id", "vehicle_type_id"],
+                            },
+                            include: [
+                                {
+                                    model: db.Vehicle_Type,
+                                    as: "vehicle_type",
+                                    attributes: {
+                                        exclude: ['createdAt', 'updatedAt', 'id'],
+                                    },
+                                }
+                            ]
+                        },
+                    ],
+                }
+            ],
+            attributes: {
+                include: [[db.Sequelize.json('start.place'), 'startAddress'], [db.Sequelize.json('end.place'), 'endAddress']],
+                exclude: ['createdAt', 'updatedAt', 'accessToken', "start", "end", "driver"]
+            },
+            raw: true,
+            nest: true,
+        })
+        const a = await historyService.GetHistoryOfDriver(result.driver_id);
+        console.log("cout<<data");
+        console.log(a);
+        result["driver_stats"] = historyService.GetDriverStatics(a);
         SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
-        sendMessageToS3(trip)
+        sendMessageToS3(result)
     }
     else {
-        sendMessageToS2(trip)
+        const trip2 = {
+            user_phone: phone,
+            startAddress: start.place,
+            type: carType,
+            trip_id: trip.trip_id,
+            status: status
+        }
+        sendMessageToS2(trip2)
     }
     return trip
 }
@@ -377,35 +431,70 @@ export const initTripCallCenterS2 = async (data) => {
     await db.Trip.update(updateObj, {
         where: { id: trip_id }
     })
-    const trip = await db.Trip.findOne(
-        {
-            where: {
-                id: trip_id
-            },
-            include: {
+    ///
+    const result = await db.Trip.findOne({
+        where: {
+            id: trip_id
+        },
+        include: [
+            {
                 model: db.User,
                 as: 'user',
                 attributes: ['name', 'phone'],
                 required: true,
             },
-            raw: true,
-            nest: true,
-        }
-    )
-    console.log(trip)
+            {
+                model: db.User,
+                as: 'driver',
+                attributes: ['id', 'phone', 'email'],
+                include: [
+                    {
+                        model: db.Vehicle,
+                        as: "driver_vehicle",
+                        required: true,
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt', "driver_id", "vehicle_type_id"],
+                        },
+                        include: [
+                            {
+                                model: db.Vehicle_Type,
+                                as: "vehicle_type",
+                                attributes: {
+                                    exclude: ['createdAt', 'updatedAt', 'id'],
+                                },
+                            }
+                        ]
+                    },
+                ],
+            }
+        ],
+        attributes: {
+            include: [[db.Sequelize.json('start.place'), 'startAddress'], [db.Sequelize.json('end.place'), 'endAddress']],
+            exclude: ['createdAt', 'updatedAt', 'accessToken', "start", "end", "driver"]
+        },
+        raw: true,
+        nest: true,
+    })
+    const a = await historyService.GetHistoryOfDriver(result.driver_id);
+    console.log("cout<<data");
+    console.log(a);
+    result["driver_stats"] = historyService.GetDriverStatics(a);
+
+    ///
+    console.log(result)
     const newTrip = {
-        trip_id: trip.id,
-        phone: trip.user.phone,
-        start: start,
+        trip_id: result.id,
+        phone: result.user.phone,
+        start: result,
         // user_id: user_id,
-        type: trip.type,
-        status: trip.status
+        type: result.type,
+        status: result.status
     }
-    trip.trip_id = trip.id
-    sendMessageToS3(trip)
+    result.trip_id = result.id
+    sendMessageToS3(result)
     console.log("send trip to callcenter trip queue")
     SendMessageToQueue("callcenter-trip-queue", JSON.stringify(newTrip))
-    return trip
+    return result
 }
 
 export const getAppointmentTrip = async () => {
@@ -484,7 +573,7 @@ export const GetTripS3 = async () => {
             {
                 model: db.User,
                 as: 'driver',
-                attributes: ['id', 'phone'],
+                attributes: ['id', 'phone', 'email'],
                 include: [
                     {
                         model: db.Vehicle,
