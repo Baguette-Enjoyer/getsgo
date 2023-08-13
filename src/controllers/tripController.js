@@ -184,7 +184,7 @@ export const GetTripForS2 = async (req, res) => {
 }
 
 export const GetTripForS3 = async (req, res) => {
-    const result = await GetTripForS3()
+    const result = await GetTripS3()
     return res.status(200).json({
         statusCode: 200,
         trips: result
