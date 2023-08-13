@@ -51,14 +51,14 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 }
 
 export const sendMessageToS2 = (data) => {
-    io.to("callcenter").emit("s2-trip",data)
+    io.to("callcenter").emit("s2-trip", data)
 }
 
 export const handleCallCenterLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('callcenter-login',async () => {
+    socket.on('callcenter-login', async () => {
         socket.join("callcenter")
         const data = await tripService.GetTripS2()
-        socket.to("callcenter").emit("s2-trip",data)
+        socket.to("callcenter").emit("s2-trip", data)
     })
 }
 
@@ -236,10 +236,10 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
         UserCancelTrip(data.trip_id)
         const tripDat = TripMap.getMap().get(data.trip_id)
         const driver_id = tripDat?.driver_id!
-        const socketid = GetDriverInfoById(driver_id) 
-        if (socketid === null) { return}
+        const socketid = GetDriverInfoById(driver_id)
+        if (socketid === null) { return }
         const driverData = DriverMap.getMap().get(socketid)
-        if (driverData === undefined) { return}
+        if (driverData === undefined) { return }
         driverData.status = "Idle"
         driverData.client_id = undefined
         DriverMap.getMap().set(socketid, driverData)
@@ -263,10 +263,10 @@ export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsM
         if (data.status === "Done") {
             const tripDat = TripMap.getMap().get(data.trip_id)
             const driver_id = tripDat?.driver_id!
-            const socketid = GetDriverInfoById(driver_id) 
-            if (socketid === null) { return}
+            const socketid = GetDriverInfoById(driver_id)
+            if (socketid === null) { return }
             const driverData = DriverMap.getMap().get(socketid)
-            if (driverData === undefined) { return}
+            if (driverData === undefined) { return }
             driverData.status = "Idle"
             driverData.client_id = undefined
             DriverMap.getMap().set(socketid, driverData)
@@ -306,9 +306,9 @@ const GetSocketByUserId = (user_id: number) => {
     return socketArr
 }
 
-const GetDriverInfoById = (driver_id: number):string|null => {
-    DriverMap.getMap().forEach((driverData,socketId)=>{
-        if(driverData.user_id === driver_id){
+const GetDriverInfoById = (driver_id: number): string | null => {
+    DriverMap.getMap().forEach((driverData, socketId) => {
+        if (driverData.user_id === driver_id) {
             return socketId
         }
     })
@@ -327,10 +327,10 @@ export const broadCastToDriver = (socketid: string, event: string, data: Object)
 }
 
 export const AddDriverToBroadCast = (driver_id: number) => {
-    const socketid = GetDriverInfoById(driver_id) 
-    if (socketid === null) { return}
+    const socketid = GetDriverInfoById(driver_id)
+    if (socketid === null) { return }
     const driverData = DriverMap.getMap().get(socketid)
-    if (driverData === undefined) { return}
+    if (driverData === undefined) { return }
     driverData.status = "Broadcasting"
     DriverMap.getMap().set(socketid, driverData)
 
@@ -340,9 +340,9 @@ export const AddDriverToBroadCast = (driver_id: number) => {
         //     DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
         // }
         const socketid = GetDriverInfoById(driver_id)
-        if (socketid === null) { return}
+        if (socketid === null) { return }
         const driverData = DriverMap.getMap().get(socketid)
-        if (driverData === undefined) { return}
+        if (driverData === undefined) { return }
 
         if (driverData.client_id == null) {
             driverData.status = "Idle"
