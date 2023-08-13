@@ -46,6 +46,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      is_callcenter: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

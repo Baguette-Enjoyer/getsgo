@@ -47,6 +47,7 @@ const CreateTrip = async (data) => {
             paymentMethod: paymentMethod,
             is_paid: is_paid,
             price: price,
+            is_callcenter: false,
         }
         // console.log(trip)
         const newTrip = await db.Trip.create(
@@ -436,6 +437,7 @@ export const GetTripS2 = async () => {
             attributes: ['name', 'phone'],
             required: true,
         },
+        attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'address'],],
         order: [
             ['createdAt', 'ASC'],
         ],
@@ -447,6 +449,7 @@ export const GetTripS2 = async () => {
         return result
     }
     return []
+    //phone,place,carType,trip_id
 }
 
 export const GetTripS3 = async () => {
@@ -458,7 +461,8 @@ export const GetTripS3 = async () => {
         where: {
             createdAt: {
                 [Op.between]: [today, tmr]
-            }
+            },
+            is_callcenter: true
         },
         include: [
             {

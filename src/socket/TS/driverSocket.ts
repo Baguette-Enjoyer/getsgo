@@ -45,6 +45,7 @@ interface TripValue {
     cancellable: boolean
     finished_date?: Date
     schedule_time?: Date
+    is_callcenter: boolean
 }
 
 export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

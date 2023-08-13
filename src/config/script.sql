@@ -114,7 +114,8 @@ CREATE TABLE `trips` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `driver_id` int(11) DEFAULT NULL
+  `driver_id` int(11) DEFAULT NULL,
+  `is_callcenter` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Trip.init({
-    status: DataTypes.ENUM('Callcenter','Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled'),
+    status: DataTypes.ENUM('Callcenter', 'Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled'),
     start: DataTypes.JSON,
     end: DataTypes.JSON,
     finished_date: DataTypes.DATE,
@@ -38,7 +38,8 @@ module.exports = (sequelize, DataTypes) => {
     is_paid: DataTypes.BOOLEAN,
     paymentMethod: DataTypes.ENUM('Cash', 'Momo', 'IE'),
     is_scheduled: DataTypes.BOOLEAN,
-    schedule_time: DataTypes.DATE
+    schedule_time: DataTypes.DATE,
+    is_callcenter: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Trip',
