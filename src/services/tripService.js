@@ -500,5 +500,6 @@ export default {
     CancelTrip,
     UpdateTrip,
     DeleteTrip,
-    GetTripS2
+    GetTripS2,
+    GetTripS3
 }
