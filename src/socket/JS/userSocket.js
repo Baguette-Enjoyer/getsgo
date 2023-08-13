@@ -30,16 +30,15 @@ const handleUserLogin = (socket) => {
 };
 exports.handleUserLogin = handleUserLogin;
 const sendMessageToS2 = (data) => {
-    initServer_1.io.to("callcenter").emit("s2-trip", data);
+    initServer_1.io.in("callcenter").emit("s2-trip", data);
 };
 exports.sendMessageToS2 = sendMessageToS2;
 const handleCallCenterLogin = (socket) => {
     socket.on('callcenter-login', () => __awaiter(void 0, void 0, void 0, function* () {
-        socket.join("callcenter");
+        socket.join(`callcenter`);
         const data = yield tripService_1.default.GetTripS2();
-        console.log(data);
-        console.log('eeeeeeeee');
-        socket.to("callcenter").emit("s2-trip", 'eeeeeeeee');
+        initServer_1.io.in("callcenter").emit("s2-trip", data);
+        // socket.to("callcenter").emit("s2-trip", data)
     }));
 };
 exports.handleCallCenterLogin = handleCallCenterLogin;

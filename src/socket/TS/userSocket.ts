@@ -35,6 +35,7 @@ interface TripValue {
     cancellable: boolean
     finished_date?: Date
     schedule_time?: Date
+    
 }
 // const users = new Map<string, User>()
 
@@ -51,14 +52,17 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 }
 
 export const sendMessageToS2 = (data) => {
-    io.to("callcenter").emit("s2-trip", data)
+    io.in("callcenter").emit("s2-trip", data)
 }
 
 export const handleCallCenterLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('callcenter-login', async () => {
-        socket.join("callcenter")
+        socket.join(`callcenter`)
+
         const data = await tripService.GetTripS2()
-        socket.to("callcenter").emit("s2-trip", data)
+        io.in("callcenter").emit("s2-trip", data)
+
+        // socket.to("callcenter").emit("s2-trip", data)
     })
 }
 
