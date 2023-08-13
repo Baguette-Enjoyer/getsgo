@@ -55,12 +55,19 @@ export const sendMessageToS2 = (data) => {
     io.in("callcenter").emit("s2-trip",data)
 }
 
+export const sendMessageToS3 = (data) => {
+    io.in("callcenter").emit("s3-trip",data)
+}
+
 export const handleCallCenterLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('callcenter-login',async () => {
         socket.join(`callcenter`)
 
         const data = await tripService.GetTripS2()
         io.in("callcenter").emit("s2-trip",data)
+
+        const data2 = await tripService.GetTripS3()
+        io.in("callcenter").emit("s3-trip",data2)
     })
 }
 
@@ -277,13 +284,14 @@ export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsM
                 trip.status = data.status
                 TripMap.getMap().set(trip.trip_id, trip)
                 io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status })
+                io.in("callcenter").emit('trip-update', { status: trip.status,trip_id: data.trip_id })
             }
 
-        }
-        if (data.status != null && trip != null) {
+        } else if (data.status != null && trip != null) {
             trip.status = data.status
             TripMap.getMap().set(trip.trip_id, trip)
             io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status })
+            io.in("callcenter").emit('trip-update', { status: trip.status,trip_id: data.trip_id })
         }
     })
 
