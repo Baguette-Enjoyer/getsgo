@@ -66,7 +66,7 @@ export const ConsumerNormalTrip = async (message) => {
     let userData = await userService.GetUserById(data.user_id)
     TripMap.getMap().set(data.trip_id, data);
     let DataResponse = {
-        user_info: userData.phone,
+        user_info: userData,
         trip_info: data
     }
     // let DataResponseStringified = JSON.stringify(DataResponse)
