@@ -1,6 +1,7 @@
 import { conn, channel } from './createChannel.js'
 import { DriverMap, TripMap, DriverInBroadcast } from '../socket/JS/storage.js'
 import locationServices from '../services/locationService.js'
+import userService from '../services/userService.js'
 import { AddDriverToBroadCast, broadCastToDriver } from '../socket/JS/userSocket.js'
 import { io } from '../services/initServer.js'
 import { DeleteTrip } from '../services/tripService.js'
@@ -62,9 +63,10 @@ export const ConsumerNormalTrip = async (message) => {
     const trip_id = data.trip_id
     const place1 = data.start
 
+    let userData = await userService.GetUserById(data.user_id)
     TripMap.getMap().set(data.trip_id, data);
     let DataResponse = {
-        user_info: data.phone,
+        user_info: userData,
         trip_info: data
     }
     // let DataResponseStringified = JSON.stringify(DataResponse)
