@@ -26,6 +26,7 @@ const handleUserLogin = (socket) => {
         storage_1.UserMap.getMap().set(socket.id, {
             user_id: user_id,
         });
+        console.log('user đã đăng nhập');
     }));
 };
 exports.handleUserLogin = handleUserLogin;

@@ -103,7 +103,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     // const stringifiedResponse = JSON.stringify(responseData);
     // console.log(user);
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
-    io.in("callcenter").emit('found-driver',responseData)
+    io.in("callcenter").emit('found-driver', responseData)
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
     driver.client_id = trip.user_id
     DriverMap.getMap().set(socket_id, driver)
@@ -130,7 +130,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 DriverMap.getMap().set(socket.id, driver)
 
                 senDriver(trip, driver, socket.id);
-                
+
                 //thông báo cho driver nhận chuyến ok
                 io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
 

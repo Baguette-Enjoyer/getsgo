@@ -48,6 +48,7 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
         })
+        console.log('user đã đăng nhập')
     })
 }
 
