@@ -80,7 +80,7 @@ const handleDriverResponseBooking = (socket) => {
         if (driver == undefined)
             return;
         if (data.status == "Accept") {
-            const trip = storage_1.TripMap.getMap().get(data.trip.trip_id);
+            const trip = storage_1.TripMap.getMap().get(data.trip_id);
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id;
                 trip.status = 'Confirmed';
