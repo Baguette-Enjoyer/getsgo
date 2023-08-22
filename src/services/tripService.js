@@ -30,16 +30,16 @@ const CreateTrip = async (data) => {
         const is_paid = false
         const price = data.price
         const trip = {
-            start: JSON.stringify({
+            start: {
                 place: place1,
                 lat: lat1,
                 lng: lng1
-            }),
-            end: JSON.stringify({
+            },
+            end: {
                 place: place2,
                 lat: lat2,
                 lng: lng2
-            }),
+            },
             user_id: user_id,
             is_scheduled: is_scheduled,
             scheduled_time: scheduled_time,
