@@ -294,25 +294,32 @@ const broadCastToDriver = (socketid, event, data) => {
 };
 exports.broadCastToDriver = broadCastToDriver;
 const AddDriverToBroadCast = (driver_id) => {
-    // const socketid = GetDriverInfoById(driver_id) 
-    // if (socketid === null) { return}
-    // const driverData = DriverMap.getMap().get(socketid)
-    // if (driverData === undefined) { return}
-    // driverData.status = "Broadcasting"
-    // DriverMap.getMap().set(socketid, driverData)
-    storage_1.DriverInBroadcast.getDriverInBroadcast().push(driver_id);
+    const socketid = GetDriverInfoById(driver_id);
+    if (socketid === null) {
+        return;
+    }
+    const driverData = storage_1.DriverMap.getMap().get(socketid);
+    if (driverData === undefined) {
+        return;
+    }
+    driverData.status = "Broadcasting";
+    storage_1.DriverMap.getMap().set(socketid, driverData);
     setTimeout(() => {
-        const index = storage_1.DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
+        const index = DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
         if (index !== -1) {
-            storage_1.DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
+            DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
         }
-        // const socketid = GetDriverInfoById(driver_id)
-        // if (socketid === null) { return}
-        // const driverData = DriverMap.getMap().get(socketid)
-        // if (driverData === undefined) { return}
+        // const socketid = GetDriverInfoById(driver_id);
+        // if (socketid === null) {
+        //     return;
+        // }
+        // const driverData = storage_1.DriverMap.getMap().get(socketid);
+        // if (driverData === undefined) {
+        //     return;
+        // }
         // if (driverData.client_id == null) {
-        //     driverData.status = "Idle"
-        //     DriverMap.getMap().set(socketid, driverData)
+        //     driverData.status = "Idle";
+        //     storage_1.DriverMap.getMap().set(socketid, driverData);
         // }
     }, 15000);
 };
