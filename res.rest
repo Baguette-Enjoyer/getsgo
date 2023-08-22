@@ -14,13 +14,13 @@ POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"+84666666666",
+    "phone":"+84444444444",
     "password":"000000"
 }
 
 ###
 POST http://localhost:3000/v1/booking/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwOTYzNDM1LCJleHAiOjE2OTIwNDM0MzV9.sM7gAkx0Gl7043NJu3r97BqbvQD9tWdG3ZOoT2ZK-AE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTIxODM1NzUsImV4cCI6MTY5MzI2MzU3NX0.5uonl_EPt52dMZRKNxvrJ9aUFHedzl-vT2Nb29p_TKw
 Content-Type: application/json
 
 {

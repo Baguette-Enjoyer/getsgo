@@ -321,7 +321,7 @@ const AddDriverToBroadCast = (driver_id) => {
             driverData.status = "Idle";
             storage_1.DriverMap.getMap().set(socketid, driverData);
         }
-    }, 13000);
+    }, 12000);
 };
 exports.AddDriverToBroadCast = AddDriverToBroadCast;
 const UserCancelTrip = (id) => {

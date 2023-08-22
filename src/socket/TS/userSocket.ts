@@ -359,7 +359,7 @@ export const AddDriverToBroadCast = (driver_id: number) => {
             driverData.status = "Idle"
             DriverMap.getMap().set(socketid, driverData)
         }
-    }, 13000)
+    }, 12000)
 }
 
 
