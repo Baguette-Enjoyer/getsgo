@@ -182,7 +182,9 @@ const GetUserById = async (user_id) => {
   const user = await db.User.findOne({
     where: {
       id: user_id,
-    }
+    },
+    nest: true,
+    raw: true
   })
   if (user.id == null) {
     throw new Error('user not found')
