@@ -294,34 +294,27 @@ const broadCastToDriver = (socketid, event, data) => {
 };
 exports.broadCastToDriver = broadCastToDriver;
 const AddDriverToBroadCast = (driver_id) => {
-    const socketid = GetDriverInfoById(driver_id);
-    if (socketid === null) {
-        return;
-    }
-    const driverData = storage_1.DriverMap.getMap().get(socketid);
-    if (driverData === undefined) {
-        return;
-    }
-    driverData.status = "Broadcasting";
-    storage_1.DriverMap.getMap().set(socketid, driverData);
+    // const socketid = GetDriverInfoById(driver_id) 
+    // if (socketid === null) { return}
+    // const driverData = DriverMap.getMap().get(socketid)
+    // if (driverData === undefined) { return}
+    // driverData.status = "Broadcasting"
+    // DriverMap.getMap().set(socketid, driverData)
+    storage_1.DriverInBroadcast.getDriverInBroadcast().push(driver_id);
     setTimeout(() => {
-        // const index = DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
-        // if (index !== -1) {
-        //     DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
+        const index = storage_1.DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
+        if (index !== -1) {
+            storage_1.DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
+        }
+        // const socketid = GetDriverInfoById(driver_id)
+        // if (socketid === null) { return}
+        // const driverData = DriverMap.getMap().get(socketid)
+        // if (driverData === undefined) { return}
+        // if (driverData.client_id == null) {
+        //     driverData.status = "Idle"
+        //     DriverMap.getMap().set(socketid, driverData)
         // }
-        const socketid = GetDriverInfoById(driver_id);
-        if (socketid === null) {
-            return;
-        }
-        const driverData = storage_1.DriverMap.getMap().get(socketid);
-        if (driverData === undefined) {
-            return;
-        }
-        if (driverData.client_id == null) {
-            driverData.status = "Idle";
-            storage_1.DriverMap.getMap().set(socketid, driverData);
-        }
-    }, 12000);
+    }, 15000);
 };
 exports.AddDriverToBroadCast = AddDriverToBroadCast;
 const UserCancelTrip = (id) => {

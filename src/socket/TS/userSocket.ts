@@ -338,28 +338,28 @@ export const broadCastToDriver = (socketid: string, event: string, data: Object)
 }
 
 export const AddDriverToBroadCast = (driver_id: number) => {
-    const socketid = GetDriverInfoById(driver_id) 
-    if (socketid === null) { return}
-    const driverData = DriverMap.getMap().get(socketid)
-    if (driverData === undefined) { return}
-    driverData.status = "Broadcasting"
-    DriverMap.getMap().set(socketid, driverData)
-
+    // const socketid = GetDriverInfoById(driver_id) 
+    // if (socketid === null) { return}
+    // const driverData = DriverMap.getMap().get(socketid)
+    // if (driverData === undefined) { return}
+    // driverData.status = "Broadcasting"
+    // DriverMap.getMap().set(socketid, driverData)
+    DriverInBroadcast.getDriverInBroadcast().push(driver_id)
     setTimeout(() => {
-        // const index = DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
-        // if (index !== -1) {
-        //     DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
-        // }
-        const socketid = GetDriverInfoById(driver_id)
-        if (socketid === null) { return}
-        const driverData = DriverMap.getMap().get(socketid)
-        if (driverData === undefined) { return}
-
-        if (driverData.client_id == null) {
-            driverData.status = "Idle"
-            DriverMap.getMap().set(socketid, driverData)
+        const index = DriverInBroadcast.getDriverInBroadcast().indexOf(driver_id);
+        if (index !== -1) {
+            DriverInBroadcast.getDriverInBroadcast().splice(index, 1);
         }
-    }, 12000)
+        // const socketid = GetDriverInfoById(driver_id)
+        // if (socketid === null) { return}
+        // const driverData = DriverMap.getMap().get(socketid)
+        // if (driverData === undefined) { return}
+
+        // if (driverData.client_id == null) {
+        //     driverData.status = "Idle"
+        //     DriverMap.getMap().set(socketid, driverData)
+        // }
+    }, 15000)
 }
 
 
