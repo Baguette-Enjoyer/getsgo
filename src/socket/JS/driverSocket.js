@@ -76,11 +76,12 @@ const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0,
 const handleDriverResponseBooking = (socket) => {
     socket.on('driver-response-booking', (data) => __awaiter(void 0, void 0, void 0, function* () {
         // console.log(data)
+        console.log('nè mâfafasf');
         const driver = storage_1.DriverMap.getMap().get(socket.id);
         if (driver == undefined)
             return;
         if (data.status == "Accept") {
-            const trip = storage_1.TripMap.getMap().get(data.trip_id);
+            const trip = storage_1.TripMap.getMap().get(data.trip.trip_id);
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id;
                 trip.status = 'Confirmed';

@@ -96,12 +96,13 @@ export const ConsumerNormalTrip = async (message) => {
                 broadCastToDriver(driver.socketId, "user-trip", DataResponse);
             }
         }
-        await new Promise((resolve) => setTimeout(resolve, 11000));
+        await new Promise((resolve) => setTimeout(resolve, 18000));
         const trip = TripMap.getMap().get(trip_id);
         console.log('11111111111')
         console.log(trip)
         if (trip !== undefined && trip.driver_id !== undefined) {
             loopsBroken = true
+            console.log("break break break")
             break;
         }
     }

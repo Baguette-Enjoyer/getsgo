@@ -110,12 +110,13 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     // await initConvo(trip.trip_id, trip.user_id, driver.user_id)
 }
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('driver-response-booking', async (data: { trip_id: number, status: 'Accept' | 'Deny' }) => {
+    socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
         // console.log(data)
+        console.log('nè mâfafasf')
         const driver = DriverMap.getMap().get(socket.id)
         if (driver == undefined) return
         if (data.status == "Accept") {
-            const trip = TripMap.getMap().get(data.trip_id)
+            const trip = TripMap.getMap().get(data.trip.trip_id)
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id
                 trip.status = 'Confirmed'
