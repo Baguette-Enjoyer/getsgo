@@ -101,7 +101,10 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     }
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
-    // console.log(user);
+    console.log('555555555555');
+    console.log(responseData.driver_info);
+    console.log(responseData.driver_info.User);
+    console.log(responseData);
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
     io.in("callcenter").emit('found-driver', responseData)
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
@@ -228,7 +231,7 @@ export const getCurrentDriverInfoById = (id: number): { lat: number, lng: number
 }
 
 export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('driver-location-update', (data: { lat: number, lng: number, heading: number }) => {
+    socket.on('driver-location-update', (data: { lat: number, lng: number, heading: number, directions: string }) => {
         let driver = DriverMap.getMap().get(socket.id)
         if (driver == undefined) return
         // let driver_id = driver?.user_id

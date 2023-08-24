@@ -268,32 +268,36 @@ export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, Default
 // }
 
 export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('trip-update', (data: { trip_id: number, status: string }) => {
+    socket.on('trip-update', async (data: { trip_id: number, status: string, directions: string }) => {
         const trip = TripMap.getMap().get(data.trip_id)
         if (data.status === "Done") {
-            console.log('eeeeeee');
+            console.log("hehehehhehe")
             // const tripDat = TripMap.getMap().get(data.trip_id)
             // const driver_id = tripDat?.driver_id!
-            // const socketid = GetDriverInfoById(driver_id)
-            // if (socketid === null) { return }
+            // const socketid = GetDriverInfoById(driver_id) 
+            // if (socketid === null) { return}
             const driverData = DriverMap.getMap().get(socket.id)
             if (driverData === undefined) { return }
-            driverData.status = "Idle"
-            driverData.client_id = undefined
-            DriverMap.getMap().set(socket.id, driverData)
+            const updatedDriverData = { ...driverData, status: 'Idle', client_id: undefined };
+            // driverData.status = "Idle"
+            // driverData.client_id = undefined
+            DriverMap.getMap().set(socket.id, updatedDriverData)
 
             if (data.status != null && trip != null) {
-                trip.status = data.status
-                TripMap.getMap().set(trip.trip_id, trip)
-                io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status })
-                io.in("callcenter").emit('trip-update', { status: trip.status, trip_id: data.trip_id })
+                const updatedTripData = { ...trip, status: data.status }
+                // trip.status = data.status
+                TripMap.getMap().set(trip.trip_id, updatedTripData)
+                io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status })
+                io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id })
             }
 
         } else if (data.status != null && trip != null) {
-            trip.status = data.status
-            TripMap.getMap().set(trip.trip_id, trip)
-            io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status })
-            io.in("callcenter").emit('trip-update', { status: trip.status, trip_id: data.trip_id })
+            console.log("1231231231")
+            // trip.status = data.status
+            const updatedTripData = { ...trip, status: data.status }
+            TripMap.getMap().set(trip.trip_id, updatedTripData)
+            io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status, directions: data.directions })
+            io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id })
         }
     })
 

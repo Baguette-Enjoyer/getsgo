@@ -65,7 +65,10 @@ const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0,
     };
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
-    // console.log(user);
+    console.log('555555555555');
+    console.log(responseData.driver_info);
+    console.log(responseData.driver_info.User);
+    console.log(responseData);
     initServer_1.io.in(`/user/${trip.user_id}`).emit('found-driver', responseData);
     initServer_1.io.in("callcenter").emit('found-driver', responseData);
     // khi driver chấp nhận thì set lại client_id cho tài xế đó

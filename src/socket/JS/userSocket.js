@@ -224,35 +224,39 @@ exports.handleMessageFromDriver = handleMessageFromDriver;
 //     })
 // }
 const handleTripUpdate = (socket) => {
-    socket.on('trip-update', (data) => {
+    socket.on('trip-update', (data) => __awaiter(void 0, void 0, void 0, function* () {
         const trip = storage_1.TripMap.getMap().get(data.trip_id);
         if (data.status === "Done") {
-            console.log('eeeeeee');
+            console.log("hehehehhehe");
             // const tripDat = TripMap.getMap().get(data.trip_id)
             // const driver_id = tripDat?.driver_id!
-            // const socketid = GetDriverInfoById(driver_id)
-            // if (socketid === null) { return }
+            // const socketid = GetDriverInfoById(driver_id) 
+            // if (socketid === null) { return}
             const driverData = storage_1.DriverMap.getMap().get(socket.id);
             if (driverData === undefined) {
                 return;
             }
-            driverData.status = "Idle";
-            driverData.client_id = undefined;
-            storage_1.DriverMap.getMap().set(socket.id, driverData);
+            const updatedDriverData = Object.assign(Object.assign({}, driverData), { status: 'Idle', client_id: undefined });
+            // driverData.status = "Idle"
+            // driverData.client_id = undefined
+            storage_1.DriverMap.getMap().set(socket.id, updatedDriverData);
             if (data.status != null && trip != null) {
-                trip.status = data.status;
-                storage_1.TripMap.getMap().set(trip.trip_id, trip);
-                initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
-                initServer_1.io.in("callcenter").emit('trip-update', { status: trip.status, trip_id: data.trip_id });
+                const updatedTripData = Object.assign(Object.assign({}, trip), { status: data.status });
+                // trip.status = data.status
+                storage_1.TripMap.getMap().set(trip.trip_id, updatedTripData);
+                initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status });
+                initServer_1.io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id });
             }
         }
         else if (data.status != null && trip != null) {
-            trip.status = data.status;
-            storage_1.TripMap.getMap().set(trip.trip_id, trip);
-            initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: trip.status });
-            initServer_1.io.in("callcenter").emit('trip-update', { status: trip.status, trip_id: data.trip_id });
+            console.log("1231231231");
+            // trip.status = data.status
+            const updatedTripData = Object.assign(Object.assign({}, trip), { status: data.status });
+            storage_1.TripMap.getMap().set(trip.trip_id, updatedTripData);
+            initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status, directions: data.directions });
+            initServer_1.io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id });
         }
-    });
+    }));
 };
 exports.handleTripUpdate = handleTripUpdate;
 const getTripIfDisconnected = (id) => {
