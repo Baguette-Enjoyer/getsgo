@@ -17,7 +17,7 @@ services:
       - db
     build: ./
     ports:
-      - 8080:8080
+      - 3000:3000
     environment:
       SECRET_KEY: "supersecretkey"
       DB_USN: long3112
