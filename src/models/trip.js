@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Trip.init({
     status: DataTypes.ENUM('Callcenter', 'Pending', 'Waiting', 'Confirmed', 'Driving', 'Arrived', 'Done', 'Cancelled'),
-    start: DataTypes.JSON,
-    end: DataTypes.JSON,
+    start: DataTypes.TEXT,
+    end: DataTypes.TEXT,
     finished_date: DataTypes.DATE,
     type: DataTypes.INTEGER,
     note: DataTypes.TEXT,
@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Trip',
+    tableName: "trips"
   });
   return Trip;
 };
