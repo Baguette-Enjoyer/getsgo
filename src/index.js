@@ -10,7 +10,7 @@ connectDB();
 runSocketService()
 // console.log(listEndpoints(initServer.getApp()))
 
-initServer.getServer().listen(process.env.PORT || 3000, () => {
+initServer.getServer().listen(process.env.PORT || 8080, () => {
   console.log("server listening on 3000")
 })
 
