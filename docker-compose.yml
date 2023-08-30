@@ -2,15 +2,17 @@ version: '3'
 services:
   db:
     image: mysql:8
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=getsgo
     ports:
       - 3306:3306
     volumes:
       - ./db:/var/lib/mysql
       - ./scripts:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=getsgo
   app:
+    depends_on:
+      - db
     restart: always
     build: .
     ports:
@@ -24,5 +26,3 @@ services:
       - DB_NAME=getsgo
       - DB_PORT=3306
       - HOST=db
-    depends_on:
-      - db
