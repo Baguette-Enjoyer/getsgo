@@ -24,4 +24,4 @@ services:
       - MQ_URI=amqp://long:3112@174.138.19.215
       - DB_NAME=getsgo
       - DB_PORT=3306
-      - HOST: db
+      - HOST=db
