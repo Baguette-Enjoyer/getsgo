@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Cấu trúc bảng cho bảng `Conversations`
 --
 
-CREATE TABLE `Conversations` (
+CREATE TABLE IF NOT EXISTS `Conversations` (
   `id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `Conversations` (
 -- Cấu trúc bảng cho bảng `Messages`
 --
 
-CREATE TABLE `Messages` (
+CREATE TABLE IF NOT EXISTS `Messages` (
   `id` int(11) NOT NULL,
   `message` text DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `Messages` (
 -- Cấu trúc bảng cho bảng `Rates`
 --
 
-CREATE TABLE `Rates` (
+CREATE TABLE IF NOT EXISTS `Rates` (
   `id` int(11) NOT NULL,
   `star` float DEFAULT NULL,
   `comment` text DEFAULT NULL,
@@ -84,7 +84,7 @@ INSERT INTO `Rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id
 -- Cấu trúc bảng cho bảng `Settings`
 --
 
-CREATE TABLE `Settings` (
+CREATE TABLE IF NOT EXISTS `Settings` (
   `id` int(11) NOT NULL,
   `auto_accept_trip` tinyint(1) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE `Settings` (
 -- Cấu trúc bảng cho bảng `Trips`
 --
 
-CREATE TABLE `Trips` (
+CREATE TABLE IF NOT EXISTS `Trips` (
   `id` int(11) NOT NULL,
   `status` enum('Callcenter','Pending','Waiting','Confirmed','Driving','Arrived','Done','Cancelled') DEFAULT NULL,
   `start` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`start`)),
@@ -152,7 +152,7 @@ INSERT INTO `Trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `n
 -- Cấu trúc bảng cho bảng `Users`
 --
 
-CREATE TABLE `Users` (
+CREATE TABLE IF NOT EXISTS `Users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
@@ -192,7 +192,7 @@ INSERT INTO `Users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birt
 -- Cấu trúc bảng cho bảng `Vehicles`
 --
 
-CREATE TABLE `Vehicles` (
+CREATE TABLE IF NOT EXISTS `Vehicles` (
   `id` int(11) NOT NULL,
   `driver_license` varchar(255) DEFAULT NULL,
   `vehicle_registration` varchar(255) DEFAULT NULL,
@@ -220,7 +220,7 @@ INSERT INTO `Vehicles` (`id`, `driver_license`, `vehicle_registration`, `license
 -- Cấu trúc bảng cho bảng `Vehicle_Types`
 --
 
-CREATE TABLE `Vehicle_Types` (
+CREATE TABLE IF NOT EXISTS `Vehicle_Types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
