@@ -3,10 +3,8 @@ services:
   db:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: 3112
-      MYSQL_DATABASE: getsgodb
-      MYSQL_USER: long3112
-      MYSQL_PASSWORD: 3112
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=getsgo
     ports:
       - 3306:3306
     volumes:
@@ -19,11 +17,11 @@ services:
     ports:
       - 3000:3000
     environment:
-      SECRET_KEY: "supersecretkey"
-      DB_USN: long3112
-      DB_PWD: 3112
-      REDIS_CONN_STR: rediss://default:AVNS_Ekbj-C_HuLjYLZSUezY@getsgo-redis-do-user-14291271-0.b.db.ondigitalocean.com:25061 
-      MQ_URI: amqp://long:3112@174.138.19.215
-      DB_NAME: getsgodb
-      DB_PORT: 3306
-      HOST: db
+      - SECRET_KEY="supersecretkey"
+      - DB_USN=root
+      - DB_PWD=root
+      - REDIS_CONN_STR=rediss://default:AVNS_Ekbj-C_HuLjYLZSUezY@getsgo-redis-do-user-14291271-0.b.db.ondigitalocean.com:25061 
+      - MQ_URI=amqp://long:3112@174.138.19.215
+      - DB_NAME=getsgo
+      - DB_PORT=3306
+      - HOST: db
