@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 3112
+      MYSQL_DATABASE: getsgodb
+      MYSQL_USER: long3112
+      MYSQL_PASSWORD: 3112
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+  app:
+    depends_on:
+      - db
+    build: ./
+    ports:
+      - 8080:8080
+    environment:
+      SECRET_KEY: "supersecretkey"
+      DB_USN: long3112
+      DB_PWD: 3112
+      REDIS_CONN_STR: rediss://default:AVNS_Ekbj-C_HuLjYLZSUezY@getsgo-redis-do-user-14291271-0.b.db.ondigitalocean.com:25061 
+      MQ_URI: amqp://long:3112@174.138.19.215
+      DB_NAME: getsgodb
+      DB_PORT: 3306
+      HOST: db
