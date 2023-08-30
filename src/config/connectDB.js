@@ -10,7 +10,7 @@ let sequelize = new Sequelize(DB_NAME, DB_USN, DB_PWD, {
   "port": process.env.DB_PORT,
   "dialectOptions": {
     // "ssl": {
-    //   "required": false,
+    //   "required": true,
     //   "rejectUnauthorized": false
     // }
     "ssl": false
