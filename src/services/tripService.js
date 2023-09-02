@@ -328,9 +328,11 @@ export const initTripCallCenterS1 = async (data) => {
         lng: lng
     }
     let status = "Callcenter"
-    if (lat != null && lng != null) {
+    if (lat !== undefined && lng !== undefined) {
+        console.log('Pending')
         status = "Pending"
     } else {
+        console.log('Callcenter')
         status = "Callcenter"
     }
     const carType = data.carType
@@ -343,12 +345,14 @@ export const initTripCallCenterS1 = async (data) => {
         status,
         is_callcenter: true
     }
+    console.log(trip)
     let newTrip = await db.Trip.create(trip)
+    console.log('newTrip')
     console.log(newTrip)
     trip.trip_id = newTrip.id
 
     // console.log("send trip to callcenter trip queue")
-    if (lat != null && lng != null) {
+    if (lat !== undefined && lng !== undefined) {
         const result = await db.Trip.findOne({
             where: {
                 id: newTrip.id
@@ -410,6 +414,7 @@ export const initTripCallCenterS1 = async (data) => {
         }
         sendMessageToS2(trip2)
     }
+    console.log('heeelllllllllll')
     return trip
 }
 
@@ -623,7 +628,12 @@ export const GetTripS3 = async () => {
     }
     return []
 }
-
+export const CreateRating = async (trip_id, star) => {
+    await db.Rate.create({
+        trip_id: trip_id,
+        star: star,
+    })
+}
 export default {
     CreateTrip,
     CreateTripForCallCenter,
@@ -631,6 +641,7 @@ export default {
     GetTripById,
     AcceptTrip,
     CancelTrip,
+    CreateRating,
     UpdateTrip,
     DeleteTrip,
     GetTripS2,
