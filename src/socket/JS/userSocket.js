@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDriverToBroadCast = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
+exports.AddDriverToBroadCast = exports.broadCastToDriverById = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
@@ -297,6 +297,10 @@ const broadCastToDriver = (socketid, event, data) => {
     initServer_1.io.in(`/driver/${driver_id}`).emit(event, data);
 };
 exports.broadCastToDriver = broadCastToDriver;
+const broadCastToDriverById = (driver_id, event, data) => {
+    initServer_1.io.in(`/driver/${driver_id}`).emit(event, data);
+};
+exports.broadCastToDriverById = broadCastToDriverById;
 const AddDriverToBroadCast = (driver_id) => {
     // const socketid = GetDriverInfoById(driver_id) 
     // if (socketid === null) { return}

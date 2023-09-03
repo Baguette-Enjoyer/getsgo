@@ -2,7 +2,7 @@ import { conn, channel } from './createChannel.js'
 import { DriverMap, TripMap, DriverInBroadcast } from '../socket/JS/storage.js'
 import locationServices from '../services/locationService.js'
 import userService from '../services/userService.js'
-import { AddDriverToBroadCast, broadCastToDriver } from '../socket/JS/userSocket.js'
+import { AddDriverToBroadCast, broadCastToDriver, broadCastToDriverById } from '../socket/JS/userSocket.js'
 import { io } from '../services/initServer.js'
 import tripService, { DeleteTrip } from '../services/tripService.js'
 import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip } from '../socket/JS/driverSocket.js'
@@ -127,6 +127,7 @@ export const ConsumerNormalTrip = async (message) => {
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
             const t = await tripService.GetTripById(trip_id)
+            //nếu chưa có driver
             if (t.driver_id != null) {
                 await handleFind(data, userData)
             }
@@ -137,6 +138,8 @@ export const ConsumerNormalTrip = async (message) => {
                     await tripService.UpdateTrip({ trip_id: trip_id, driver_id: null, status: "Pending" })
                     await handleFind(data, userData)
                 }
+                //không thì thông báo cho biết nó chuẩn bị
+                else broadCastToDriverById(t.driver_id, "ready-notice", DataResponse)
                 // broadCastToDriver()
             }
         }, delay)

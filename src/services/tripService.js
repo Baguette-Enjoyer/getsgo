@@ -132,12 +132,13 @@ const CreateTripForCallCenter = async (data) => {
 const GetAvailableTrip = async () => {
     return new Promise(async (resolve, reject) => {
         const trips = await db.Trip.findAll(
-            // {
-            //     where: {
-            //         status:
-            //             { [Op.eq]: "Waiting" }
-            //     },
-            // },
+            {
+                where: {
+                    is_scheduled: true,
+                    status:
+                        { [Op.eq]: "Waiting" }
+                },
+            },
             {
                 include: {
                     model: db.User,

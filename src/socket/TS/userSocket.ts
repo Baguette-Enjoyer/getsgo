@@ -341,7 +341,9 @@ export const broadCastToDriver = (socketid: string, event: string, data: Object)
     console.log(`/driver/${driver_id}`);
     io.in(`/driver/${driver_id}`).emit(event, data)
 }
-
+export const broadCastToDriverById = (driver_id: string, event: string, data: Object) =>{
+    io.in(`/driver/${driver_id}`).emit(event, data)
+}
 export const AddDriverToBroadCast = (driver_id: number) => {
     // const socketid = GetDriverInfoById(driver_id) 
     // if (socketid === null) { return}
