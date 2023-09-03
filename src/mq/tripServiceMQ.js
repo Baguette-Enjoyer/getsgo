@@ -110,7 +110,7 @@ export const ConsumerNormalTrip = async (message) => {
     const data = JSON.parse(message.content.toString())
     console.log(data);
     const trip_id = data.trip_id
-    const place1 = data.start
+    // const place1 = data.start
 
 
     const userData = await userService.GetUserById(data.user_id)
@@ -119,9 +119,9 @@ export const ConsumerNormalTrip = async (message) => {
         trip_info: data
     }
     if (data.is_scheduled) {
-        BroadcastIdleDrivers(data)
+        BroadcastIdleDrivers(DataResponse)
         const now = new Date()
-        const scheduledTime = new Date(data.scheduled_time)
+        const scheduledTime = new Date(data.schedule_time)
         const notificationTime = new Date(scheduledTime - 15 * 60000)
         const delay = notificationTime - now
         setTimeout(async () => {
