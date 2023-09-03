@@ -22,7 +22,9 @@ const CreateTrip = async (data) => {
         //user_info
         const user_id = data.user_id
         const is_scheduled = data.is_scheduled
-        const scheduled_time = is_scheduled ? data.schedule_time : now
+        const scheduled_time1 = is_scheduled ? data.schedule_time : now
+        const schedule_time2 = new Date(scheduled_time1);
+        const scheduled_time = schedule_time2.toLocaleString()
         //Check user role here
         const carType = data.carType
         const status = "Pending"
@@ -86,7 +88,9 @@ const CreateTripForCallCenter = async (data) => {
         const phone = data.phone
 
         const is_scheduled = data.is_scheduled
-        const scheduled_time = is_scheduled ? data.schedule_time : now
+        const scheduled_time1 = is_scheduled ? data.schedule_time : now
+        const schedule_time2 = new Date(scheduled_time1);
+        const scheduled_time = schedule_time2.toLocaleString()
         const status = "Pending"
         const paymentMethod = data.paymentMethod
         const is_paid = false
@@ -325,7 +329,9 @@ export const initTripCallCenterS1 = async (data) => {
     console.log(user.id)
 
     const is_scheduled = data.is_scheduled
-    const scheduled_time = is_scheduled ? data.schedule_time : now
+    const scheduled_time1 = is_scheduled ? data.schedule_time : now
+    const schedule_time2 = new Date(scheduled_time1);
+    const scheduled_time = schedule_time2.toLocaleString()
     const lat = data.start.lat
     const lng = data.start.lng
     const start = {
