@@ -267,6 +267,9 @@ export const UpdateTrip = async (data) => {
         if (res != 1) {
             throw new Error("Something went wrong")
         }
+        // return {
+        //     "message": "success",
+        // }
         let newTrip = await GetTripById(data.trip_id)
         return newTrip
     } catch (error) {

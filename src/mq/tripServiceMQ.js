@@ -4,7 +4,8 @@ import locationServices from '../services/locationService.js'
 import userService from '../services/userService.js'
 import { AddDriverToBroadCast, broadCastToDriver } from '../socket/JS/userSocket.js'
 import { io } from '../services/initServer.js'
-import { DeleteTrip } from '../services/tripService.js'
+import tripService, { DeleteTrip } from '../services/tripService.js'
+import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip } from '../socket/JS/driverSocket.js'
 export const ConsumerCallcenterTrip = async (message) => {
     // console.log(message)
     const data = JSON.parse(message.content.toString())
@@ -55,16 +56,11 @@ export const ConsumerCallcenterTrip = async (message) => {
         }
     }
 }
-
-export const ConsumerNormalTrip = async (message) => {
-    // console.log(message)
-    const data = JSON.parse(message.content.toString())
-    console.log(data);
-    const trip_id = data.trip_id
+const handleFind = async (data, userData) => {
     const place1 = data.start
 
-    let userData = await userService.GetUserById(data.user_id)
-    TripMap.getMap().set(data.trip_id, data);
+    // TripMap.getMap().set(data.trip_id, data);
+    // TripMap.getMap().set(data.trip_id, data);
     let DataResponse = {
         user_info: userData,
         trip_info: data
@@ -106,4 +102,43 @@ export const ConsumerNormalTrip = async (message) => {
             break;
         }
     }
+}
+export const ConsumerNormalTrip = async (message) => {
+    // console.log(message)
+    const data = JSON.parse(message.content.toString())
+    console.log(data);
+    const trip_id = data.trip_id
+    const place1 = data.start
+
+
+    const userData = await userService.GetUserById(data.user_id)
+    let DataResponse = {
+        user_info: userData,
+        trip_info: data
+    }
+    if (data.is_scheduled) {
+        BroadcastIdleDrivers(data)
+        const now = new Date()
+        const scheduledTime = new Date(data.scheduled_time)
+        const notificationTime = new Date(scheduledTime - 15 * 60000)
+        const delay = notificationTime - now
+        setTimeout(async () => {
+            // kiểm tra lại chuyến đi
+            const t = await tripService.GetTripById(trip_id)
+            if (t.driver_id != null) {
+                await handleFind(data, userData)
+            }
+            else {
+                //kiểm tra driver đang có trong chuyến khác
+                const curDat = getCurrentDriverInfoById(t.driver_id)
+                if (curDat.status != "Idle" || curDat.driver_id == 0) {
+                    await tripService.UpdateTrip({ trip_id: trip_id, driver_id: null, status: "Pending" })
+                    await handleFind(data, userData)
+                }
+                // broadCastToDriver()
+            }
+        }, delay)
+        return
+    }
+    await handleFind(data, userData)
 }

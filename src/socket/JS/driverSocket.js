@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleMessageFromUser = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.handleDriverLogin = void 0;
+exports.BroadcastIdleDrivers = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
@@ -32,7 +32,7 @@ const handleDriverLogin = (socket) => {
             rating: driver_info.statics.starResult,
             client_id: undefined,
         };
-        const currentTrip = getDriverCurrentTrip(user_id);
+        const currentTrip = (0, exports.getDriverCurrentTrip)(user_id);
         if (currentTrip != null) {
             driver_data.client_id = (_a = storage_1.TripMap.getMap().get(currentTrip)) === null || _a === void 0 ? void 0 : _a.user_id;
         }
@@ -51,6 +51,7 @@ const getDriverCurrentTrip = (driver_id) => {
     });
     return null;
 };
+exports.getDriverCurrentTrip = getDriverCurrentTrip;
 const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0, function* () {
     yield tripService_1.default.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed", driver_id: driver.user_id });
     let driverData = yield driverServices_1.default.GetDriverInfoById(driver.user_id);
@@ -176,12 +177,14 @@ const getCurrentDriverInfoById = (id) => {
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.user_id == id) {
             return {
+                user_id: socket_value.user_id,
+                status: socket_value.status,
                 lat: socket_value.lat,
                 lng: socket_value.lng
             };
         }
     });
-    return { lat: 0, lng: 0 };
+    return { user_id: 0, status: "", lat: 0, lng: 0 };
 };
 exports.getCurrentDriverInfoById = getCurrentDriverInfoById;
 const handleLocationUpdate = (socket) => {
@@ -209,6 +212,9 @@ const handleLocationUpdate = (socket) => {
     });
 };
 exports.handleLocationUpdate = handleLocationUpdate;
+const broadcastScheduleTrip = (socket) => {
+};
+exports.broadcastScheduleTrip = broadcastScheduleTrip;
 const handleMessageFromUser = (socket) => {
     socket.on("user-message", (data) => {
         socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message);
@@ -224,3 +230,11 @@ const GetSocketByDriverId = (driver_id) => {
     });
     return socketArr;
 };
+const BroadcastIdleDrivers = (data) => {
+    storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
+        if (socket_value.status == "Idle") {
+            initServer_1.io.in(`/driver/${socket_value.user_id}`).emit("new-scheduled", data);
+        }
+    });
+};
+exports.BroadcastIdleDrivers = BroadcastIdleDrivers;

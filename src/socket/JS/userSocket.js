@@ -330,6 +330,3 @@ const UserCancelTrip = (id) => {
         }
     });
 };
-const GetSocketInRoom = (id) => {
-    const room = initServer_1.io.sockets.adapter.rooms.get("/users");
-};

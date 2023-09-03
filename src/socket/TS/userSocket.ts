@@ -378,7 +378,3 @@ const UserCancelTrip = (id: number) => {
     })
 }
 
-const GetSocketInRoom = (id: number) => {
-    const room = io.sockets.adapter.rooms.get("/users")
-
-}

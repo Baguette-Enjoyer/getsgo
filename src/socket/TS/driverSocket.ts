@@ -78,7 +78,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
     })
 }
 
-const getDriverCurrentTrip = (driver_id: number): number | null => {
+export const getDriverCurrentTrip = (driver_id: number): number | null => {
     TripMap.getMap().forEach((trip_value, trip_id) => {
         if (trip_value.driver_id == driver_id) {
             return trip_id
@@ -218,16 +218,18 @@ export const setDriverResponseStatus = (driver_id: number, status: string) => {
     })
 }
 
-export const getCurrentDriverInfoById = (id: number): { lat: number, lng: number } => {
+export const getCurrentDriverInfoById = (id: number): { user_id:number,status:string,lat: number, lng: number } => {
     DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.user_id == id) {
             return {
+                user_id: socket_value.user_id,
+                status: socket_value.status,
                 lat: socket_value.lat,
                 lng: socket_value.lng
             }
         }
     })
-    return { lat: 0, lng: 0 }
+    return { user_id:0,status:"",lat: 0, lng: 0 }
 }
 
 export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -255,6 +257,10 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
     })
 }
 
+export const broadcastScheduleTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+    
+}
+
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on("user-message", (data: { conversation_id: number, user_id: number, message: string }) => {
         socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message)
@@ -269,4 +275,12 @@ const GetSocketByDriverId = (driver_id: number) => {
         }
     })
     return socketArr
+}
+
+export const BroadcastIdleDrivers = (data:{trip_info:TripValue,user_info:any}) => {
+    DriverMap.getMap().forEach((socket_value,socket_id)=>{
+        if(socket_value.status == "Idle"){
+            io.in(`/driver/${socket_value.user_id}`).emit("new-scheduled",data)
+        }
+    })
 }
