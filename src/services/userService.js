@@ -23,9 +23,10 @@ const RegisterUser = async (data) => {
   const hash = await hashUserPassword(pwd)
   try {
     let newuser = await db.User.create({
-      // name: data.name,
+      name: data.name,
       phone: phone,
       password: hash,
+      email: data.email,
       // gender: data.gender,
       active: true,
       type: "User"
@@ -38,6 +39,7 @@ const RegisterUser = async (data) => {
     //     id: newuser.id
     //   }
     // })
+    console.log(newuser)
     return {
       user_id: newuser.id,
       message: "User created",
@@ -97,9 +99,12 @@ const LoginUser = async (data) => {
     }
 
   }
+  console.log(user);
   return {
     user_id: user.id,
     phone: user.phone,
+    name: user.name,
+    avatar: user.avatar,
     type: user.type,
     accessToken: token,
   }
