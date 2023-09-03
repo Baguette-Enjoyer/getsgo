@@ -21,10 +21,9 @@ const CreateTrip = async (data) => {
 
         //user_info
         const user_id = data.user_id
-        const is_scheduled = data.is_scheduled
-        const scheduled_time1 = is_scheduled ? data.schedule_time : now
-        const schedule_time2 = new Date(scheduled_time1);
-        const scheduled_time = schedule_time2.toLocaleString()
+        const is_scheduled = data.is_scheduled;
+
+        const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
         //Check user role here
         const carType = data.carType
         const status = "Pending"
@@ -44,7 +43,7 @@ const CreateTrip = async (data) => {
             },
             user_id: user_id,
             is_scheduled: is_scheduled,
-            scheduled_time: scheduled_time,
+            schedule_time: schedule_time,
             status: status,
             type: carType,
             paymentMethod: paymentMethod,
@@ -88,9 +87,7 @@ const CreateTripForCallCenter = async (data) => {
         const phone = data.phone
 
         const is_scheduled = data.is_scheduled
-        const scheduled_time1 = is_scheduled ? data.schedule_time : now
-        const schedule_time2 = new Date(scheduled_time1);
-        const scheduled_time = schedule_time2.toLocaleString()
+        const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
         const status = "Pending"
         const paymentMethod = data.paymentMethod
         const is_paid = false
@@ -107,7 +104,7 @@ const CreateTripForCallCenter = async (data) => {
             },
             user_id: user_id,
             is_scheduled: is_scheduled,
-            scheduled_time: scheduled_time,
+            schedule_time: schedule_time,
             status: "Callcenter",
             paymentMethod: paymentMethod,
             is_paid: is_paid,
@@ -329,9 +326,7 @@ export const initTripCallCenterS1 = async (data) => {
     console.log(user.id)
 
     const is_scheduled = data.is_scheduled
-    const scheduled_time1 = is_scheduled ? data.schedule_time : now
-    const schedule_time2 = new Date(scheduled_time1);
-    const scheduled_time = schedule_time2.toLocaleString()
+    const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
     const lat = data.start.lat
     const lng = data.start.lng
     const start = {
@@ -357,7 +352,7 @@ export const initTripCallCenterS1 = async (data) => {
         status,
         is_callcenter: true,
         is_scheduled: is_scheduled,
-        scheduled_time: scheduled_time
+        schedule_time: schedule_time
     }
     console.log(trip)
     let newTrip = await db.Trip.create(trip)
@@ -426,7 +421,7 @@ export const initTripCallCenterS1 = async (data) => {
             trip_id: trip.trip_id,
             status: status,
             is_scheduled: is_scheduled,
-            scheduled_time: scheduled_time
+            schedule_time: schedule_time
         }
         sendMessageToS2(trip2)
     }
@@ -516,7 +511,7 @@ export const initTripCallCenterS2 = async (data) => {
         type: result.type,
         status: result.status,
         is_scheduled: result.is_scheduled,
-        scheduled_time: result.scheduled_time
+        schedule_time: result.schedule_time
     }
     result.trip_id = result.id
     sendMessageToS3(result)
