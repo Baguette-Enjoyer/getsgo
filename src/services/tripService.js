@@ -323,6 +323,9 @@ export const initTripCallCenterS1 = async (data) => {
     const user = await CreateUserIfNotExist(phone)
     console.log("cout<<userid")
     console.log(user.id)
+
+    const is_scheduled = data.is_scheduled
+    const scheduled_time = is_scheduled ? data.schedule_time : now
     const lat = data.start.lat
     const lng = data.start.lng
     const start = {
@@ -344,7 +347,9 @@ export const initTripCallCenterS1 = async (data) => {
         user_id: user_id,
         type: carType,
         status,
-        is_callcenter: true
+        is_callcenter: true,
+        is_scheduled: is_scheduled,
+        scheduled_time: scheduled_time
     }
     let newTrip = await db.Trip.create(trip)
     console.log(newTrip)
@@ -409,7 +414,9 @@ export const initTripCallCenterS1 = async (data) => {
             startAddress: start.place,
             type: carType,
             trip_id: trip.trip_id,
-            status: status
+            status: status,
+            is_scheduled: is_scheduled,
+            scheduled_time: scheduled_time
         }
         sendMessageToS2(trip2)
     }
@@ -496,7 +503,9 @@ export const initTripCallCenterS2 = async (data) => {
         start: result,
         // user_id: user_id,
         type: result.type,
-        status: result.status
+        status: result.status,
+        is_scheduled: result.is_scheduled,
+        scheduled_time: result.scheduled_time
     }
     result.trip_id = result.id
     sendMessageToS3(result)
