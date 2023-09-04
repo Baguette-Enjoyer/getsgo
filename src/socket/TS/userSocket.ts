@@ -246,6 +246,7 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
         UserCancelTrip(data.trip_id)
         const tripDat = TripMap.getMap().get(data.trip_id)
         const driver_id = tripDat?.driver_id!
+        io.in(`/driver/${driver_id}`).emit("user-cancel-trip","user has canceled trip")
         const socketid = GetDriverInfoById(driver_id)
         if (socketid === null) { return }
         const driverData = DriverMap.getMap().get(socketid)

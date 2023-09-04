@@ -198,6 +198,7 @@ const handleUserCancelTrip = (socket) => {
         UserCancelTrip(data.trip_id);
         const tripDat = storage_1.TripMap.getMap().get(data.trip_id);
         const driver_id = tripDat === null || tripDat === void 0 ? void 0 : tripDat.driver_id;
+        initServer_1.io.in(`/driver/${driver_id}`).emit("user-cancel-trip", "user has canceled trip");
         const socketid = GetDriverInfoById(driver_id);
         if (socketid === null) {
             return;
