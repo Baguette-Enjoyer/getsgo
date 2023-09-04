@@ -277,10 +277,10 @@ const GetSocketByDriverId = (driver_id: number) => {
     return socketArr
 }
 
-export const BroadcastIdleDrivers = (data:{trip_info:TripValue,user_info:any}) => {
+export const BroadcastIdleDrivers = (event:string,data:any) => {
     DriverMap.getMap().forEach((socket_value,socket_id)=>{
         if(socket_value.status == "Idle"){
-            io.in(`/driver/${socket_value.user_id}`).emit("new-scheduled",data)
+            io.in(`/driver/${socket_value.user_id}`).emit(event,data)
         }
     })
 }

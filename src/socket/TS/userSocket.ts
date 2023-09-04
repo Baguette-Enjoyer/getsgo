@@ -242,10 +242,12 @@ export const handleUserFindTrip = (socket: Socket<DefaultEventsMap, DefaultEvent
 }
 
 export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on('user-cancel-trip', (data: { trip_id: number }) => {
+    socket.on('user-cancel-trip', async (data: { trip_id: number }) => {
         UserCancelTrip(data.trip_id)
         const tripDat = TripMap.getMap().get(data.trip_id)
         const driver_id = tripDat?.driver_id!
+        io.in(`/driver/${driver_id}`).emit("user-cancel-trip","user has cancelled the trip")
+        await tripService.UpdateTrip({trip_id: data.trip_id,status:"Cancelled"})
         const socketid = GetDriverInfoById(driver_id)
         if (socketid === null) { return }
         const driverData = DriverMap.getMap().get(socketid)

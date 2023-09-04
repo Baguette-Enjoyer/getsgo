@@ -129,33 +129,30 @@ const CreateTripForCallCenter = async (data) => {
     })
 }
 
-const GetAvailableTrip = async () => {
+const getAppointmentTrip2 = async () => {
     return new Promise(async (resolve, reject) => {
         const trips = await db.Trip.findAll(
             {
                 where: {
                     is_scheduled: true,
-                    status:
-                        { [Op.eq]: "Waiting" }
+                    driver_id: null
+                    // status:
+                    //     { [Op.eq]: "Waiting" }
                 },
-            },
-            {
                 include: {
                     model: db.User,
                     as: 'user',
                     attributes: ['name', 'phone']
-                }
-            },
-
-            {
+                },
                 order: [
-                    ['createdAt', 'ASC'],
+                    ['createdAt', 'DESC'],
                 ]
             }
         )
         trips.forEach(trip => {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
+            trip.schedule_time = new Date(trip.schedule_time)
         })
         return resolve({
             statusCode: 200,
@@ -521,8 +518,8 @@ export const initTripCallCenterS2 = async (data) => {
     return result
 }
 
-export const getAppointmentTrip = async () => {
-    const result = await db.Trip.findAll({
+export const GetAppointmentTrip = async () => {
+    const trips = await db.Trip.findAll({
         where: {
             is_scheduled: true,
             driver_id: null,
@@ -534,12 +531,17 @@ export const getAppointmentTrip = async () => {
             required: true,
         },
         order: [
-            ['createdAt', 'ASC'],
+            ['createdAt', 'DESC'],
         ]
     }
     )
-    if (result) {
-        return result
+    if (trips) {
+        trips.forEach(trip => {
+            trip.start = JSON.parse(trip.start)
+            trip.end = JSON.parse(trip.end)
+            trip.schedule_time = new Date(trip.schedule_time)
+        })
+        return trips
     }
     return []
 }
@@ -558,7 +560,7 @@ export const GetTripS2 = async () => {
         },
         attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'startAddress'],],
         order: [
-            ['createdAt', 'ASC'],
+            ['createdAt', 'DESC'],
         ],
         raw: true,
         nest: true,
@@ -624,7 +626,7 @@ export const GetTripS3 = async () => {
             exclude: ['createdAt', 'updatedAt', 'accessToken', "start", "end", "driver"]
         },
         order: [
-            ['createdAt', 'ASC'],
+            ['createdAt', 'DESC'],
         ],
         raw: true,
         nest: true,
@@ -652,7 +654,6 @@ export const CreateRating = async (trip_id, star) => {
 export default {
     CreateTrip,
     CreateTripForCallCenter,
-    GetAvailableTrip,
     GetTripById,
     AcceptTrip,
     CancelTrip,
