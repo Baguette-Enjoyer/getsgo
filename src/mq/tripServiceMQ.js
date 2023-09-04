@@ -119,7 +119,7 @@ export const ConsumerNormalTrip = async (message) => {
         trip_info: data
     }
     if (data.is_scheduled) {
-        BroadcastIdleDrivers(DataResponse)
+        BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
         const now = new Date()
         const scheduledTime = new Date(data.schedule_time)
         const notificationTime = new Date(scheduledTime - 15 * 60000)
@@ -139,7 +139,7 @@ export const ConsumerNormalTrip = async (message) => {
                     await handleFind(data, userData)
                 }
                 //không thì thông báo cho biết nó chuẩn bị
-                else broadCastToDriverById(t.driver_id, "ready-notice", DataResponse)
+                else broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
                 // broadCastToDriver()
             }
         }, delay)

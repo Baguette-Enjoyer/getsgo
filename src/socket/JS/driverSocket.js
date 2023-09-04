@@ -230,10 +230,10 @@ const GetSocketByDriverId = (driver_id) => {
     });
     return socketArr;
 };
-const BroadcastIdleDrivers = (data) => {
+const BroadcastIdleDrivers = (event, data) => {
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {
-            initServer_1.io.in(`/driver/${socket_value.user_id}`).emit("new-scheduled", data);
+            initServer_1.io.in(`/driver/${socket_value.user_id}`).emit(event, data);
         }
     });
 };
