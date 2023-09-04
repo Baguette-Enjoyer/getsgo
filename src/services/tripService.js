@@ -560,7 +560,7 @@ export const GetTripS2 = async () => {
         },
         attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'startAddress'],],
         order: [
-            ['createdAt', 'ASC'],
+            ['createdAt', 'DESC'],
         ],
         raw: true,
         nest: true,
@@ -626,7 +626,7 @@ export const GetTripS3 = async () => {
             exclude: ['createdAt', 'updatedAt', 'accessToken', "start", "end", "driver"]
         },
         order: [
-            ['createdAt', 'ASC'],
+            ['createdAt', 'DESC'],
         ],
         raw: true,
         nest: true,
