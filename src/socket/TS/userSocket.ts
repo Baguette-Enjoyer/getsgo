@@ -10,6 +10,7 @@ import initRedis from "../../config/connectRedis"
 let rd = initRedis()
 interface User {
     user_id: number
+    token_fcm: string
 }
 
 interface TripValue {
@@ -42,13 +43,23 @@ interface TripValue {
 
 export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('user-login', async (data: User) => {
-        const user_id = data.user_id
+        const {user_id,token_fcm} = data
         socket.join(`/user/${user_id}`)
 
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
+            token_fcm: token_fcm
         })
         console.log('user đã đăng nhập')
+
+        const curTrips = await tripService.GetRunningTripOfUser(user_id)
+        curTrips.forEach((item:any)=>{
+            const driverInfo = GetDriverInfoById(item.driver_id)
+            const driverDat = DriverMap.getMap().get(driverInfo!)
+            curTrips.driver = driverDat
+        })
+        
+        io.in(`/user/${user_id}`).emit("user-reconnect",curTrips)
     })
 }
 

@@ -2,6 +2,7 @@
 
 export interface User {
     user_id: number
+    token_fcm: string
 }
 
 export interface Driver {
@@ -15,6 +16,7 @@ export interface Driver {
     rating: number | 0
     response?: 'Accept' | 'Deny' | string
     client_id?:number | undefined
+    token_fcm: string
 }
 
 export interface TripValue {
