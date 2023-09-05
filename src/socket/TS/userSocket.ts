@@ -255,6 +255,7 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
         driverData.status = "Idle"
         driverData.client_id = undefined
         DriverMap.getMap().set(socketid, driverData)
+        await tripService.UpdateTrip({trip_id:data.trip_id,status:"Cancelled"})
     })
 }
 
@@ -292,12 +293,13 @@ export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsM
                 io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status })
                 io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id })
             }
-
+            await tripService.UpdateTrip({trip_id: data.trip_id, status: "Done"})
         } else if (data.status != null && trip != null) {
             console.log("1231231231")
             // trip.status = data.status
             const updatedTripData = { ...trip, status: data.status }
             TripMap.getMap().set(trip.trip_id, updatedTripData)
+            await tripService.UpdateTrip({trip_id: data.trip_id, status: data.status})
             io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status, directions: data.directions })
             io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id })
         }
