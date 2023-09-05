@@ -97,7 +97,8 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
         lng: driver.lng,
         heading: driver.heading,
         message: "coming",
-        status: "Confirmed"
+        status: "Confirmed",
+        is_scheduled:trip.is_scheduled
     }
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);

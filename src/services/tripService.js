@@ -6,6 +6,7 @@ import Sequelize from 'sequelize'
 import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
 import { sendMessageToS2, sendMessageToS3 } from '../socket/JS/userSocket.js'
+import { sendMessage as sendMessageFirebase } from '../firebase/firebaseApp'
 import historyService from './historyService'
 
 const CreateTrip = async (data) => {
@@ -213,6 +214,7 @@ const AcceptTrip = async (data) => {
     if (result != 1) {
         throw new Error("Something went wrong")
     }
+    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
     const newTrip = await GetTripById(data.trip_id)
     return newTrip
 }
@@ -686,7 +688,7 @@ export const CreateRating = async (trip_id, star) => {
     await db.Rate.create({
         trip_id: trip_id,
         star: star,
-        
+
     })
 }
 export default {
