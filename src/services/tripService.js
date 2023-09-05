@@ -686,6 +686,7 @@ export const CreateRating = async (trip_id, star) => {
     await db.Rate.create({
         trip_id: trip_id,
         star: star,
+        
     })
 }
 export default {

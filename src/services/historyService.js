@@ -9,10 +9,35 @@ const GetHistoryOfUser = async (user_id) => {
                 attributes: {
                     exclude: ['createdAt', 'updatedAt']
                 }
+            },
+            {
+                model: db.User,
+                as: 'driver',
+                attributes: ['id', 'name', 'phone', 'email', 'avatar'],
+                include: [
+                    {
+                        model: db.Vehicle,
+                        as: "driver_vehicle",
+                        required: true,
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt', "driver_id", "vehicle_type_id"],
+                        },
+                        include: [
+                            {
+                                model: db.Vehicle_Type,
+                                as: "vehicle_type",
+                                attributes: {
+                                    exclude: ['createdAt', 'updatedAt', 'id'],
+                                },
+                            }
+                        ]
+                    },
+                ]
             }
         ],
         attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
     })
+
     return trips
 }
 

@@ -49,6 +49,8 @@ let RegisterUser = async (req, res) => {
 
 let GetUserByPhone = async (req, res) => {
     let phone = req.query.phone
+    console.log('phone111')
+    console.log(phone)
     let phoneNormalized = '+' + phone.trim();
     if (phoneNormalized.length != 12) {
         return res.status(500).json({
