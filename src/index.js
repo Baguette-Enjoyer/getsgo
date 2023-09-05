@@ -22,7 +22,7 @@ initializeApp({
 initServer.getServer().listen(process.env.PORT || 3000, () => {
   console.log("server listening on 3000")
 })
-sendMessageFirebase('fj9Kb13NThm-4QqSAIu4rb:APA91bHOZm3Fja_OzP7tXdhV391geJ6ZIM_1W_KMOexa_VYF4OUL_M2K7QBrqJlxv1lRlTnJaOnHbDGyrgiP3niBJGoJ8x9y5RzLQn7SNhLbJA2mqgyxnoWENpeE6FTSIfy8dv7iatEB', 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
+// sendMessageFirebase('fj9Kb13NThm-4QqSAIu4rb:APA91bHOZm3Fja_OzP7tXdhV391geJ6ZIM_1W_KMOexa_VYF4OUL_M2K7QBrqJlxv1lRlTnJaOnHbDGyrgiP3niBJGoJ8x9y5RzLQn7SNhLbJA2mqgyxnoWENpeE6FTSIfy8dv7iatEB', 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
 
 process.on("beforeExit", () => {
   rd.quit();

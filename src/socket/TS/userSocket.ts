@@ -49,6 +49,12 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
             user_id: user_id,
         })
         console.log('user đã đăng nhập')
+        const allTrips = Array.from(TripMap.getMap().values());
+
+        const tripsWithUserId1 = allTrips.filter((trip) => trip.user_id === user_id);
+        console.log(tripsWithUserId1);
+        
+
     })
 }
 

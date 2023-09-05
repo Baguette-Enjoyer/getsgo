@@ -141,12 +141,15 @@ export const ConsumerNormalTrip = async (message) => {
                 }
                 //không thì thông báo cho biết nó chuẩn bị
                 else {
+                    // driver
+                    sendMessageFirebase('','Chuyến đi hẹn giờ',"Tài xế đang đến chỗ bạn")
                     broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
                     const driverData = await userService.GetUserById(t.driver_id)
                     const dataDriver = {
                         driver_info: driverData,
                         trip_id: trip_id
                     }
+                    // client
                     sendMessageFirebase('','Chuyến đi hẹn giờ',"Tài xế đang đến chỗ bạn")
                     broadCastToClientById(t.user_id, "schedule-start", dataDriver)
                 }
