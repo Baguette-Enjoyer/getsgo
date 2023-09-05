@@ -211,6 +211,7 @@ const handleUserCancelTrip = (socket) => {
         driverData.status = "Idle";
         driverData.client_id = undefined;
         storage_1.DriverMap.getMap().set(socketid, driverData);
+        yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: "Cancelled" });
     }));
 };
 exports.handleUserCancelTrip = handleUserCancelTrip;
@@ -249,12 +250,14 @@ const handleTripUpdate = (socket) => {
                 initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status });
                 initServer_1.io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id });
             }
+            yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: "Done" });
         }
         else if (data.status != null && trip != null) {
             console.log("1231231231");
             // trip.status = data.status
             const updatedTripData = Object.assign(Object.assign({}, trip), { status: data.status });
             storage_1.TripMap.getMap().set(trip.trip_id, updatedTripData);
+            yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: data.status });
             initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status, directions: data.directions });
             initServer_1.io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id });
         }
