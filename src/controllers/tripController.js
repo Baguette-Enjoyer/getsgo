@@ -206,6 +206,14 @@ export const updateRate = async (req, res) => {
         trips: result
     })
 }
+
+const GetAcceptedScheduledTrip = async (req, res) => {
+    const driver_id = req.params.driver_id;
+    const trips = await tripService.GetAcceptedScheduledTrip(driver_id)
+    return res.status(200).json({
+        trips: trips
+    })
+}
 export default {
     BookTrip,
     CallCenterBookTrip,
@@ -221,5 +229,6 @@ export default {
     BookCallCenter,
     GetTripForS2,
     GetTripForS3,
-    GetAppointmentTripController
+    GetAppointmentTripController,
+    GetAcceptedScheduledTrip
 }

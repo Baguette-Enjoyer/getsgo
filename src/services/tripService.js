@@ -644,6 +644,44 @@ export const GetTripS3 = async () => {
     }
     return []
 }
+export const GetAcceptedScheduledTrip = async (driver_id) => {
+    const trips = await db.Trip.findAll({
+        where: {
+            is_scheduled: true,
+            driver_id: driver_id,
+            [Op.and]: [
+                {
+                    status: {
+                        [Op.ne]: "Done"
+                    },
+                },
+                {
+                    status: {
+                        [Op.ne]: "Cancelled"
+                    },
+                }
+            ]
+
+        },
+        include: [
+            {
+                model: db.User,
+                as: 'user',
+                attributes: ['name', 'phone'],
+                required: true,
+            },
+        ],
+        order: [
+            ['createdAt', 'ASC'],
+        ],
+        nest: true,
+        raw: true
+    })
+    if (trips) {
+        return trips
+    }
+    else return []
+}
 export const CreateRating = async (trip_id, star) => {
     await db.Rate.create({
         trip_id: trip_id,
@@ -660,5 +698,6 @@ export default {
     UpdateTrip,
     DeleteTrip,
     GetTripS2,
-    GetTripS3
+    GetTripS3,
+    GetAcceptedScheduledTrip
 }

@@ -25,6 +25,8 @@ const GetProfitPlusTrip = async (req, res) => {
         trips: trips
     })
 }
+
+
 export default {
     GetDriverInfoById,
     GetProfitPlusTrip

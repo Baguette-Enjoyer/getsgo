@@ -19,6 +19,7 @@ const initTripRoutes = (app) => {
     Routes.delete('/v1/trips/:trip_id', tripController.DeleteTrip)
     Routes.post('/v1/trips/rate', tripController.updateRate)
     Routes.get('/v1/appointment_trips', tripController.GetAppointmentTripController)
+    Routes.get('/v1/appointment_trips/:driver_id', tripController.GetAcceptedScheduledTrip)
     app.use(Routes)
     app.use(AuthRoutes)
     return app

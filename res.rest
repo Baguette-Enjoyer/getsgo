@@ -169,3 +169,6 @@ Content-Type: application/json
 POST http://localhost:3000/v1/booking/callcenters1
 ###
 GET http://localhost:3000/v1/booking/callcenters3
+
+###
+GET http://localhost:3000/v1/appointment_trips/3
