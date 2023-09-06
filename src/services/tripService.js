@@ -10,6 +10,7 @@ import { sendMessageFirebase } from '../firebase/firebaseApp'
 import historyService from './historyService'
 // import userService from './userService'
 import driverServices from './driverServices'
+import { TripMap } from '../socket/JS/storage'
 
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -254,6 +255,7 @@ const CancelTrip = async (trip_id) => {
 
 export const UpdateTrip = async (data) => {
     let updateObj = {}
+    const tripDat = TripMap.getMap().get(data.trip_id)
     if (data.driver_id != null) {
         updateObj.driver_id = data.driver_id
     }
@@ -263,6 +265,23 @@ export const UpdateTrip = async (data) => {
     if (data.finished_date != null) {
         updateObj.finished_date = data.finished_date
     }
+    if (data.end != null) {
+        updateObj.end = data.end
+        tripDat.end = data.end
+    }
+    if (data.price != null) {
+        updateObj.price = data.price
+        tripDat.price = data.price
+    }
+    if (data.distance != null) {
+        updateObj.distance = data.distance
+        tripDat.distance = data.distance
+    }
+    if (data.duration != null) {
+        updateObj.duration = data.duration
+        tripDat.duration = data.duration
+    }
+    TripMap.getMap().put(data.trip_id, tripDat)
     // console.log(updateObj)
     // console.log(data.trip_id)
     try {
@@ -543,11 +562,16 @@ export const GetAppointmentTrip = async () => {
     }
     )
     if (trips) {
-        trips.forEach(trip => {
+        for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
             trip.schedule_time = new Date(trip.schedule_time)
-        })
+        }
+        // trips.forEach(trip => {
+        //     trip.start = JSON.parse(trip.start)
+        //     trip.end = JSON.parse(trip.end)
+        //     trip.schedule_time = new Date(trip.schedule_time)
+        // })
         return trips
     }
     return []
@@ -685,9 +709,19 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         raw: true
     })
     if (trips) {
+        for (const trip of trips) {
+            trip.start = JSON.parse(trip.start)
+            trip.end = JSON.parse(trip.end)
+            trip.schedule_time = new Date(trip.schedule_time)
+        }
+        // trips.forEach(trip => {
+        //     trip.start = JSON.parse(trip.start)
+        //     trip.end = JSON.parse(trip.end)
+        //     trip.schedule_time = new Date(trip.schedule_time)
+        // })
         return trips
     }
-    else return []
+    return []
 }
 export const CreateRating = async (trip_id, star) => {
     await db.Rate.create({
