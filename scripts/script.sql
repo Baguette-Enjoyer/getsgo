@@ -220,8 +220,8 @@ INSERT INTO `Vehicles` (`id`, `driver_license`, `vehicle_registration`, `license
 --
 -- Cấu trúc bảng cho bảng `vehicle_types`
 --
-DROP TABLE IF EXISTS `Vehicle_types`;
-CREATE TABLE `Vehicle_types` (
+DROP TABLE IF EXISTS `Vehicle_Types`;
+CREATE TABLE `Vehicle_Types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -232,7 +232,7 @@ CREATE TABLE `Vehicle_types` (
 -- Đang đổ dữ liệu cho bảng `vehicle_types`
 --
 
-INSERT INTO `Vehicle_types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Vehicle_Types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 (1, 'Xe 4 Chỗ', '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
 (2, 'Xe 7 Chỗ', '2023-08-11 09:44:46', '2023-08-11 09:44:46');
 
@@ -296,7 +296,7 @@ ALTER TABLE `Vehicles`
 --
 -- Chỉ mục cho bảng `vehicle_types`
 --
-ALTER TABLE `Vehicle_types`
+ALTER TABLE `Vehicle_Types`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -348,7 +348,7 @@ ALTER TABLE `Vehicles`
 --
 -- AUTO_INCREMENT cho bảng `vehicle_types`
 --
-ALTER TABLE `Vehicle_types`
+ALTER TABLE `Vehicle_Types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
@@ -394,7 +394,7 @@ ALTER TABLE `Trips`
 --
 ALTER TABLE `Vehicles`
   ADD CONSTRAINT `Vehicles_ibfk_1` FOREIGN KEY (`driver_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `Vehicles_ibfk_2` FOREIGN KEY (`vehicle_type_id`) REFERENCES `Vehicle_types` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `Vehicles_ibfk_2` FOREIGN KEY (`vehicle_type_id`) REFERENCES `Vehicle_Types` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
