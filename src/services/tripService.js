@@ -562,11 +562,16 @@ export const GetAppointmentTrip = async () => {
     }
     )
     if (trips) {
-        trips.forEach(trip => {
+        for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
             trip.schedule_time = new Date(trip.schedule_time)
-        })
+        }
+        // trips.forEach(trip => {
+        //     trip.start = JSON.parse(trip.start)
+        //     trip.end = JSON.parse(trip.end)
+        //     trip.schedule_time = new Date(trip.schedule_time)
+        // })
         return trips
     }
     return []
@@ -704,9 +709,19 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         raw: true
     })
     if (trips) {
+        for (const trip of trips) {
+            trip.start = JSON.parse(trip.start)
+            trip.end = JSON.parse(trip.end)
+            trip.schedule_time = new Date(trip.schedule_time)
+        }
+        // trips.forEach(trip => {
+        //     trip.start = JSON.parse(trip.start)
+        //     trip.end = JSON.parse(trip.end)
+        //     trip.schedule_time = new Date(trip.schedule_time)
+        // })
         return trips
     }
-    else return []
+    return []
 }
 export const CreateRating = async (trip_id, star) => {
     await db.Rate.create({
