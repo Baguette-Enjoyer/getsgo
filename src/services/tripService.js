@@ -147,7 +147,7 @@ const getAppointmentTrip2 = async () => {
                 include: {
                     model: db.User,
                     as: 'user',
-                    attributes: ['name', 'phone']
+                    attributes: ['name', 'phone', 'avatar']
                 },
                 order: [
                     ['createdAt', 'DESC'],
@@ -176,12 +176,12 @@ let GetTripById = async (trip_id) => {
                 {
                     model: db.User,
                     as: 'user',
-                    attributes: ['name', 'phone']
+                    attributes: ['name', 'phone', 'avatar']
                 },
                 {
                     model: db.User,
                     as: 'driver',
-                    attributes: ['name', 'phone']
+                    attributes: ['name', 'phone', 'avatar']
                 }
             ]
         },
@@ -375,13 +375,13 @@ export const initTripCallCenterS1 = async (data) => {
                 {
                     model: db.User,
                     as: 'user',
-                    attributes: ['name', 'phone'],
+                    attributes: ['name', 'phone', 'avatar'],
                     required: true,
                 },
                 {
                     model: db.User,
                     as: 'driver',
-                    attributes: ['id', 'phone', 'email'],
+                    attributes: ['id', 'phone', 'email', 'avatar'],
                     include: [
                         {
                             model: db.Vehicle,
@@ -462,13 +462,13 @@ export const initTripCallCenterS2 = async (data) => {
             {
                 model: db.User,
                 as: 'user',
-                attributes: ['name', 'phone'],
+                attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },
             {
                 model: db.User,
                 as: 'driver',
-                attributes: ['id', 'phone', 'email'],
+                attributes: ['id', 'phone', 'email', 'avatar'],
                 include: [
                     {
                         model: db.Vehicle,
@@ -534,7 +534,7 @@ export const GetAppointmentTrip = async () => {
         include: {
             model: db.User,
             as: 'user',
-            attributes: ['name', 'phone','avatar'],
+            attributes: ['name', 'phone', 'avatar'],
             required: true,
         },
         order: [
@@ -562,7 +562,7 @@ export const GetTripS2 = async () => {
         include: {
             model: db.User,
             as: 'user',
-            attributes: ['name', 'phone'],
+            attributes: ['name', 'phone', 'avatar'],
             required: true,
         },
         attributes: ["id", "type", 'createdAt', [db.Sequelize.col('user.phone'), 'user_phone'], [db.Sequelize.json('start.place'), 'startAddress'],],
@@ -600,13 +600,13 @@ export const GetTripS3 = async () => {
             {
                 model: db.User,
                 as: 'user',
-                attributes: ['name', 'phone'],
+                attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },
             {
                 model: db.User,
                 as: 'driver',
-                attributes: ['id', 'phone', 'email'],
+                attributes: ['id', 'phone', 'email', 'avatar'],
                 include: [
                     {
                         model: db.Vehicle,
@@ -674,7 +674,7 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
             {
                 model: db.User,
                 as: 'user',
-                attributes: ['name', 'phone'],
+                attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },
         ],
@@ -718,7 +718,7 @@ export const GetRunningTripOfUser = async (user_id) => {
             {
                 model: db.User,
                 as: 'user',
-                attributes: ['name', 'phone'],
+                attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },
         ],
@@ -750,7 +750,7 @@ export const GetRunningTripOfDriver = async (driver_id) => {
             {
                 model: db.User,
                 as: 'user',
-                attributes: ['name', 'phone'],
+                attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },
         ],

@@ -2,7 +2,7 @@ import { conn, channel } from './createChannel.js'
 import { DriverMap, TripMap, DriverInBroadcast } from '../socket/JS/storage.js'
 import locationServices from '../services/locationService.js'
 import userService from '../services/userService.js'
-import { AddDriverToBroadCast, broadCastToDriver, broadCastToDriverById,broadCastToClientById } from '../socket/JS/userSocket.js'
+import { AddDriverToBroadCast, broadCastToDriver, broadCastToDriverById, broadCastToClientById } from '../socket/JS/userSocket.js'
 import { io } from '../services/initServer.js'
 import tripService, { DeleteTrip } from '../services/tripService.js'
 import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip } from '../socket/JS/driverSocket.js'
@@ -142,7 +142,7 @@ export const ConsumerNormalTrip = async (message) => {
                 //không thì thông báo cho biết nó chuẩn bị
                 else {
                     // driver
-                    sendMessageFirebase('','Chuyến đi hẹn giờ',"Tài xế đang đến chỗ bạn")
+                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
                     broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
                     const driverData = await userService.GetUserById(t.driver_id)
                     const dataDriver = {
@@ -150,7 +150,7 @@ export const ConsumerNormalTrip = async (message) => {
                         trip_id: trip_id
                     }
                     // client
-                    sendMessageFirebase('','Chuyến đi hẹn giờ',"Tài xế đang đến chỗ bạn")
+                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
                     broadCastToClientById(t.user_id, "schedule-start", dataDriver)
                 }
                 // broadCastToDriver()
