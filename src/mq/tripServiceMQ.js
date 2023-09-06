@@ -60,7 +60,7 @@ export const ConsumerCallcenterTrip = async (message) => {
 const handleFind = async (data, userData) => {
     const place1 = data.start
     const trip_id = data.trip_id
-    // TripMap.getMap().set(data.trip_id, data);
+    TripMap.getMap().set(data.trip_id, data);
     // TripMap.getMap().set(data.trip_id, data);
     let DataResponse = {
         user_info: userData,
