@@ -569,7 +569,7 @@ export const GetAppointmentTrip = async () => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time)
+            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         // trips.forEach(trip => {
         //     trip.start = JSON.parse(trip.start)
@@ -716,7 +716,7 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time)
+            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         // trips.forEach(trip => {
         //     trip.start = JSON.parse(trip.start)
