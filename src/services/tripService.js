@@ -26,8 +26,11 @@ const CreateTrip = async (data) => {
         //user_info
         const user_id = data.user_id
         const is_scheduled = data.is_scheduled;
-
+        console.log('wwwwwwwwwwwwwwww')
+        console.log(data.schedule_time);
+        console.log(new Date(data.schedule_time).toLocaleString());
         const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
+        console.log(schedule_time);
         //Check user role here
         const carType = data.carType
         const status = "Pending"
@@ -216,6 +219,7 @@ const AcceptTrip = async (data) => {
             }
         }
     )
+    console.log(result);
     if (result != 1) {
         throw new Error("Something went wrong")
     }
@@ -281,7 +285,7 @@ export const UpdateTrip = async (data) => {
         updateObj.duration = data.duration
         tripDat.duration = data.duration
     }
-    TripMap.getMap().put(data.trip_id, tripDat)
+    TripMap.getMap().set(data.trip_id, tripDat)
     // console.log(updateObj)
     // console.log(data.trip_id)
     try {
@@ -722,6 +726,7 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         return trips
     }
     return []
+    git
 }
 export const CreateRating = async (trip_id, star) => {
     await db.Rate.create({
