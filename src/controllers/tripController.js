@@ -176,7 +176,7 @@ export const BookS2 = async (req, res) => {
 }
 
 const GetAppointmentTripController = async (req, res) => {
-    const result = await GetAppointmentTrip()
+    const result = await tripService.GetAppointmentTrip()
     return res.status(200).json({
         statusCode: 200,
         trips: result

@@ -770,6 +770,7 @@ export default {
     DeleteTrip,
     GetTripS2,
     GetTripS3,
+    GetAppointmentTrip,
     GetAcceptedScheduledTrip,
     GetRunningTripOfUser,
     GetRunningTripOfDriver

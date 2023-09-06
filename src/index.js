@@ -13,7 +13,7 @@ require("dotenv").config();
 initQueue()
 connectDB();
 runSocketService()
-// console.log(listEndpoints(initServer.getApp()))
+console.log(listEndpoints(initServer.getApp()))
 process.env.GOOGLE_APPLICATION_CREDENTIALS
 initializeApp({
   credential: applicationDefault(),
