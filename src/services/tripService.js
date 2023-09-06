@@ -562,17 +562,14 @@ export const GetAppointmentTrip = async () => {
     }
     )
     if (trips) {
-        for (const trip of trips) {
-            trip.start = JSON.parse(trip.start)
-            trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
-        }
-        // trips.forEach(trip => {
-        //     trip.start = JSON.parse(trip.start)
-        //     trip.end = JSON.parse(trip.end)
-        //     trip.schedule_time = new Date(trip.schedule_time)
-        // })
-        return trips
+        trips.map(trip => ({
+            ...trip,
+            start: JSON.parse(trip.start),
+            end: JSON.parse(trip.end),
+            schedule_time: new Date(trip.schedule_time).toLocaleString()
+        }));
+
+        return trips;
     }
     return []
 }
@@ -709,17 +706,14 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         raw: true
     })
     if (trips) {
-        for (const trip of trips) {
-            trip.start = JSON.parse(trip.start)
-            trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
-        }
-        // trips.forEach(trip => {
-        //     trip.start = JSON.parse(trip.start)
-        //     trip.end = JSON.parse(trip.end)
-        //     trip.schedule_time = new Date(trip.schedule_time)
-        // })
-        return trips
+        trips.map(trip => ({
+            ...trip,
+            start: JSON.parse(trip.start),
+            end: JSON.parse(trip.end),
+            schedule_time: new Date(trip.schedule_time).toLocaleString()
+        }));
+
+        return trips;
     }
     return []
 }
