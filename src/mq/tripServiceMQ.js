@@ -129,7 +129,7 @@ export const ConsumerNormalTrip = async (message) => {
             // kiểm tra lại chuyến đi
             const t = await tripService.GetTripById(trip_id)
             //nếu chưa có driver
-            if (t.driver_id != null) {
+            if (t.driver_id == null || t.driver_id == undefined) {
                 await handleFind(data, userData)
             }
             else {
@@ -158,5 +158,5 @@ export const ConsumerNormalTrip = async (message) => {
         }, delay)
         return
     }
-    await handleFind(data, userData)
+    else await handleFind(data, userData)
 }

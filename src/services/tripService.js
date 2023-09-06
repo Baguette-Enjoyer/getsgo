@@ -281,7 +281,7 @@ export const UpdateTrip = async (data) => {
         updateObj.duration = data.duration
         tripDat.duration = data.duration
     }
-    TripMap.getMap().put(data.trip_id, tripDat)
+    TripMap.getMap().set(data.trip_id, tripDat)
     // console.log(updateObj)
     // console.log(data.trip_id)
     try {
@@ -565,7 +565,7 @@ export const GetAppointmentTrip = async () => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time)
+            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         // trips.forEach(trip => {
         //     trip.start = JSON.parse(trip.start)
@@ -712,7 +712,7 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time)
+            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         // trips.forEach(trip => {
         //     trip.start = JSON.parse(trip.start)
