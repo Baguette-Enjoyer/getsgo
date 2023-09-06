@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 --
 -- Cấu trúc bảng cho bảng `conversations`
 --
-
+DROP TABLE IF EXISTS `conversations`
 CREATE TABLE `conversations` (
   `id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `conversations` (
 --
 -- Cấu trúc bảng cho bảng `messages`
 --
-
+DROP TABLE IF EXISTS `messages`
 CREATE TABLE `messages` (
   `id` int(11) NOT NULL,
   `message` text DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `messages` (
 --
 -- Cấu trúc bảng cho bảng `rates`
 --
-
+DROP TABLE IF EXISTS `rates`
 CREATE TABLE `rates` (
   `id` int(11) NOT NULL,
   `star` float DEFAULT NULL,
@@ -83,7 +83,7 @@ INSERT INTO `rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id
 --
 -- Cấu trúc bảng cho bảng `settings`
 --
-
+DROP TABLE IF EXISTS `settings`
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL,
   `auto_accept_trip` tinyint(1) DEFAULT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE `settings` (
 --
 -- Cấu trúc bảng cho bảng `trips`
 --
-
+DROP TABLE IF EXISTS `trips`
 CREATE TABLE `trips` (
   `id` int(11) NOT NULL,
   `status` enum('Callcenter','Pending','Waiting','Confirmed','Driving','Arrived','Done','Cancelled') DEFAULT NULL,
@@ -151,7 +151,7 @@ INSERT INTO `trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `n
 --
 -- Cấu trúc bảng cho bảng `users`
 --
-
+DROP TABLE IF EXISTS `users`
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -192,7 +192,7 @@ INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birt
 --
 -- Cấu trúc bảng cho bảng `vehicles`
 --
-
+DROP TABLE IF EXISTS `vehicles`
 CREATE TABLE `vehicles` (
   `id` int(11) NOT NULL,
   `driver_license` varchar(255) DEFAULT NULL,
@@ -220,7 +220,7 @@ INSERT INTO `vehicles` (`id`, `driver_license`, `vehicle_registration`, `license
 --
 -- Cấu trúc bảng cho bảng `vehicle_types`
 --
-
+DROP TABLE IF EXISTS `vehicle_types`
 CREATE TABLE `vehicle_types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
