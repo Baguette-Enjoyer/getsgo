@@ -10,6 +10,7 @@ import initRedis from "../../config/connectRedis"
 let rd = initRedis()
 interface User {
     user_id: number
+    token_fcm: string
 }
 
 interface TripValue {
@@ -42,19 +43,23 @@ interface TripValue {
 
 export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('user-login', async (data: User) => {
-        const user_id = data.user_id
+        const { user_id, token_fcm } = data
         socket.join(`/user/${user_id}`)
 
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
+            token_fcm: token_fcm
         })
         console.log('user đã đăng nhập')
-        const allTrips = Array.from(TripMap.getMap().values());
 
-        const tripsWithUserId1 = allTrips.filter((trip) => trip.user_id === user_id);
-        console.log(tripsWithUserId1);
-        
+        const curTrips = await tripService.GetRunningTripOfUser(user_id)
+        curTrips.forEach((item: any) => {
+            const driverInfo = GetDriverInfoById(item.driver_id)
+            const driverDat = DriverMap.getMap().get(driverInfo!)
+            curTrips.driver = driverDat
+        })
 
+        io.in(`/user/${user_id}`).emit("user-reconnect", curTrips)
     })
 }
 
@@ -261,7 +266,7 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
         driverData.status = "Idle"
         driverData.client_id = undefined
         DriverMap.getMap().set(socketid, driverData)
-        await tripService.UpdateTrip({trip_id:data.trip_id,status:"Cancelled"})
+        await tripService.UpdateTrip({ trip_id: data.trip_id, status: "Cancelled" })
     })
 }
 
@@ -299,13 +304,13 @@ export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsM
                 io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status })
                 io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id })
             }
-            await tripService.UpdateTrip({trip_id: data.trip_id, status: "Done"})
+            await tripService.UpdateTrip({ trip_id: data.trip_id, status: "Done" })
         } else if (data.status != null && trip != null) {
             console.log("1231231231")
             // trip.status = data.status
             const updatedTripData = { ...trip, status: data.status }
             TripMap.getMap().set(trip.trip_id, updatedTripData)
-            await tripService.UpdateTrip({trip_id: data.trip_id, status: data.status})
+            await tripService.UpdateTrip({ trip_id: data.trip_id, status: data.status })
             io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status, directions: data.directions })
             io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id })
         }

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDriverToBroadCast = exports.broadCastToDriverById = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
+exports.AddDriverToBroadCast = exports.broadCastToClientById = exports.broadCastToDriverById = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
@@ -21,12 +21,20 @@ let rd = (0, connectRedis_1.default)();
 // const users = new Map<string, User>()
 const handleUserLogin = (socket) => {
     socket.on('user-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        const user_id = data.user_id;
+        const { user_id, token_fcm } = data;
         socket.join(`/user/${user_id}`);
         storage_1.UserMap.getMap().set(socket.id, {
             user_id: user_id,
+            token_fcm: token_fcm
         });
         console.log('user đã đăng nhập');
+        const curTrips = yield tripService_1.default.GetRunningTripOfUser(user_id);
+        curTrips.forEach((item) => {
+            const driverInfo = GetDriverInfoById(item.driver_id);
+            const driverDat = storage_1.DriverMap.getMap().get(driverInfo);
+            curTrips.driver = driverDat;
+        });
+        initServer_1.io.in(`/user/${user_id}`).emit("user-reconnect", curTrips);
     }));
 };
 exports.handleUserLogin = handleUserLogin;
@@ -306,6 +314,10 @@ const broadCastToDriverById = (driver_id, event, data) => {
     initServer_1.io.in(`/driver/${driver_id}`).emit(event, data);
 };
 exports.broadCastToDriverById = broadCastToDriverById;
+const broadCastToClientById = (user_id, event, data) => {
+    initServer_1.io.in(`/user/${user_id}`).emit(event, data);
+};
+exports.broadCastToClientById = broadCastToClientById;
 const AddDriverToBroadCast = (driver_id) => {
     // const socketid = GetDriverInfoById(driver_id) 
     // if (socketid === null) { return}

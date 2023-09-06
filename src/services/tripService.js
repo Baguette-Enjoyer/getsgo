@@ -6,8 +6,10 @@ import Sequelize from 'sequelize'
 import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
 import { sendMessageToS2, sendMessageToS3 } from '../socket/JS/userSocket.js'
-import { sendMessage as sendMessageFirebase } from '../firebase/firebaseApp'
+import { sendMessageFirebase } from '../firebase/firebaseApp'
 import historyService from './historyService'
+// import userService from './userService'
+import driverServices from './driverServices'
 
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -214,8 +216,9 @@ const AcceptTrip = async (data) => {
     if (result != 1) {
         throw new Error("Something went wrong")
     }
-    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
     const newTrip = await GetTripById(data.trip_id)
+    const userInfo = await userService.GetUserById(newTrip.user_id)
+    sendMessageFirebase(userInfo.token_fcm, 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
     return newTrip
 }
 
@@ -691,6 +694,71 @@ export const CreateRating = async (trip_id, star) => {
 
     })
 }
+
+export const GetRunningTripOfUser = async (user_id) => {
+    const trip = await db.Trip.findAll({
+        where: {
+            user_id: user_id,
+            [Op.and]: [
+                {
+                    status: {
+                        [Op.ne]: "Done"
+                    },
+                },
+                {
+                    status: {
+                        [Op.ne]: "Cancelled"
+                    },
+                },
+            ]
+        },
+        include: [
+            {
+                model: db.User,
+                as: 'user',
+                attributes: ['name', 'phone'],
+                required: true,
+            },
+        ],
+        order: [
+            ['updatedAt', 'DESC'],
+        ],
+    })
+    if (trip) return trip
+    return null
+}
+export const GetRunningTripOfDriver = async (driver_id) => {
+    const trip = await db.Trip.findAll({
+        where: {
+            driver_id: driver_id,
+            [Op.and]: [
+                {
+                    status: {
+                        [Op.ne]: "Done"
+                    },
+                },
+                {
+                    status: {
+                        [Op.ne]: "Cancelled"
+                    },
+                },
+            ]
+        },
+        include: [
+            {
+                model: db.User,
+                as: 'user',
+                attributes: ['name', 'phone'],
+                required: true,
+            },
+        ],
+        order: [
+            ['updatedAt', 'DESC'],
+        ],
+    })
+    if (trip) return trip
+    return null
+}
 export default {
     CreateTrip,
     CreateTripForCallCenter,
@@ -702,5 +770,7 @@ export default {
     DeleteTrip,
     GetTripS2,
     GetTripS3,
-    GetAcceptedScheduledTrip
+    GetAcceptedScheduledTrip,
+    GetRunningTripOfUser,
+    GetRunningTripOfDriver
 }

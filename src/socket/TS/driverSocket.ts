@@ -5,7 +5,7 @@ import userService from "../../services/userService"
 import locationServices from "../../services/locationService"
 import { initConvo, addChatMessage, dropConvo } from "../../services/chatService"
 import { DriverInBroadcast, DriverMap, TripMap, UserMap } from './storage'
-import tripService from "../../services/tripService"
+import tripService, { GetRunningTripOfDriver } from "../../services/tripService"
 import driverServices from "../../services/driverServices"
 import initRedis from "../../config/connectRedis"
 import { sendMessageToS3 } from "./userSocket"
@@ -21,6 +21,7 @@ interface Driver {
     client_id?: number | undefined
     rating: number | 0
     response?: 'Accept' | 'Deny' | string
+    token_fcm: string
 }
 
 interface TripValue {
@@ -64,15 +65,22 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             vehicle_type: driver_info.driver_info.driver_vehicle.id,
             rating: driver_info.statics.starResult,
             client_id: undefined,
+            token_fcm: driver_info.token_fcm,
         }
-
+        const curTrips = await GetRunningTripOfDriver(user_id)
         const currentTrip = getDriverCurrentTrip(user_id)
-
+        // const curTrips = await tripService.GetRunningTripOfUser(user_id)
+        // curTrips.forEach((item:any)=>{
+        //     const driverInfo = GetDriverInfoById(item.driver_id)
+        //     const driverDat = DriverMap.getMap().get(driverInfo!)
+        //     curTrips.driver = driverDat
+        // })
         if (currentTrip != null) {
             driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
         }
         console.log(driver_data);
         socket.join(`/driver/${user_id}`)
+        io.in(`/driver/${user_id}`).emit("driver-reconnect",curTrips)
         DriverMap.getMap().set(socket.id, driver_data)
         // console.log(data)
     })
