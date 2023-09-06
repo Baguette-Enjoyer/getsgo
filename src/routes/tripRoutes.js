@@ -3,6 +3,7 @@ import tripController from "../controllers/tripController"
 import authMiddleware from "../middleware/authMiddleware"
 const AuthRoutes = express.Router()
 const Routes = express.Router()
+const Routes2 = express.Router()
 const initTripRoutes = (app) => {
     AuthRoutes.use(authMiddleware.AuthMiddleware)
     AuthRoutes.post('/v1/booking/users', tripController.BookTrip)
@@ -17,10 +18,11 @@ const initTripRoutes = (app) => {
     Routes.get('/v1/trips/:trip_id', tripController.GetTripById)
     Routes.put('/v1/trips/:trip_id', tripController.UpdateTrip)
     Routes.delete('/v1/trips/:trip_id', tripController.DeleteTrip)
-    Routes.get('/v1/appointment_trips', tripController.GetAppointmentTripController)
-    Routes.get('/v1/appointment_trips/:driver_id', tripController.GetAcceptedScheduledTrip)
+    Routes2.get('/v1/appointment_trips', tripController.GetAppointmentTripController)
+    Routes2.get('/v1/appointment_trips/:driver_id', tripController.GetAcceptedScheduledTrip)
     Routes.post('/v1/trips/rate', tripController.updateRate)
     app.use(Routes)
+    app.use(Routes2)
     app.use(AuthRoutes)
     return app
 }
