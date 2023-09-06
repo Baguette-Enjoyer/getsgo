@@ -207,7 +207,17 @@ const setDriverResponseStatus = (driver_id, status) => {
 };
 exports.setDriverResponseStatus = setDriverResponseStatus;
 const getCurrentDriverInfoById = (id) => {
-    storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
+    // DriverMap.getMap().forEach((socket_value, socket_id) => {
+    //     if (socket_value.user_id == id) {
+    //         return {
+    //             user_id: socket_value.user_id,
+    //             status: socket_value.status,
+    //             lat: socket_value.lat,
+    //             lng: socket_value.lng
+    //         }
+    //     }
+    // })
+    for (const [socket_id, socket_value] of storage_1.DriverMap.getMap()) {
         if (socket_value.user_id == id) {
             return {
                 user_id: socket_value.user_id,
@@ -216,7 +226,7 @@ const getCurrentDriverInfoById = (id) => {
                 lng: socket_value.lng
             };
         }
-    });
+    }
     return { user_id: 0, status: "", lat: 0, lng: 0 };
 };
 exports.getCurrentDriverInfoById = getCurrentDriverInfoById;
@@ -266,6 +276,7 @@ const GetSocketByDriverId = (driver_id) => {
 const BroadcastIdleDrivers = (event, data) => {
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {
+            console.log("thằng này rãnh t broadcast nè", socket_value.user_id);
             initServer_1.io.in(`/driver/${socket_value.user_id}`).emit(event, data);
         }
     });
