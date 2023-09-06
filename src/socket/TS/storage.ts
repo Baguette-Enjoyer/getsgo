@@ -43,6 +43,8 @@ export interface TripValue {
     finished_date?: Date
     schedule_time?: Date
     is_callcenter: boolean
+    duration: string
+    distance: number
 }
 
 const users = new Map<string, User>()

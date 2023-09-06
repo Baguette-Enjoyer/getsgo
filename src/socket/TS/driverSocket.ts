@@ -48,6 +48,8 @@ interface TripValue {
     finished_date?: Date
     schedule_time?: Date
     is_callcenter: boolean
+    duration: string
+    distance: number
 }
 
 export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

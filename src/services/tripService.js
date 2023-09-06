@@ -53,6 +53,8 @@ const CreateTrip = async (data) => {
             is_paid: is_paid,
             price: price,
             is_callcenter: false,
+            distance: data.distance || 0,
+            duration: data.duration
         }
         // console.log(trip)
         const newTrip = await db.Trip.create(
