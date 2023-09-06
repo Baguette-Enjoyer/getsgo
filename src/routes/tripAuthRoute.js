@@ -11,7 +11,7 @@ const initTripAuthRoutes = (app) => {
     AuthRoutes.put('/v1/trips/cancel/:trip_id', tripController.CancelTrip)
     AuthRoutes.put('/v1/trips/accept/:trip_id', tripController.AcceptTrip)
 
-    return app.use(AuthRoutes)
+    return app.use('', AuthRoutes)
 }
 
 export default initTripAuthRoutes;

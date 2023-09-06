@@ -9,7 +9,7 @@ const initDBRoutes = (app) => {
     routes.get('/getallusers', dbController.GetAllCustomer)
     routes.get('/getalltrips', dbController.GetAllTrips)
     routes.get('/getallvehicles', dbController.GetAllVehicles)
-    return app.use(routes)
+    return app.use('', routes)
 }
 
 export default initDBRoutes

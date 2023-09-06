@@ -201,7 +201,7 @@ const AcceptTrip = async (data) => {
         if (trip.status == "Cancelled") throw new Error("Trip has been cancelled")
         else if (trip.status == "Confirmed") {
             throw new Error("Trip has been confirmed by other driver")
-        } else if (trip.status != "Waiting") throw new Error("Trip is not waiting")
+        }
     } catch (error) {
         throw error
     }

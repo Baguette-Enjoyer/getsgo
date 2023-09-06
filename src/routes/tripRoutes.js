@@ -17,7 +17,7 @@ const initTripRoutes = (app) => {
 
 
 
-    return app.use(Routes)
+    return app.use('', Routes)
 }
 
 export default initTripRoutes;

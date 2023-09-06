@@ -212,6 +212,7 @@ const GetAcceptedScheduledTrip = async (req, res) => {
     const driver_id = req.params.driver_id;
     const trips = await tripService.GetAcceptedScheduledTrip(driver_id)
     return res.status(200).json({
+        statusCode: 200,
         trips: trips
     })
 }
