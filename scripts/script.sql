@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `conversations`
+-- Cấu trúc bảng cho bảng `Conversations`
 --
 DROP TABLE IF EXISTS `Conversations`;
 CREATE TABLE `Conversations` (
@@ -241,7 +241,7 @@ INSERT INTO `Vehicle_types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 --
 
 --
--- Chỉ mục cho bảng `conversations`
+-- Chỉ mục cho bảng `Conversations`
 --
 ALTER TABLE `Conversations`
   ADD PRIMARY KEY (`id`),
@@ -304,7 +304,7 @@ ALTER TABLE `Vehicle_types`
 --
 
 --
--- AUTO_INCREMENT cho bảng `conversations`
+-- AUTO_INCREMENT cho bảng `Conversations`
 --
 ALTER TABLE `Conversations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -356,7 +356,7 @@ ALTER TABLE `Vehicle_types`
 --
 
 --
--- Các ràng buộc cho bảng `conversations`
+-- Các ràng buộc cho bảng `Conversations`
 --
 ALTER TABLE `Conversations`
   ADD CONSTRAINT `Conversations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -367,7 +367,7 @@ ALTER TABLE `Conversations`
 -- Các ràng buộc cho bảng `messages`
 --
 ALTER TABLE `Messages`
-  ADD CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `Conversations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
