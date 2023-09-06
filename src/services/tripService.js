@@ -532,7 +532,7 @@ export const GetAppointmentTrip = async () => {
         include: {
             model: db.User,
             as: 'user',
-            attributes: ['name', 'phone'],
+            attributes: ['name', 'phone','avatar'],
             required: true,
         },
         order: [
