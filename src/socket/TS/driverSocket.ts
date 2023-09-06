@@ -82,7 +82,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
         }
         console.log(driver_data);
         socket.join(`/driver/${user_id}`)
-        io.in(`/driver/${user_id}`).emit("driver-reconnect",curTrips)
+        io.in(`/driver/${user_id}`).emit("driver-reconnect", curTrips)
         DriverMap.getMap().set(socket.id, driver_data)
         // console.log(data)
     })
@@ -108,7 +108,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
         heading: driver.heading,
         message: "coming",
         status: "Confirmed",
-        is_scheduled:trip.is_scheduled
+        is_scheduled: trip.is_scheduled
     }
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
@@ -131,6 +131,9 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
         if (driver == undefined) return
         if (data.status == "Accept") {
             const trip = TripMap.getMap().get(data.trip.trip_id)
+            console.log('eeeeeeeeeeeeeeeeeee con ')
+            console.log(trip)
+            console.log(trip?.driver_id)
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id
                 trip.status = 'Confirmed'
@@ -145,7 +148,8 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 DriverMap.getMap().set(socket.id, driver)
 
                 senDriver(trip, driver, socket.id);
-
+                console.log(trip?.driver_id)
+                console.log('hhhhhhhssss')
                 //thông báo cho driver nhận chuyến ok
                 io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
 
@@ -229,7 +233,7 @@ export const setDriverResponseStatus = (driver_id: number, status: string) => {
     })
 }
 
-export const getCurrentDriverInfoById = (id: number): { user_id:number,status:string,lat: number, lng: number } => {
+export const getCurrentDriverInfoById = (id: number): { user_id: number, status: string, lat: number, lng: number } => {
     DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.user_id == id) {
             return {
@@ -240,7 +244,7 @@ export const getCurrentDriverInfoById = (id: number): { user_id:number,status:st
             }
         }
     })
-    return { user_id:0,status:"",lat: 0, lng: 0 }
+    return { user_id: 0, status: "", lat: 0, lng: 0 }
 }
 
 export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -269,7 +273,7 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const broadcastScheduleTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    
+
 }
 
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -288,10 +292,10 @@ const GetSocketByDriverId = (driver_id: number) => {
     return socketArr
 }
 
-export const BroadcastIdleDrivers = (event:string,data:any) => {
-    DriverMap.getMap().forEach((socket_value,socket_id)=>{
-        if(socket_value.status == "Idle"){
-            io.in(`/driver/${socket_value.user_id}`).emit(event,data)
+export const BroadcastIdleDrivers = (event: string, data: any) => {
+    DriverMap.getMap().forEach((socket_value, socket_id) => {
+        if (socket_value.status == "Idle") {
+            io.in(`/driver/${socket_value.user_id}`).emit(event, data)
         }
     })
 }

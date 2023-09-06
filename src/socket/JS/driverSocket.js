@@ -1,18 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
+        desc = { enumerable: true, get: function () { return m[k]; } };
     }
     Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
+}) : (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
+}) : function (o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -119,6 +119,9 @@ const handleDriverResponseBooking = (socket) => {
             return;
         if (data.status == "Accept") {
             const trip = storage_1.TripMap.getMap().get(data.trip.trip_id);
+            console.log('eeeeeeeeeeeeeeeeeee con ');
+            console.log(trip);
+            console.log(trip === null || trip === void 0 ? void 0 : trip.driver_id);
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id;
                 trip.status = 'Confirmed';
@@ -207,16 +210,29 @@ const setDriverResponseStatus = (driver_id, status) => {
 };
 exports.setDriverResponseStatus = setDriverResponseStatus;
 const getCurrentDriverInfoById = (id) => {
-    storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
-        if (socket_value.user_id == id) {
+    for (const socket_value of storage_1.DriverMap.getMap()) {
+        // storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
+        console.log(socket_value)
+        console.log(socket_value[1].user_id)
+        console.log('socket_value.user_id')
+        if (socket_value[1].user_id === id) {
+            console.log({
+                user_id: socket_value[1].user_id,
+                status: socket_value[1].status,
+                lat: socket_value[1].lat,
+                lng: socket_value[1].lng
+            })
+            console.log(socket_value[1].user_id)
+            console.log(socket_value[1].user_id)
+            console.log('socket_value[1].user_id')
             return {
-                user_id: socket_value.user_id,
-                status: socket_value.status,
-                lat: socket_value.lat,
-                lng: socket_value.lng
+                user_id: socket_value[1].user_id,
+                status: socket_value[1].status,
+                lat: socket_value[1].lat,
+                lng: socket_value[1].lng
             };
         }
-    });
+    };
     return { user_id: 0, status: "", lat: 0, lng: 0 };
 };
 exports.getCurrentDriverInfoById = getCurrentDriverInfoById;

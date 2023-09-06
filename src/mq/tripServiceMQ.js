@@ -129,18 +129,28 @@ export const ConsumerNormalTrip = async (message) => {
             // kiểm tra lại chuyến đi
             const t = await tripService.GetTripById(trip_id)
             //nếu chưa có driver
+            console.log('111111111')
+            console.log(t.driver_id)
             if (t.driver_id == null || t.driver_id == undefined) {
+                console.log('sao vậy anh')
                 await handleFind(data, userData)
             }
             else {
                 //kiểm tra driver đang có trong chuyến khác
                 const curDat = getCurrentDriverInfoById(t.driver_id)
-                if (curDat.status != "Idle" || curDat.driver_id == 0) {
+                console.log(curDat)
+                console.log('sao mày')
+                if (curDat.status != "Idle" || curDat.user_id == 0) {
+                    console.log('có em đây')
+                    console.log(curDat.status)
+                    console.log(curDat.user_id)
+
                     await tripService.UpdateTrip({ trip_id: trip_id, driver_id: null, status: "Pending" })
                     await handleFind(data, userData)
                 }
                 //không thì thông báo cho biết nó chuẩn bị
                 else {
+                    console.log('em ơi')
                     // driver
                     sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
                     broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
