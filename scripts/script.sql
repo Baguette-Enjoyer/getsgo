@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 --
 -- Cấu trúc bảng cho bảng `Conversations`
 --
---DROP TABLE IF EXISTS `Conversations`;
+
 CREATE TABLE `Conversations` (
   `id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `Conversations` (
 --
 -- Cấu trúc bảng cho bảng `messages`
 --
---DROP TABLE IF EXISTS `Messages`;
+
 CREATE TABLE `Messages` (
   `id` int(11) NOT NULL,
   `message` text DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `Messages` (
 --
 -- Cấu trúc bảng cho bảng `rates`
 --
---DROP TABLE IF EXISTS `Rates`;
+
 CREATE TABLE `Rates` (
   `id` int(11) NOT NULL,
   `star` float DEFAULT NULL,
@@ -83,7 +83,7 @@ INSERT INTO `Rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id
 --
 -- Cấu trúc bảng cho bảng `settings`
 --
---DROP TABLE IF EXISTS `Settings`;
+
 CREATE TABLE `Settings` (
   `id` int(11) NOT NULL,
   `auto_accept_trip` tinyint(1) DEFAULT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE `Settings` (
 --
 -- Cấu trúc bảng cho bảng `Trips`
 --
---DROP TABLE IF EXISTS `Trips`;
+
 CREATE TABLE `Trips` (
   `id` int(11) NOT NULL,
   `status` enum('Callcenter','Pending','Waiting','Confirmed','Driving','Arrived','Done','Cancelled') DEFAULT NULL,
@@ -151,7 +151,7 @@ INSERT INTO `Trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `n
 --
 -- Cấu trúc bảng cho bảng `Users`
 --
---DROP TABLE IF EXISTS `Users`;
+
 CREATE TABLE `Users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -192,7 +192,7 @@ INSERT INTO `Users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birt
 --
 -- Cấu trúc bảng cho bảng `vehicles`
 --
---DROP TABLE IF EXISTS `Vehicles`;
+
 CREATE TABLE `Vehicles` (
   `id` int(11) NOT NULL,
   `driver_license` varchar(255) DEFAULT NULL,
@@ -220,7 +220,7 @@ INSERT INTO `Vehicles` (`id`, `driver_license`, `vehicle_registration`, `license
 --
 -- Cấu trúc bảng cho bảng `vehicle_types`
 --
---DROP TABLE IF EXISTS `Vehicle_Types`;
+
 CREATE TABLE `Vehicle_Types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
