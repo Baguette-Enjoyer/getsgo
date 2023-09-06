@@ -109,6 +109,7 @@ const handleFind = async (data, userData) => {
 export const ConsumerNormalTrip = async (message) => {
     // console.log(message)
     const data = JSON.parse(message.content.toString())
+    console.log("này là data nè")
     console.log(data);
     const trip_id = data.trip_id
     // const place1 = data.start
@@ -120,6 +121,7 @@ export const ConsumerNormalTrip = async (message) => {
         trip_info: data
     }
     if (data.is_scheduled) {
+        console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
         const now = new Date()
         const scheduledTime = new Date(data.schedule_time)
@@ -127,12 +129,13 @@ export const ConsumerNormalTrip = async (message) => {
         const delay = notificationTime - now
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
+            console.log("kiểm tra lại")
             const t = await tripService.GetTripById(trip_id)
             //nếu chưa có driver
             console.log('111111111')
             console.log(t.driver_id)
             if (t.driver_id == null || t.driver_id == undefined) {
-                console.log('sao vậy anh')
+                console.log("không có driver chuyển qua")
                 await handleFind(data, userData)
             }
             else {
@@ -150,7 +153,7 @@ export const ConsumerNormalTrip = async (message) => {
                 }
                 //không thì thông báo cho biết nó chuẩn bị
                 else {
-                    console.log('em ơi')
+                    console.log('em ơi1')
                     // driver
                     sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
                     broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)

@@ -19,13 +19,21 @@ export const initQueue = async () => {
     // channel.assertQueue(rrq, {
     //     durable: true,
     // })
+    // console.log("hey call center queue")
     channel.consume("callcenter-trip-queue", async (message) => {
-        ConsumerCallcenterTrip(message)
-        channel.ack(message)
+
+        await ConsumerCallcenterTrip(message)
+        // channel.ack(message)
+    }, {
+        noAck: true
     })
+    // console.log("hey book trip queue")
     channel.consume("book-trip-queue", async (message) => {
-        ConsumerNormalTrip(message)
-        channel.ack(message)
+        console.log("t nhận được rồi nha")
+        await ConsumerNormalTrip(message)
+        // channel.ack(message)
+    }, {
+        noAck: true
     })
     return { conn, channel }
 }
@@ -35,9 +43,7 @@ export const SendMessageToQueue = (queueName, message) => {
         console.error("Channel is not initialized. Call initQueue() first.");
         return;
     }
-
-    channel.sendToQueue(queueName, Buffer.from(message), {
-        persistent: true, // Make the message persistent
-    });
+    console.log("gửi nè")
+    channel.sendToQueue(queueName, Buffer.from(message));
 };
 // export const { conn, channel } = await initQueue();

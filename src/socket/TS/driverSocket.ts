@@ -234,8 +234,31 @@ export const setDriverResponseStatus = (driver_id: number, status: string) => {
 }
 
 export const getCurrentDriverInfoById = (id: number): { user_id: number, status: string, lat: number, lng: number } => {
-    DriverMap.getMap().forEach((socket_value, socket_id) => {
-        if (socket_value.user_id == id) {
+    // DriverMap.getMap().forEach((socket_value, socket_id) => {
+    //     if (socket_value.user_id == id) {
+    //         return {
+    //             user_id: socket_value.user_id,
+    //             status: socket_value.status,
+    //             lat: socket_value.lat,
+    //             lng: socket_value.lng
+    //         }
+    //     }
+    // })
+    for (const [socket_id, socket_value] of DriverMap.getMap()) {
+        console.log({
+            user_id: socket_value.user_id,
+            status: socket_value.status,
+            lat: socket_value.lat,
+            lng: socket_value.lng
+        })
+        if (socket_value.user_id === id) {
+            console.log("nè mày")
+            console.log({
+                user_id: socket_value.user_id,
+                status: socket_value.status,
+                lat: socket_value.lat,
+                lng: socket_value.lng
+            })
             return {
                 user_id: socket_value.user_id,
                 status: socket_value.status,
@@ -243,7 +266,7 @@ export const getCurrentDriverInfoById = (id: number): { user_id: number, status:
                 lng: socket_value.lng
             }
         }
-    })
+    }
     return { user_id: 0, status: "", lat: 0, lng: 0 }
 }
 
@@ -295,6 +318,7 @@ const GetSocketByDriverId = (driver_id: number) => {
 export const BroadcastIdleDrivers = (event: string, data: any) => {
     DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {
+            console.log("thằng này rãnh t broadcast nè", socket_value.user_id)
             io.in(`/driver/${socket_value.user_id}`).emit(event, data)
         }
     })

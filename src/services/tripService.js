@@ -10,7 +10,7 @@ import { sendMessageFirebase } from '../firebase/firebaseApp'
 import historyService from './historyService'
 // import userService from './userService'
 import driverServices from './driverServices'
-import { TripMap } from '../socket/JS/storage'
+import { TripMap, DriverMap } from '../socket/JS/storage'
 
 const CreateTrip = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -223,6 +223,12 @@ const AcceptTrip = async (data) => {
     if (result != 1) {
         throw new Error("Something went wrong")
     }
+    // for (const [socket_id, driver_value] of DriverMap.getMap()) {
+    //     if (driver_value.user_id === data.driver_id) {
+    //         driver_value.status = "Driving"
+    //         break
+    //     }
+    // }
     const newTrip = await GetTripById(data.trip_id)
     const userInfo = await userService.GetUserById(newTrip.user_id)
     sendMessageFirebase(userInfo.token_fcm, 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
