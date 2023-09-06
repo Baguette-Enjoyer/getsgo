@@ -39,7 +39,9 @@ module.exports = (sequelize, DataTypes) => {
     paymentMethod: DataTypes.ENUM('Cash', 'Momo', 'IE'),
     is_scheduled: DataTypes.BOOLEAN,
     schedule_time: DataTypes.DATE,
-    is_callcenter: DataTypes.BOOLEAN
+    is_callcenter: DataTypes.BOOLEAN,
+    distance: DataTypes.DECIMAL,
+    duration: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Trip',

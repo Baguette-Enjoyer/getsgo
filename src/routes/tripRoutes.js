@@ -1,14 +1,8 @@
 import express from "express"
 import tripController from "../controllers/tripController"
-import authMiddleware from "../middleware/authMiddleware"
-const AuthRoutes = express.Router()
 const Routes = express.Router()
+
 const initTripRoutes = (app) => {
-    AuthRoutes.use(authMiddleware.AuthMiddleware)
-    AuthRoutes.post('/v1/booking/users', tripController.BookTrip)
-    AuthRoutes.get('/v1/drivers/trips', tripController.GetTrips)
-    AuthRoutes.put('/v1/trips/cancel/:trip_id', tripController.CancelTrip)
-    AuthRoutes.put('/v1/trips/accept/:trip_id', tripController.AcceptTrip)
     Routes.post('/v1/booking/callcenter', tripController.BookCallCenter)
     Routes.post('/v1/booking/callcenters1', tripController.BookS1)
     Routes.post('/v1/booking/callcenters2', tripController.BookS2)
@@ -20,9 +14,10 @@ const initTripRoutes = (app) => {
     Routes.get('/v1/appointment_trips', tripController.GetAppointmentTripController)
     Routes.get('/v1/appointment_trips/:driver_id', tripController.GetAcceptedScheduledTrip)
     Routes.post('/v1/trips/rate', tripController.updateRate)
-    app.use(Routes)
-    app.use(AuthRoutes)
-    return app
+
+
+
+    return app.use('', Routes)
 }
 
 export default initTripRoutes;

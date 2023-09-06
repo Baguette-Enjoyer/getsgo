@@ -24,10 +24,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `conversations`
+-- Cấu trúc bảng cho bảng `Conversations`
 --
-DROP TABLE IF EXISTS `conversations`;
-CREATE TABLE `conversations` (
+
+CREATE TABLE `Conversations` (
   `id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
@@ -41,8 +41,8 @@ CREATE TABLE `conversations` (
 --
 -- Cấu trúc bảng cho bảng `messages`
 --
-DROP TABLE IF EXISTS `messages`;
-CREATE TABLE `messages` (
+
+CREATE TABLE `Messages` (
   `id` int(11) NOT NULL,
   `message` text DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -56,8 +56,8 @@ CREATE TABLE `messages` (
 --
 -- Cấu trúc bảng cho bảng `rates`
 --
-DROP TABLE IF EXISTS `rates`;
-CREATE TABLE `rates` (
+
+CREATE TABLE `Rates` (
   `id` int(11) NOT NULL,
   `star` float DEFAULT NULL,
   `comment` text DEFAULT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `rates` (
 -- Đang đổ dữ liệu cho bảng `rates`
 --
 
-INSERT INTO `rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id`) VALUES
+INSERT INTO `Rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id`) VALUES
 (1, 4, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', NULL),
 (2, 5, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 2),
 (3, 2, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 3),
@@ -83,8 +83,8 @@ INSERT INTO `rates` (`id`, `star`, `comment`, `createdAt`, `updatedAt`, `trip_id
 --
 -- Cấu trúc bảng cho bảng `settings`
 --
-DROP TABLE IF EXISTS `settings`;
-CREATE TABLE `settings` (
+
+CREATE TABLE `Settings` (
   `id` int(11) NOT NULL,
   `auto_accept_trip` tinyint(1) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -95,10 +95,10 @@ CREATE TABLE `settings` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `trips`
+-- Cấu trúc bảng cho bảng `Trips`
 --
-DROP TABLE IF EXISTS `trips`;
-CREATE TABLE `trips` (
+
+CREATE TABLE `Trips` (
   `id` int(11) NOT NULL,
   `status` enum('Callcenter','Pending','Waiting','Confirmed','Driving','Arrived','Done','Cancelled') DEFAULT NULL,
   `start` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`start`)),
@@ -115,44 +115,46 @@ CREATE TABLE `trips` (
   `updatedAt` datetime NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `driver_id` int(11) DEFAULT NULL,
-  `is_callcenter` tinyint(1) DEFAULT NULL
+  `is_callcenter` tinyint(1) DEFAULT NULL,
+  `distance` decimal(10,0) DEFAULT NULL,
+  `duration` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Đang đổ dữ liệu cho bảng `trips`
+-- Đang đổ dữ liệu cho bảng `Trips`
 --
 
-INSERT INTO `trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `note`, `price`, `is_paid`, `paymentMethod`, `is_scheduled`, `schedule_time`, `createdAt`, `updatedAt`, `user_id`, `driver_id`, `is_callcenter`) VALUES
-(2, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 2, NULL),
-(3, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 2, NULL),
-(4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3, NULL),
-(5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3, 1),
-(6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 3, NULL),
-(7, 'Done', '{\"place\":\"2 Nguyễn Bỉnh Khiêm, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7877783,\"lng\":106.705055}', '{\"name\":\"Quận 1, Ho Chi Minh City, Vietnam\",\"lat\":10.7756587,\"lng\":106.7004238}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL),
-(8, 'Done', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL),
-(9, 'Done', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL),
-(10, 'Done', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, NULL),
-(11, 'Done', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, NULL),
-(13, 'Pending', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL),
-(14, 'Waiting', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL),
-(15, 'Confirmed', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, NULL),
-(16, 'Driving', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, 1),
-(18, 'Pending', '\"{\\\"place\\\":\\\"random places\\\",\\\"lat\\\":10.1,\\\"lng\\\":10.2}\"', '\"{\\\"place\\\":\\\"2nd random places\\\",\\\"lat\\\":10.3,\\\"lng\\\":10.4}\"', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-16 11:02:34', '2023-08-16 11:02:34', 4, NULL, 0),
-(19, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 05:58:55', '2023-08-22 05:58:55', 4, NULL, 0),
-(20, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 07:54:59', '2023-08-22 07:54:59', 4, NULL, 0),
-(21, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 07:56:33', '2023-08-22 07:56:33', 4, NULL, 0),
-(22, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 07:59:55', '2023-08-22 07:59:55', 4, NULL, 0),
-(23, 'Confirmed', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 08:06:30', '2023-08-22 08:06:39', 4, 3, 0),
-(26, 'Confirmed', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 08:11:17', '2023-08-22 08:11:22', 4, 3, 0),
-(37, 'Confirmed', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 09:00:12', '2023-08-22 09:00:46', 4, 3, 0);
+INSERT INTO `Trips` (`id`, `status`, `start`, `end`, `finished_date`, `type`, `note`, `price`, `is_paid`, `paymentMethod`, `is_scheduled`, `schedule_time`, `createdAt`, `updatedAt`, `user_id`, `driver_id`, `is_callcenter`,`distance`,`duration`) VALUES
+(2, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 2, NULL,NULL,NULL),
+(3, 'Cancelled', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 2, NULL,NULL,NULL),
+(4, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3, NULL,NULL,NULL),
+(5, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 4, 3, 1,NULL,NULL),
+(6, 'Done', '{\"lat\":10.1,\"lng\":10.2,\"place\":\"random places\"}', '{\"lat\":10.3,\"lng\":10.4,\"place\":\"2nd random places\"}', NULL, NULL, NULL, '50000', 0, 'Cash', 0, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 5, 3, NULL,NULL,NULL),
+(7, 'Done', '{\"place\":\"2 Nguyễn Bỉnh Khiêm, Quận 1, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7877783,\"lng\":106.705055}', '{\"name\":\"Quận 1, Ho Chi Minh City, Vietnam\",\"lat\":10.7756587,\"lng\":106.7004238}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL,NULL,NULL),
+(8, 'Done', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL,NULL,NULL),
+(9, 'Done', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL,NULL,NULL),
+(10, 'Done', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, NULL,NULL,NULL),
+(11, 'Done', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, NULL,NULL,NULL),
+(13, 'Pending', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL,NULL,NULL),
+(14, 'Waiting', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 10, 9, NULL,NULL,NULL),
+(15, 'Confirmed', '{\"place\":\"History Museum of Ho Chi Minh City, 2 Nguyễn Bỉnh Khiêm, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh, Vietnam\",\"lat\":10.787984,\"lng\":106.7047376}', '{\"place\":\"Quận 7, Ho Chi Minh City, Vietnam\",\"lat\":10.7340344,\"lng\":106.7215787}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, NULL,NULL,NULL),
+(16, 'Driving', '{\"place\":\"58B, Quận 3, Thành phố Hồ Chí Minh, Việt Nam\",\"lat\":10.7843683,\"lng\":106.6844083}', '{\"place\":\"Quán 1...2...3...DZÔ | Quán nhậu ngon quận 8, Đường Cao Lỗ, Phường 4, District 8, Ho Chi Minh City, Vietnam\",\"lat\":10.743322,\"lng\":106.6764163}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-11 09:45:30', '2023-08-11 09:45:30', 12, 9, 1,NULL,NULL),
+(18, 'Pending', '\"{\\\"place\\\":\\\"random places\\\",\\\"lat\\\":10.1,\\\"lng\\\":10.2}\"', '\"{\\\"place\\\":\\\"2nd random places\\\",\\\"lat\\\":10.3,\\\"lng\\\":10.4}\"', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-16 11:02:34', '2023-08-16 11:02:34', 4, NULL, 0,NULL,NULL),
+(19, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 05:58:55', '2023-08-22 05:58:55', 4, NULL, 0,NULL,NULL),
+(20, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 07:54:59', '2023-08-22 07:54:59', 4, NULL, 0,NULL,NULL),
+(21, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 07:56:33', '2023-08-22 07:56:33', 4, NULL, 0,NULL,NULL),
+(22, 'Pending', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 07:59:55', '2023-08-22 07:59:55', 4, NULL, 0,NULL,NULL),
+(23, 'Confirmed', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 08:06:30', '2023-08-22 08:06:39', 4, 3, 0,NULL,NULL),
+(26, 'Confirmed', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 08:11:17', '2023-08-22 08:11:22', 4, 3, 0,NULL,NULL),
+(37, 'Confirmed', '{\"place\":\"random places\",\"lat\":10.1,\"lng\":10.2}', '{\"place\":\"2nd random places\",\"lat\":10.3,\"lng\":10.4}', NULL, NULL, NULL, '50000', 0, NULL, 0, NULL, '2023-08-22 09:00:12', '2023-08-22 09:00:46', 4, 3, 0,NULL,NULL);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `users`
+-- Cấu trúc bảng cho bảng `Users`
 --
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
+
+CREATE TABLE `Users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
@@ -170,10 +172,10 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Đang đổ dữ liệu cho bảng `users`
+-- Đang đổ dữ liệu cho bảng `Users`
 --
 
-INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birthday`, `avatar`, `type`, `active`, `accessToken`, `createdAt`, `updatedAt`, `token_fcm`) VALUES
+INSERT INTO `Users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birthday`, `avatar`, `type`, `active`, `accessToken`, `createdAt`, `updatedAt`, `token_fcm`) VALUES
 (1, 'Admin', '+84111111111', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Admin', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 'fj9Kb13NThm-4QqSAIu4rb:APA91bHOZm3Fja_OzP7tXdhV391geJ6ZIM_1W_KMOexa_VYF4OUL_M2K7QBrqJlxv1lRlTnJaOnHbDGyrgiP3niBJGoJ8x9y5RzLQn7SNhLbJA2mqgyxnoWENpeE6FTSIfy8dv7iatEB'),
 (2, 'Driver', '+84222222222', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 'fj9Kb13NThm-4QqSAIu4rb:APA91bHOZm3Fja_OzP7tXdhV391geJ6ZIM_1W_KMOexa_VYF4OUL_M2K7QBrqJlxv1lRlTnJaOnHbDGyrgiP3niBJGoJ8x9y5RzLQn7SNhLbJA2mqgyxnoWENpeE6FTSIfy8dv7iatEB'),
 (3, 'Driver', '+84333333333', NULL, '$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee', NULL, NULL, 'https://picsum.photos/200/300', 'Driver', NULL, NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 'fj9Kb13NThm-4QqSAIu4rb:APA91bHOZm3Fja_OzP7tXdhV391geJ6ZIM_1W_KMOexa_VYF4OUL_M2K7QBrqJlxv1lRlTnJaOnHbDGyrgiP3niBJGoJ8x9y5RzLQn7SNhLbJA2mqgyxnoWENpeE6FTSIfy8dv7iatEB'),
@@ -192,8 +194,8 @@ INSERT INTO `users` (`id`, `name`, `phone`, `email`, `password`, `gender`, `birt
 --
 -- Cấu trúc bảng cho bảng `vehicles`
 --
-DROP TABLE IF EXISTS `vehicles`;
-CREATE TABLE `vehicles` (
+
+CREATE TABLE `Vehicles` (
   `id` int(11) NOT NULL,
   `driver_license` varchar(255) DEFAULT NULL,
   `vehicle_registration` varchar(255) DEFAULT NULL,
@@ -210,7 +212,7 @@ CREATE TABLE `vehicles` (
 -- Đang đổ dữ liệu cho bảng `vehicles`
 --
 
-INSERT INTO `vehicles` (`id`, `driver_license`, `vehicle_registration`, `license_plate`, `name`, `description`, `createdAt`, `updatedAt`, `driver_id`, `vehicle_type_id`) VALUES
+INSERT INTO `Vehicles` (`id`, `driver_license`, `vehicle_registration`, `license_plate`, `name`, `description`, `createdAt`, `updatedAt`, `driver_id`, `vehicle_type_id`) VALUES
 (1, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 2, 1),
 (2, '0964155097', '123456', '30D-206.32', 'Honda 7 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 3, 2),
 (3, '0964155097', '123456', '30D-206.32', 'Honda 4 Chỗ Vip', NULL, '2023-08-11 09:44:46', '2023-08-11 09:44:46', 9, 1);
@@ -220,8 +222,8 @@ INSERT INTO `vehicles` (`id`, `driver_license`, `vehicle_registration`, `license
 --
 -- Cấu trúc bảng cho bảng `vehicle_types`
 --
-DROP TABLE IF EXISTS `vehicle_types`;
-CREATE TABLE `vehicle_types` (
+
+CREATE TABLE `Vehicle_Types` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -232,7 +234,7 @@ CREATE TABLE `vehicle_types` (
 -- Đang đổ dữ liệu cho bảng `vehicle_types`
 --
 
-INSERT INTO `vehicle_types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Vehicle_Types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 (1, 'Xe 4 Chỗ', '2023-08-11 09:44:46', '2023-08-11 09:44:46'),
 (2, 'Xe 7 Chỗ', '2023-08-11 09:44:46', '2023-08-11 09:44:46');
 
@@ -241,9 +243,9 @@ INSERT INTO `vehicle_types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 --
 
 --
--- Chỉ mục cho bảng `conversations`
+-- Chỉ mục cho bảng `Conversations`
 --
-ALTER TABLE `conversations`
+ALTER TABLE `Conversations`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `driver_id` (`driver_id`),
@@ -252,7 +254,7 @@ ALTER TABLE `conversations`
 --
 -- Chỉ mục cho bảng `messages`
 --
-ALTER TABLE `messages`
+ALTER TABLE `Messages`
   ADD PRIMARY KEY (`id`),
   ADD KEY `conversation_id` (`conversation_id`),
   ADD KEY `user_id` (`user_id`);
@@ -260,35 +262,35 @@ ALTER TABLE `messages`
 --
 -- Chỉ mục cho bảng `rates`
 --
-ALTER TABLE `rates`
+ALTER TABLE `Rates`
   ADD PRIMARY KEY (`id`),
   ADD KEY `trip_id` (`trip_id`);
 
 --
 -- Chỉ mục cho bảng `settings`
 --
-ALTER TABLE `settings`
+ALTER TABLE `Settings`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Chỉ mục cho bảng `trips`
+-- Chỉ mục cho bảng `Trips`
 --
-ALTER TABLE `trips`
+ALTER TABLE `Trips`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `driver_id` (`driver_id`);
 
 --
--- Chỉ mục cho bảng `users`
+-- Chỉ mục cho bảng `Users`
 --
-ALTER TABLE `users`
+ALTER TABLE `Users`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Chỉ mục cho bảng `vehicles`
 --
-ALTER TABLE `vehicles`
+ALTER TABLE `Vehicles`
   ADD PRIMARY KEY (`id`),
   ADD KEY `driver_id` (`driver_id`),
   ADD KEY `vehicle_type_id` (`vehicle_type_id`);
@@ -296,7 +298,7 @@ ALTER TABLE `vehicles`
 --
 -- Chỉ mục cho bảng `vehicle_types`
 --
-ALTER TABLE `vehicle_types`
+ALTER TABLE `Vehicle_Types`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -304,51 +306,51 @@ ALTER TABLE `vehicle_types`
 --
 
 --
--- AUTO_INCREMENT cho bảng `conversations`
+-- AUTO_INCREMENT cho bảng `Conversations`
 --
-ALTER TABLE `conversations`
+ALTER TABLE `Conversations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `messages`
 --
-ALTER TABLE `messages`
+ALTER TABLE `Messages`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `rates`
 --
-ALTER TABLE `rates`
+ALTER TABLE `Rates`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `settings`
 --
-ALTER TABLE `settings`
+ALTER TABLE `Settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `trips`
+-- AUTO_INCREMENT cho bảng `Trips`
 --
-ALTER TABLE `trips`
+ALTER TABLE `Trips`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT cho bảng `users`
+-- AUTO_INCREMENT cho bảng `Users`
 --
-ALTER TABLE `users`
+ALTER TABLE `Users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `vehicles`
 --
-ALTER TABLE `vehicles`
+ALTER TABLE `Vehicles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT cho bảng `vehicle_types`
 --
-ALTER TABLE `vehicle_types`
+ALTER TABLE `Vehicle_Types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
@@ -356,45 +358,45 @@ ALTER TABLE `vehicle_types`
 --
 
 --
--- Các ràng buộc cho bảng `conversations`
+-- Các ràng buộc cho bảng `Conversations`
 --
-ALTER TABLE `conversations`
-  ADD CONSTRAINT `Conversations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `Conversations_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `Conversations_ibfk_3` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Conversations`
+  ADD CONSTRAINT `Conversations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Conversations_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Conversations_ibfk_3` FOREIGN KEY (`trip_id`) REFERENCES `Trips` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `messages`
 --
-ALTER TABLE `messages`
-  ADD CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `conversations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Messages`
+  ADD CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`conversation_id`) REFERENCES `Conversations` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `rates`
 --
-ALTER TABLE `rates`
-  ADD CONSTRAINT `Rates_ibfk_1` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Rates`
+  ADD CONSTRAINT `Rates_ibfk_1` FOREIGN KEY (`trip_id`) REFERENCES `Trips` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `settings`
 --
-ALTER TABLE `settings`
-  ADD CONSTRAINT `Settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Settings`
+  ADD CONSTRAINT `Settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `trips`
+-- Các ràng buộc cho bảng `Trips`
 --
-ALTER TABLE `trips`
-  ADD CONSTRAINT `Trips_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `Trips_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Trips`
+  ADD CONSTRAINT `Trips_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Trips_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `vehicles`
 --
-ALTER TABLE `vehicles`
-  ADD CONSTRAINT `Vehicles_ibfk_1` FOREIGN KEY (`driver_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `Vehicles_ibfk_2` FOREIGN KEY (`vehicle_type_id`) REFERENCES `vehicle_types` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Vehicles`
+  ADD CONSTRAINT `Vehicles_ibfk_1` FOREIGN KEY (`driver_id`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `Vehicles_ibfk_2` FOREIGN KEY (`vehicle_type_id`) REFERENCES `Vehicle_Types` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
