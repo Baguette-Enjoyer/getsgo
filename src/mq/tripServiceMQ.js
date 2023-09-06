@@ -123,7 +123,7 @@ export const ConsumerNormalTrip = async (message) => {
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
         const now = new Date()
         const scheduledTime = new Date(data.schedule_time)
-        const notificationTime = new Date(scheduledTime - 15 * 60000)
+        const notificationTime = new Date(scheduledTime - 1 * 60000)
         const delay = notificationTime - now
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
