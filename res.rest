@@ -10,7 +10,7 @@ Content-Type: application/json
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTA5NjM0NzksImV4cCI6MTY5MjA0MzQ3OX0.o0kfUy4iiG5kyYoB3ea8URXpISHenDkopQdlKvwtNeU
 
 ###
-POST http://174.138.19.215:3000/v1/users/login
+POST http://localhost:3000/v1/users/login
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ###
 POST http://localhost:3000/v1/booking/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTIxODM1NzUsImV4cCI6MTY5MzI2MzU3NX0.5uonl_EPt52dMZRKNxvrJ9aUFHedzl-vT2Nb29p_TKw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTMzODA3MDEsImV4cCI6MTY5NDQ2MDcwMX0.EnFKtTwFmabITxZUgvebmQyecsBQ_o4nOlQiKSjWKVo
 Content-Type: application/json
 
 {
@@ -37,7 +37,9 @@ Content-Type: application/json
     "is_scheduled":false,
     "price":50000,
     "is_paid":false,
-    "payment_method":"Cash"
+    "payment_method":"Cash",
+    "duration":"100",
+    "distance":100
 }
 ###
 POST http://localhost:3000/v1/booking/callcenter
