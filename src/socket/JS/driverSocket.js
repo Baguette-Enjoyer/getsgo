@@ -21,27 +21,36 @@ const driverServices_1 = __importDefault(require("../../services/driverServices"
 const handleDriverLogin = (socket) => {
     socket.on('driver-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
         const user_id = data.user_id;
-        const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
-        const driver_data = {
-            user_id: user_id,
-            lat: data.lat,
-            lng: data.lng,
-            status: data.status,
-            heading: data.heading,
-            vehicle_type: driver_info.driver_info.driver_vehicle.id,
-            rating: driver_info.statics.starResult,
-            client_id: undefined,
-            token_fcm: driver_info.token_fcm,
-        };
-        // const curTrips = await GetRunningTripOfDriver(user_id)
+        const d = (0, exports.getCurrentDriverInfoById)(user_id);
+        let driver_data;
+        if (d.status == "Reconnecting") {
+            driver_data = {
+                user_id: user_id,
+                status: "Driving",
+                vehicle_type: d.vehicle_type,
+                rating: d.rating,
+                client_id: d.client_id,
+                token_fcm: d.token_fcm,
+                lat: data.lat,
+                lng: data.lng,
+                heading: data.heading,
+            };
+        }
+        else {
+            const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
+            driver_data = {
+                user_id: user_id,
+                lat: data.lat,
+                lng: data.lng,
+                status: data.status,
+                heading: data.heading,
+                vehicle_type: driver_info.driver_info.driver_vehicle.id,
+                rating: driver_info.statics.starResult,
+                client_id: undefined,
+                token_fcm: driver_info.token_fcm,
+            };
+        }
         const currentTrip = yield (0, exports.getDriverCurrentTrip)(user_id);
-        // const curTrips = await tripService.GetRunningTripOfUser(user_id)
-        // curTrips.forEach((item:any)=>{
-        //     const driverInfo = GetDriverInfoById(item.driver_id)
-        //     const driverDat = DriverMap.getMap().get(driverInfo!)
-        //     curTrips.driver = driverDat
-        // })
-        // console.log(driver_data);
         socket.join(`/driver/${user_id}`);
         initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip);
         storage_1.DriverMap.getMap().set(socket.id, driver_data);
@@ -184,27 +193,12 @@ const setDriverResponseStatus = (driver_id, status) => {
 };
 exports.setDriverResponseStatus = setDriverResponseStatus;
 const getCurrentDriverInfoById = (id) => {
-    // DriverMap.getMap().forEach((socket_value, socket_id) => {
-    //     if (socket_value.user_id == id) {
-    //         return {
-    //             user_id: socket_value.user_id,
-    //             status: socket_value.status,
-    //             lat: socket_value.lat,
-    //             lng: socket_value.lng
-    //         }
-    //     }
-    // })
     for (const [socket_id, socket_value] of storage_1.DriverMap.getMap()) {
         if (socket_value.user_id == id) {
-            return {
-                user_id: socket_value.user_id,
-                status: socket_value.status,
-                lat: socket_value.lat,
-                lng: socket_value.lng
-            };
+            return socket_value;
         }
     }
-    return { user_id: 0, status: "", lat: 0, lng: 0 };
+    return { user_id: 0, status: "", lat: 0, lng: 0, heading: 0, rating: 0, token_fcm: "000", vehicle_type: "1" };
 };
 exports.getCurrentDriverInfoById = getCurrentDriverInfoById;
 const handleLocationUpdate = (socket) => {

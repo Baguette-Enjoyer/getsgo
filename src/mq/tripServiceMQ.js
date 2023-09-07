@@ -16,47 +16,70 @@ export const ConsumerCallcenterTrip = async (message) => {
     const trip_id = data.trip_id
     const place1 = data.start
 
-    TripMap.getMap().set(data.trip_id, data);
+    // TripMap.getMap().set(data.trip_id, data);
     let DataResponse = {
         user_info: data.phone,
         trip_info: data
     }
     // let DataResponseStringified = JSON.stringify(DataResponse)
-    let timesUp = false
-    let loopsBroken = false
-    setTimeout(async () => {
-        if (!loopsBroken) {
-            timesUp = true
-            await DeleteTrip(trip_id)
-            TripMap.getMap().delete(trip_id)
-            // io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
-        }
-    }, 70000)
-    while (timesUp == false) {
-        console.log(DriverMap.getMap());
-        console.log('hehehhehe');
-        const possibleDrivers = locationServices.requestRide(DriverMap.getMap(), place1, DriverInBroadcast.getDriverInBroadcast())
-        console.log(possibleDrivers);
-        for (let i = 0; i < possibleDrivers.length; i++) {
-            console.log('driver');
-            console.log(DataResponse);
-            const driver = possibleDrivers[i];
-            console.log(driver.socketId)
-            if (timesUp != true && loopsBroken == false) {
-                AddDriverToBroadCast(driver.user_id);
-                //
-                broadCastToDriver(driver.socketId, "user-trip", DataResponse);
+    if (data.is_scheduled) {
+        console.log("mày đặt chuyến hẹn giờ")
+        BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
+        const now = new Date()
+        const scheduledTime = new Date(data.schedule_time)
+        const notificationTime = new Date(scheduledTime - 1 * 60000)
+        const delay = notificationTime - now
+        setTimeout(async () => {
+            // kiểm tra lại chuyến đi
+            console.log("kiểm tra lại")
+            const t = await tripService.GetTripById(trip_id)
+            //nếu chưa có driver
+            console.log('111111111')
+            console.log(t.driver_id)
+            if (t.driver_id == null || t.driver_id == undefined) {
+                console.log("không có driver chuyển qua")
+                await handleFind(data, userData)
             }
-        }
-        await new Promise((resolve) => setTimeout(resolve, 11000));
-        const trip = TripMap.getMap().get(trip_id);
-        console.log('11111111111')
-        console.log(trip)
-        if (trip !== undefined && trip.driver_id !== undefined) {
-            loopsBroken = true
-            break;
-        }
+            else {
+                //kiểm tra driver đang có trong chuyến khác
+                const curDat = getCurrentDriverInfoById(t.driver_id)
+                console.log(curDat)
+                console.log('sao mày')
+                if (curDat.status != "Idle" || curDat.user_id == 0) {
+                    console.log('có em đây')
+                    console.log(curDat.status)
+                    console.log(curDat.user_id)
+
+                    await tripService.UpdateTrip({ trip_id: trip_id, driver_id: null, status: "Pending" })
+                    await handleFind(data, userData)
+                }
+                //không thì thông báo cho biết nó chuẩn bị
+                else {
+                    console.log('em ơi1')
+                    TripMap.getMap().set(data.trip_id, data);
+
+                    // driver
+                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
+                    broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
+                    const driverData = await driverServices.GetDriverInfoById(t.driver_id)
+                    const location = GetSocketByDriverId(t.driver_id)
+                    const dataDriver = {
+                        driver_info: driverData,
+                        trip_id: trip_id,
+                        location: location
+                    }
+                    console.log(dataDriver)
+                    console.log('em ơi')
+                    // client
+                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
+                    broadCastToClientById(t.user_id, "schedule-start", dataDriver)
+                }
+                // broadCastToDriver()
+            }
+        }, delay)
+        return
     }
+    else await handleFind(data, data.phone)
 }
 const handleFind = async (data, userData) => {
     const place1 = data.start

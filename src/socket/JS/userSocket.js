@@ -60,6 +60,7 @@ const findCurrentTripOfUser = (user_id) => __awaiter(void 0, void 0, void 0, fun
             const returnDat = trip_value;
             driverDat['location'] = location;
             returnDat["driver"] = driverDat;
+            // returnDat= location
             return returnDat;
         }
     }

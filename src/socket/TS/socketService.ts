@@ -90,7 +90,12 @@ const handleDisconnect = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Def
             UserMap.getMap().delete(socket.id)
         }
         else {
-            DriverMap.getMap().delete(socket.id)
+            const driverDat = DriverMap.getMap().get(socket.id)
+            if (driverDat?.client_id != null){
+                driverDat!.status = "Reconnecting"
+                DriverMap.getMap().set(socket.id,driverDat)
+            }
+            else DriverMap.getMap().delete(socket.id)
         }
         // users.delete(socket.id)
         console.log("client disconnected " + socket.id)
