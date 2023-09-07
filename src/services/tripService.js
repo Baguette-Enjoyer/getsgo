@@ -780,7 +780,7 @@ export const GetRunningTripOfUser = async (user_id) => {
             },
             {
                 model: db.User,
-                as: 'driver',
+                as: 'driver_info',
                 attributes: ['id', 'name', 'phone', 'email', 'avatar'],
                 include: [
                     {
