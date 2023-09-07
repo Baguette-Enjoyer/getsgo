@@ -9,6 +9,7 @@ import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip, G
 import { sendMessageFirebase } from '../firebase/firebaseApp.js'
 import driverServices from '../services/driverServices.js'
 const moment = require('moment-timezone');
+moment.tz.setDefault('Asia/Ho_Chi_Minh');
 export const ConsumerCallcenterTrip = async (message) => {
     // console.log(message)
     const data = JSON.parse(message.content.toString())
@@ -30,13 +31,13 @@ export const ConsumerCallcenterTrip = async (message) => {
     if (data.is_scheduled) {
         console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
-        let now = new Date()
-        now = moment(now).tz('Asia/Ho_Chi_Minh');
+        const now = moment()
 
-        let scheduledTime = new Date(data.schedule_time)
-        scheduledTime = moment(scheduledTime).tz('Asia/Ho_Chi_Minh');
-        const notificationTime = scheduledTime.clone().subtract(1, 'minutes'); // Sử dụng scheduledTime và subtract 1 phút
-        const delay = notificationTime - now;
+        const scheduledTime = moment(data.schedule_time);
+        // const remainingMinutes = scheduledTime.diff(currentTime, 'minutes');
+        const delay = scheduledTime - now;
+        // const delay = notificationTime - now;
+        console.log("delay ", delay)
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
             console.log("kiểm tra lại")
@@ -156,15 +157,15 @@ export const ConsumerNormalTrip = async (message) => {
     if (data.is_scheduled) {
         console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
-        let now = new Date()
-        now = moment(now).tz('Asia/Ho_Chi_Minh');
 
-        let scheduledTime = new Date(data.schedule_time)
-        scheduledTime = moment(scheduledTime).tz('Asia/Ho_Chi_Minh');
-        const notificationTime = scheduledTime.clone().subtract(1, 'minutes'); // Sử dụng scheduledTime và subtract 1 phút
-        const delay = notificationTime - now;
-        console.log("schedule time là ", scheduledTime)
-        console.log("tao cho delay là ", delay)
+        const now = moment()
+
+        const scheduledTime = moment(data.schedule_time);
+        // const remainingMinutes = scheduledTime.diff(currentTime, 'minutes');
+        const delay = scheduledTime - now;
+        // const delay = notificationTime - now;
+        console.log("delay ", delay)
+
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
             console.log("kiểm tra lại")

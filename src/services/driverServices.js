@@ -51,7 +51,7 @@ const GetDriverInfoById = async (driver_id) => {
             },
         )
         if (driver == null) {
-            return reject(new Error(`Driver not found`))
+            return resolve(null)
         }
         const trips = await historyService.GetHistoryOfDriver(driver.id)
         const stats = historyService.GetDriverStatics(trips)
