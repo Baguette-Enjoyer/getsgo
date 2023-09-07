@@ -798,7 +798,15 @@ export const GetRunningTripOfUser = async (user_id) => {
             ['updatedAt', 'DESC'],
         ],
     })
-    if (trip) return trip
+
+    if (trip) {
+        for (const t of trip) {
+            t.start = JSON.parse(t.start)
+            t.end = JSON.parse(t.end)
+            t.schedule_time = new Date(t.schedule_time).toLocaleString()
+        }
+        return trip
+    }
     return null
 }
 export const GetRunningTripOfDriver = async (driver_id) => {
