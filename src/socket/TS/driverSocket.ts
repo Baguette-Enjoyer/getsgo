@@ -304,17 +304,14 @@ export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEv
         socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message)
     })
 }
-
-const GetSocketByDriverId = (driver_id: number) => {
-    let socketArr: string[] = []
-    DriverMap.getMap().forEach((socket_value, socket_id) => {
+export const GetSocketByDriverId = (driver_id: number) => {
+    for (const [socket_id,socket_value] of DriverMap.getMap()){
         if (socket_value.user_id == driver_id) {
-            socketArr.push(socket_id)
+            return socket_value
         }
-    })
-    return socketArr
+    }
+    return null
 }
-
 export const BroadcastIdleDrivers = (event: string, data: any) => {
     DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {

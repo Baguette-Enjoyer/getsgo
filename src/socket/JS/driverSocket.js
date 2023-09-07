@@ -1,18 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function () { return m[k]; } };
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
     Object.defineProperty(o, k2, desc);
-}) : (function (o, m, k, k2) {
+}) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function (o, v) {
+}) : function(o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BroadcastIdleDrivers = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
+exports.BroadcastIdleDrivers = exports.GetSocketByDriverId = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const tripService_1 = __importStar(require("../../services/tripService"));
@@ -283,14 +283,14 @@ const handleMessageFromUser = (socket) => {
 };
 exports.handleMessageFromUser = handleMessageFromUser;
 const GetSocketByDriverId = (driver_id) => {
-    let socketArr = [];
-    storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
+    for (const [socket_id, socket_value] of storage_1.DriverMap.getMap()) {
         if (socket_value.user_id == driver_id) {
-            socketArr.push(socket_id);
+            return socket_value;
         }
-    });
-    return socketArr;
+    }
+    return null;
 };
+exports.GetSocketByDriverId = GetSocketByDriverId;
 const BroadcastIdleDrivers = (event, data) => {
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {
