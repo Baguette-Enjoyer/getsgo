@@ -11,7 +11,7 @@ import jwtService from "../../services/jwtService"
 export const runSocketService = () => {
     // io.use(authSocket)
     initSocket()
-    initSocketService()
+    // initSocketService()
     console.log("socket service running")
 }
 
@@ -68,21 +68,21 @@ const initSocket = () => {
 //     });
 // }
 
-const initSocketService = () => {
-    updateLocationLoop()
-}
+// const initSocketService = () => {
+//     updateLocationLoop()
+// }
 
-const updateLocationLoop = () => {
-    TripMap.getMap().forEach((trip_value, trip_id) => {
-        const driver_id = trip_value.driver_id
-        if (driver_id === undefined) return
-        // let socketDriver = GetSocketByDriverId(driver_id)
-        const driver_info = getCurrentDriverInfoById(driver_id)
-        const stringifiedResponse = JSON.stringify(driver_info)
-        io.in(`/user/${trip_value.user_id}`).emit('location-update', stringifiedResponse)
-    })
-    setTimeout(() => updateLocationLoop(), 60000)
-}
+// const updateLocationLoop = () => {
+//     TripMap.getMap().forEach((trip_value, trip_id) => {
+//         const driver_id = trip_value.driver_id
+//         if (driver_id === undefined) return
+//         // let socketDriver = GetSocketByDriverId(driver_id)
+//         const driver_info = getCurrentDriverInfoById(driver_id)
+//         const stringifiedResponse = JSON.stringify(driver_info)
+//         io.in(`/user/${trip_value.user_id}`).emit('location-update', stringifiedResponse)
+//     })
+//     setTimeout(() => updateLocationLoop(), 60000)
+// }
 
 const handleDisconnect = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('disconnect', () => {
@@ -91,9 +91,9 @@ const handleDisconnect = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Def
         }
         else {
             const driverDat = DriverMap.getMap().get(socket.id)
-            if (driverDat?.client_id != null){
+            if (driverDat?.client_id != null) {
                 driverDat!.status = "Reconnecting"
-                DriverMap.getMap().set(socket.id,driverDat)
+                DriverMap.getMap().set(socket.id, driverDat)
             }
             else DriverMap.getMap().delete(socket.id)
         }
