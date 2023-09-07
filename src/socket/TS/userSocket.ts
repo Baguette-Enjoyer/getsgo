@@ -7,6 +7,7 @@ import { DriverInBroadcast, DriverMap, TripMap, UserMap } from './storage'
 import tripService from "../../services/tripService"
 import driverServices from "../../services/driverServices"
 import initRedis from "../../config/connectRedis"
+import { GetSocketByDriverId } from "./driverSocket"
 let rd = initRedis()
 interface User {
     user_id: number
@@ -17,6 +18,8 @@ interface TripValue {
     trip_id: number
     user_id: number
     driver_id?: number
+    driver?: any
+    user?: any
     start: {
         lat: number
         lng: number
@@ -47,23 +50,43 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
     socket.on('user-login', async (data: User) => {
         const { user_id } = data
         socket.join(`/user/${user_id}`)
-        const {token_fcm} = await userService.getBasicUserInfo(user_id)
+        const { token_fcm } = await userService.getBasicUserInfo(user_id)
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
             token_fcm: token_fcm
         })
         console.log('user đã đăng nhập')
 
-        const curTrips = await tripService.GetRunningTripOfUser(user_id) // chuyến hẹn giờ sau 10/31
-        // chuyến này đang trong tripMap
-        curTrips.forEach((item: any) => {
-            const driverInfo = GetDriverInfoById(item.driver_id)
-            const driverDat = DriverMap.getMap().get(driverInfo!)
-            curTrips.driver = driverDat
-        })
+        const curTrips = await tripService.GetRunningTripOfUser(user_id)//hẹn giờ
+        const curTrip2 = await findCurrentTripOfUser(user_id)
+        // curTrips.push(curTrip2);
+        const ts = {
+            active: curTrip2,
+            schedule: curTrips
+        }
+        // curTrips.forEach((item: any) => {
+        //     const driverInfo = GetDriverInfoById(item.driver_id)
+        //     const driverDat = DriverMap.getMap().get(driverInfo!)
+        //     curTrips.driver = driverDat
+        // })
 
-        io.in(`/user/${user_id}`).emit("user-reconnect", curTrips)
+        io.in(`/user/${user_id}`).emit("user-reconnect", ts)
     })
+}
+
+export const findCurrentTripOfUser = async (user_id: number) => {
+    for (const [trip_id, trip_value] of TripMap.getMap()) {
+        if (trip_value.user_id === user_id) {
+            const driverDat = await driverServices.GetDriverInfoById(trip_value.driver_id)
+            const location = GetSocketByDriverId(trip_value.driver_id)
+            const returnDat = trip_value
+            driverDat['location'] = location
+            returnDat["driver"] = driverDat
+            // returnDat= location
+            return returnDat
+        }
+    }
+    return null
 }
 
 export const sendMessageToS2 = (data) => {

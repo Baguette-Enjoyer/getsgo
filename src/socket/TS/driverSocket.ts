@@ -28,6 +28,8 @@ interface TripValue {
     trip_id: number
     user_id?: number
     driver_id?: number
+    driver?: any
+    user?: any
     start: {
         lat: number
         lng: number
@@ -69,31 +71,32 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             client_id: undefined,
             token_fcm: driver_info.token_fcm,
         }
-        const curTrips = await GetRunningTripOfDriver(user_id)
-        const currentTrip = getDriverCurrentTrip(user_id)
+        // const curTrips = await GetRunningTripOfDriver(user_id)
+        const currentTrip = await getDriverCurrentTrip(user_id)
         // const curTrips = await tripService.GetRunningTripOfUser(user_id)
         // curTrips.forEach((item:any)=>{
         //     const driverInfo = GetDriverInfoById(item.driver_id)
         //     const driverDat = DriverMap.getMap().get(driverInfo!)
         //     curTrips.driver = driverDat
         // })
-        if (currentTrip != null) {
-            driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
-        }
-        console.log(driver_data);
+
+        // console.log(driver_data);
         socket.join(`/driver/${user_id}`)
-        io.in(`/driver/${user_id}`).emit("driver-reconnect",curTrips)
+        io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip)
         DriverMap.getMap().set(socket.id, driver_data)
         // console.log(data)
     })
 }
 
-export const getDriverCurrentTrip = (driver_id: number): number | null => {
-    TripMap.getMap().forEach((trip_value, trip_id) => {
+export const getDriverCurrentTrip = async (driver_id: number) => {
+    for (const [trip_id, trip_value] of TripMap.getMap()) {
         if (trip_value.driver_id == driver_id) {
-            return trip_id
+            const userInfo = await userService.getBasicUserInfo(trip_value.user_id)
+            const returnDat = trip_value
+            returnDat["user"] = userInfo
+            return returnDat
         }
-    })
+    }
     return null
 }
 
@@ -108,7 +111,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
         heading: driver.heading,
         message: "coming",
         status: "Confirmed",
-        is_scheduled:trip.is_scheduled
+        is_scheduled: trip.is_scheduled
     }
     // const user = userService.getUserBySocket(trip.user_id);
     // const stringifiedResponse = JSON.stringify(responseData);
@@ -229,7 +232,7 @@ export const setDriverResponseStatus = (driver_id: number, status: string) => {
     })
 }
 
-export const getCurrentDriverInfoById = (id: number): { user_id:number,status:string,lat: number, lng: number } => {
+export const getCurrentDriverInfoById = (id: number): { user_id: number, status: string, lat: number, lng: number } => {
     // DriverMap.getMap().forEach((socket_value, socket_id) => {
     //     if (socket_value.user_id == id) {
     //         return {
@@ -240,7 +243,7 @@ export const getCurrentDriverInfoById = (id: number): { user_id:number,status:st
     //         }
     //     }
     // })
-    for (const [socket_id,socket_value] of DriverMap.getMap()){
+    for (const [socket_id, socket_value] of DriverMap.getMap()) {
         if (socket_value.user_id == id) {
             return {
                 user_id: socket_value.user_id,
@@ -250,7 +253,7 @@ export const getCurrentDriverInfoById = (id: number): { user_id:number,status:st
             }
         }
     }
-    return { user_id:0,status:"",lat: 0, lng: 0 }
+    return { user_id: 0, status: "", lat: 0, lng: 0 }
 }
 
 export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -279,7 +282,7 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const broadcastScheduleTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    
+
 }
 
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
@@ -288,21 +291,20 @@ export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEv
     })
 }
 
-const GetSocketByDriverId = (driver_id: number) => {
-    let socketArr: string[] = []
-    DriverMap.getMap().forEach((socket_value, socket_id) => {
+export const GetSocketByDriverId = (driver_id: any) => {
+    for (const [socket_id, socket_value] of DriverMap.getMap()) {
         if (socket_value.user_id == driver_id) {
-            socketArr.push(socket_id)
+            return socket_value
         }
-    })
-    return socketArr
+    }
+    return null
 }
 
-export const BroadcastIdleDrivers = (event:string,data:any) => {
-    DriverMap.getMap().forEach((socket_value,socket_id)=>{
-        if(socket_value.status == "Idle"){
-            console.log("thằng này rãnh t broadcast nè",socket_value.user_id)
-            io.in(`/driver/${socket_value.user_id}`).emit(event,data)
+export const BroadcastIdleDrivers = (event: string, data: any) => {
+    DriverMap.getMap().forEach((socket_value, socket_id) => {
+        if (socket_value.status == "Idle") {
+            console.log("thằng này rãnh t broadcast nè", socket_value.user_id)
+            io.in(`/driver/${socket_value.user_id}`).emit(event, data)
         }
     })
 }

@@ -23,6 +23,8 @@ export interface TripValue {
     trip_id: number
     user_id: number
     driver_id?: number
+    driver?:any
+    user?:any
     start: {
         lat: number
         lng: number

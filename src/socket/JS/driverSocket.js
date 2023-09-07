@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BroadcastIdleDrivers = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
+exports.BroadcastIdleDrivers = exports.GetSocketByDriverId = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
+const userService_1 = __importDefault(require("../../services/userService"));
 const storage_1 = require("./storage");
-const tripService_1 = __importStar(require("../../services/tripService"));
+const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
 const handleDriverLogin = (socket) => {
     socket.on('driver-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
         const user_id = data.user_id;
         const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
         const driver_data = {
@@ -56,33 +33,33 @@ const handleDriverLogin = (socket) => {
             client_id: undefined,
             token_fcm: driver_info.token_fcm,
         };
-        const curTrips = yield (0, tripService_1.GetRunningTripOfDriver)(user_id);
-        const currentTrip = (0, exports.getDriverCurrentTrip)(user_id);
+        // const curTrips = await GetRunningTripOfDriver(user_id)
+        const currentTrip = yield (0, exports.getDriverCurrentTrip)(user_id);
         // const curTrips = await tripService.GetRunningTripOfUser(user_id)
         // curTrips.forEach((item:any)=>{
         //     const driverInfo = GetDriverInfoById(item.driver_id)
         //     const driverDat = DriverMap.getMap().get(driverInfo!)
         //     curTrips.driver = driverDat
         // })
-        if (currentTrip != null) {
-            driver_data.client_id = (_a = storage_1.TripMap.getMap().get(currentTrip)) === null || _a === void 0 ? void 0 : _a.user_id;
-        }
-        console.log(driver_data);
+        // console.log(driver_data);
         socket.join(`/driver/${user_id}`);
-        initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", curTrips);
+        initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip);
         storage_1.DriverMap.getMap().set(socket.id, driver_data);
         // console.log(data)
     }));
 };
 exports.handleDriverLogin = handleDriverLogin;
-const getDriverCurrentTrip = (driver_id) => {
-    storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
+const getDriverCurrentTrip = (driver_id) => __awaiter(void 0, void 0, void 0, function* () {
+    for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
         if (trip_value.driver_id == driver_id) {
-            return trip_id;
+            const userInfo = yield userService_1.default.getBasicUserInfo(trip_value.user_id);
+            const returnDat = trip_value;
+            returnDat["user"] = userInfo;
+            return returnDat;
         }
-    });
+    }
     return null;
-};
+});
 exports.getDriverCurrentTrip = getDriverCurrentTrip;
 const senDriver = (trip, driver, socket_id) => __awaiter(void 0, void 0, void 0, function* () {
     yield tripService_1.default.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed", driver_id: driver.user_id });
@@ -265,14 +242,14 @@ const handleMessageFromUser = (socket) => {
 };
 exports.handleMessageFromUser = handleMessageFromUser;
 const GetSocketByDriverId = (driver_id) => {
-    let socketArr = [];
-    storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
+    for (const [socket_id, socket_value] of storage_1.DriverMap.getMap()) {
         if (socket_value.user_id == driver_id) {
-            socketArr.push(socket_id);
+            return socket_value;
         }
-    });
-    return socketArr;
+    }
+    return null;
 };
+exports.GetSocketByDriverId = GetSocketByDriverId;
 const BroadcastIdleDrivers = (event, data) => {
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {
