@@ -195,7 +195,7 @@ const GetUserById = async (user_id) => {
     nest: true,
     raw: true
   })
-  if (user.id == null) {
+  if (user == null) {
     throw new Error('user not found')
   }
   return user
