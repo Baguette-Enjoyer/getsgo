@@ -62,6 +62,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
 
         let driver_data: Driver
         if (d) {
+            console.log('thèn có trip nhen')
             driver_data = {
                 user_id: user_id,
                 status: "Driving",
@@ -75,7 +76,9 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             }
         }
         else {
+            console.log('thèn có trip nhen')
             const driver_info = await driverServices.GetDriverInfoById(user_id)
+            console.log(driver_info)
             driver_data = {
                 user_id: user_id,
                 lat: data.lat,
@@ -85,7 +88,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 vehicle_type: driver_info.driver_info.driver_vehicle.id,
                 rating: driver_info.statics.starResult,
                 client_id: undefined,
-                token_fcm: driver_info.driver_info.token_fcm,
+                token_fcm: driver_info.token_fcm,
             }
         }
         const currentTrip = await getDriverCurrentTrip(user_id)
