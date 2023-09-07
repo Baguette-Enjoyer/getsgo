@@ -45,8 +45,10 @@ const GetDriverInfoById = async (driver_id) => {
                 ],
                 attributes: {
                     exclude: ['createdAt', 'updatedAt', 'password', 'accessToken']
-                }
-            }
+                },
+                raw: true,
+                nest: true
+            },
         )
         if (driver == null) {
             return reject(new Error(`Driver not found`))

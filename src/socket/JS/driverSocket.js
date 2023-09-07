@@ -24,6 +24,7 @@ const handleDriverLogin = (socket) => {
         const d = storage_1.DriverMap.getMap().get(user_id.toString());
         let driver_data;
         if (d) {
+            console.log('thèn có trip nhen');
             driver_data = {
                 user_id: user_id,
                 status: "Driving",
@@ -37,7 +38,9 @@ const handleDriverLogin = (socket) => {
             };
         }
         else {
+            console.log('thèn có trip nhen');
             const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
+            console.log(driver_info);
             driver_data = {
                 user_id: user_id,
                 lat: data.lat,
