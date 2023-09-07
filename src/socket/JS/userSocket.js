@@ -268,18 +268,16 @@ const handleTripUpdate = (socket) => {
         const trip = storage_1.TripMap.getMap().get(data.trip_id);
         if (data.status === "Done") {
             console.log("hehehehhehe");
-            // const tripDat = TripMap.getMap().get(data.trip_id)
-            // const driver_id = tripDat?.driver_id!
-            // const socketid = GetDriverInfoById(driver_id) 
-            // if (socketid === null) { return}
             const driverData = storage_1.DriverMap.getMap().get(socket.id);
             if (driverData === undefined) {
                 return;
             }
             const updatedDriverData = Object.assign(Object.assign({}, driverData), { status: 'Idle', client_id: undefined });
+            storage_1.DriverMap.getMap().set(socket.id, updatedDriverData);
+            const driverData2 = storage_1.DriverMap.getMap().get(socket.id);
+            console.log("data driver sau update nè", driverData2);
             // driverData.status = "Idle"
             // driverData.client_id = undefined
-            storage_1.DriverMap.getMap().set(socket.id, updatedDriverData);
             if (data.status != null && trip != null) {
                 const updatedTripData = Object.assign(Object.assign({}, trip), { status: data.status });
                 // trip.status = data.status
@@ -287,6 +285,8 @@ const handleTripUpdate = (socket) => {
                 initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status });
                 initServer_1.io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id });
             }
+            storage_1.TripMap.getMap().delete(data.trip_id);
+            console.log("Đã xóa chuyển khỏi trip");
             yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: "Done" });
         }
         else if (data.status != null && trip != null) {
