@@ -145,6 +145,7 @@ export const CreateUserIfNotExist = async (phone) => {
     }
     const user = await db.User.create({
       phone: phone,
+      name: "Tổng đài",
       active: true,
       type: "User"
     })
