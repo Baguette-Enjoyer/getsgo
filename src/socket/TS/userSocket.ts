@@ -55,7 +55,6 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
             user_id: user_id,
             token_fcm: token_fcm
         })
-        console.log('user đã đăng nhập')
 
         const curTrips = await tripService.GetRunningTripOfUser(user_id)//hẹn giờ
         const curTrip2 = await findCurrentTripOfUser(user_id)
@@ -76,13 +75,12 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 
 export const findCurrentTripOfUser = async (user_id: number) => {
     for (const [trip_id, trip_value] of TripMap.getMap()) {
-        if (trip_value.user_id === user_id) {
-            const driverDat = await driverServices.GetDriverInfoById(trip_value.driver_id)
+        if (trip_value.user_id == user_id) {
+        const driverDat = await driverServices.GetDriverInfoById(trip_value.driver_id)
             const location = GetSocketByDriverId(trip_value.driver_id)
             const returnDat = trip_value
             driverDat['location'] = location
             returnDat["driver"] = driverDat
-            // returnDat= location
             return returnDat
         }
     }
