@@ -88,7 +88,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 vehicle_type: driver_info.driver_info.driver_vehicle.vehicle_type.id,
                 rating: driver_info.statics.starResult,
                 client_id: undefined,
-                token_fcm: driver_info.token_fcm,
+                token_fcm: driver_info.driver_info.token_fcm,
             }
         }
         const currentTrip = await getDriverCurrentTrip(user_id)
