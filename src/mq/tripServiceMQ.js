@@ -30,7 +30,9 @@ export const ConsumerCallcenterTrip = async (message) => {
         console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
         const now = new Date()
+        now.setUTCHours(now.getUTCHours() + 7);
         const scheduledTime = new Date(data.schedule_time)
+        scheduledTime.setUTCHours(scheduledTime.getUTCHours() + 7);
         const notificationTime = new Date(scheduledTime - 1 * 60000)
         const delay = notificationTime - now
         setTimeout(async () => {
@@ -153,7 +155,9 @@ export const ConsumerNormalTrip = async (message) => {
         console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
         const now = new Date()
+        now.setUTCHours(now.getUTCHours() + 7);
         const scheduledTime = new Date(data.schedule_time)
+        scheduledTime.setUTCHours(scheduledTime.getUTCHours() + 7);
         const notificationTime = new Date(scheduledTime - 1 * 60000)
         const delay = notificationTime - now
         console.log("schedule time là ", scheduledTime)
