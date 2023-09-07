@@ -17,6 +17,8 @@ interface TripValue {
     trip_id: number
     user_id: number
     driver_id?: number
+    driver?:any
+    user?:any
     start: {
         lat: number
         lng: number
@@ -54,15 +56,32 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
         })
         console.log('user đã đăng nhập')
 
-        const curTrips = await tripService.GetRunningTripOfUser(user_id)
-        curTrips.forEach((item: any) => {
-            const driverInfo = GetDriverInfoById(item.driver_id)
-            const driverDat = DriverMap.getMap().get(driverInfo!)
-            curTrips.driver = driverDat
-        })
+        const curTrips = await tripService.GetRunningTripOfUser(user_id)//hẹn giờ
+        const curTrip2 = await findCurrentTripOfUser(user_id)
+        const ts = {
+            active:curTrip2,
+            schedule: curTrips
+        }
+        // curTrips.forEach((item: any) => {
+        //     const driverInfo = GetDriverInfoById(item.driver_id)
+        //     const driverDat = DriverMap.getMap().get(driverInfo!)
+        //     curTrips.driver = driverDat
+        // })
 
-        io.in(`/user/${user_id}`).emit("user-reconnect", curTrips)
+        io.in(`/user/${user_id}`).emit("user-reconnect", ts)
     })
+}
+
+export const findCurrentTripOfUser = async (user_id: number) => {
+    for(const [trip_id,trip_value] of TripMap.getMap()){
+        if(trip_value.user_id === user_id){
+            const driverDat = await userService.getBasicUserInfo(trip_value.driver_id)
+            const returnDat = trip_value
+            returnDat["driver"] = driverDat
+            return returnDat
+        }
+    }
+    return null
 }
 
 export const sendMessageToS2 = (data) => {

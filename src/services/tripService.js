@@ -5,7 +5,7 @@ import Sequelize from 'sequelize'
 // import socketServiceTS from '../socket/socketServiceTS.js'
 import { CreateUserIfNotExist } from '../services/userService'
 import { SendMessageToQueue } from '../mq/createChannel'
-import { sendMessageToS2, sendMessageToS3 } from '../socket/JS/userSocket.js'
+import { broadCastToClientById, sendMessageToS2, sendMessageToS3 } from '../socket/JS/userSocket.js'
 import { sendMessageFirebase } from '../firebase/firebaseApp'
 import historyService from './historyService'
 // import userService from './userService'
@@ -230,6 +230,12 @@ const AcceptTrip = async (data) => {
     //     }
     // }
     const newTrip = await GetTripById(data.trip_id)
+    const driverInfo = await driverServices.GetDriverInfoById(data.driver_id)
+    const returnDat = {
+        trip_id: newTrip.trip_id,
+        driverInfo,
+    }
+    broadCastToClientById(newTrip.user_id, "found-driver-schedule", returnDat)
     const userInfo = await userService.GetUserById(newTrip.user_id)
     sendMessageFirebase(userInfo.token_fcm, 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
     return newTrip
@@ -736,6 +742,7 @@ export const GetRunningTripOfUser = async (user_id) => {
     const trip = await db.Trip.findAll({
         where: {
             user_id: user_id,
+            is_scheduled: true,
             [Op.and]: [
                 {
                     status: {
@@ -747,12 +754,23 @@ export const GetRunningTripOfUser = async (user_id) => {
                         [Op.ne]: "Cancelled"
                     },
                 },
+                {
+                    schedule_time: {
+                        [Op.gt]: Sequelize.literal('NOW()')
+                    },
+                },
             ]
         },
         include: [
             {
                 model: db.User,
                 as: 'user',
+                attributes: ['name', 'phone', 'avatar'],
+                required: true,
+            },
+            {
+                model: db.User,
+                as: 'driver',
                 attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },

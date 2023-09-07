@@ -28,6 +28,8 @@ interface TripValue {
     trip_id: number
     user_id?: number
     driver_id?: number
+    driver?:any
+    user?:any
     start: {
         lat: number
         lng: number
@@ -69,31 +71,32 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             client_id: undefined,
             token_fcm: driver_info.token_fcm,
         }
-        const curTrips = await GetRunningTripOfDriver(user_id)
-        const currentTrip = getDriverCurrentTrip(user_id)
+        // const curTrips = await GetRunningTripOfDriver(user_id)
+        const currentTrip = await getDriverCurrentTrip(user_id)
         // const curTrips = await tripService.GetRunningTripOfUser(user_id)
         // curTrips.forEach((item:any)=>{
         //     const driverInfo = GetDriverInfoById(item.driver_id)
         //     const driverDat = DriverMap.getMap().get(driverInfo!)
         //     curTrips.driver = driverDat
         // })
-        if (currentTrip != null) {
-            driver_data.client_id = TripMap.getMap().get(currentTrip)?.user_id
-        }
-        console.log(driver_data);
+        
+        // console.log(driver_data);
         socket.join(`/driver/${user_id}`)
-        io.in(`/driver/${user_id}`).emit("driver-reconnect",curTrips)
+        io.in(`/driver/${user_id}`).emit("driver-reconnect",currentTrip)
         DriverMap.getMap().set(socket.id, driver_data)
         // console.log(data)
     })
 }
 
-export const getDriverCurrentTrip = (driver_id: number): number | null => {
-    TripMap.getMap().forEach((trip_value, trip_id) => {
+export const getDriverCurrentTrip = async (driver_id: number) => {
+    for (const [trip_id,trip_value] of TripMap.getMap()){
         if (trip_value.driver_id == driver_id) {
-            return trip_id
+            const userInfo = await userService.getBasicUserInfo(trip_value.user_id)
+            const returnDat = trip_value
+            returnDat["user"] = userInfo
+            return returnDat
         }
-    })
+    }    
     return null
 }
 

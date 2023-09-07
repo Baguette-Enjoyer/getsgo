@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDriverToBroadCast = exports.broadCastToClientById = exports.broadCastToDriverById = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
+exports.AddDriverToBroadCast = exports.broadCastToClientById = exports.broadCastToDriverById = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.findCurrentTripOfUser = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const userService_1 = __importDefault(require("../../services/userService"));
 const storage_1 = require("./storage");
@@ -30,16 +30,33 @@ const handleUserLogin = (socket) => {
             token_fcm: token_fcm
         });
         console.log('user đã đăng nhập');
-        const curTrips = yield tripService_1.default.GetRunningTripOfUser(user_id);
-        curTrips.forEach((item) => {
-            const driverInfo = GetDriverInfoById(item.driver_id);
-            const driverDat = storage_1.DriverMap.getMap().get(driverInfo);
-            curTrips.driver = driverDat;
-        });
-        initServer_1.io.in(`/user/${user_id}`).emit("user-reconnect", curTrips);
+        const curTrips = yield tripService_1.default.GetRunningTripOfUser(user_id); //hẹn giờ
+        const curTrip2 = yield (0, exports.findCurrentTripOfUser)(user_id);
+        const ts = {
+            active: curTrip2,
+            schedule: curTrips
+        };
+        // curTrips.forEach((item: any) => {
+        //     const driverInfo = GetDriverInfoById(item.driver_id)
+        //     const driverDat = DriverMap.getMap().get(driverInfo!)
+        //     curTrips.driver = driverDat
+        // })
+        initServer_1.io.in(`/user/${user_id}`).emit("user-reconnect", ts);
     }));
 };
 exports.handleUserLogin = handleUserLogin;
+const findCurrentTripOfUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
+        if (trip_value.user_id === user_id) {
+            const driverDat = yield userService_1.default.getBasicUserInfo(trip_value.driver_id);
+            const returnDat = trip_value;
+            returnDat["driver"] = driverDat;
+            return returnDat;
+        }
+    }
+    return null;
+});
+exports.findCurrentTripOfUser = findCurrentTripOfUser;
 const sendMessageToS2 = (data) => {
     initServer_1.io.in("callcenter").emit("s2-update-trip", data);
 };
