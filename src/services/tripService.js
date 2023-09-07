@@ -28,8 +28,7 @@ const CreateTrip = async (data) => {
         const is_scheduled = data.is_scheduled;
         console.log('wwwwwwwwwwwwwwww')
         console.log(data.schedule_time);
-        console.log(new Date(data.schedule_time).toLocaleString());
-        const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
+        const schedule_time = is_scheduled ? data.schedule_time : now
         console.log(schedule_time);
         //Check user role here
         const carType = data.carType
@@ -96,7 +95,7 @@ const CreateTripForCallCenter = async (data) => {
         const phone = data.phone
 
         const is_scheduled = data.is_scheduled
-        const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
+        const schedule_time = is_scheduled ? data.schedule_time : now;
         const status = "Pending"
         const paymentMethod = data.paymentMethod
         const is_paid = false
@@ -161,7 +160,7 @@ const getAppointmentTrip2 = async () => {
         trips.forEach(trip => {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time)
+            // trip.schedule_time = new Date(trip.schedule_time)
         })
         return resolve({
             statusCode: 200,
@@ -367,7 +366,7 @@ export const initTripCallCenterS1 = async (data) => {
     console.log(user.id)
 
     const is_scheduled = data.is_scheduled
-    const schedule_time = is_scheduled ? new Date(data.schedule_time).toLocaleString() : new Date().toLocaleString();
+    const schedule_time = is_scheduled ? data.schedule_time : now;
     const lat = data.start.lat
     const lng = data.start.lng
     const start = {
@@ -582,7 +581,7 @@ export const GetAppointmentTrip = async () => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
+            // trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         return trips;
     }
@@ -724,7 +723,7 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
-            trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
+            // trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         return trips;
     }
@@ -798,7 +797,15 @@ export const GetRunningTripOfUser = async (user_id) => {
             ['updatedAt', 'DESC'],
         ],
     })
-    if (trip) return trip
+
+    if (trip) {
+        for (const t of trip) {
+            t.start = JSON.parse(t.start)
+            t.end = JSON.parse(t.end)
+            // t.schedule_time = new Date(t.schedule_time).toLocaleString()
+        }
+        return trip
+    }
     return null
 }
 export const GetRunningTripOfDriver = async (driver_id) => {
