@@ -13,7 +13,7 @@ const locationService_1 = __importDefault(require("../../services/locationServic
 const runSocketService = () => {
     // io.use(authSocket)
     initSocket();
-    // initSocketService();
+    initSocketService();
     console.log("socket service running");
 };
 exports.runSocketService = runSocketService;
@@ -69,21 +69,21 @@ const initSocket = () => {
 //       return next(new Error('Authentication error: ' + err.message));
 //     });
 // }
-// const initSocketService = () => {
-//     // updateLocationLoop();
-// };
-// const updateLocationLoop = () => {
-//     storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
-//         const driver_id = trip_value.driver_id;
-//         if (driver_id === undefined)
-//             return;
-//         // let socketDriver = GetSocketByDriverId(driver_id)
-//         const driver_info = (0, driverSocket_1.getCurrentDriverInfoById)(driver_id);
-//         const stringifiedResponse = JSON.stringify(driver_info);
-//         initServer_1.io.in(`/user/${trip_value.user_id}`).emit('location-update', stringifiedResponse);
-//     });
-//     setTimeout(() => updateLocationLoop(), 60000);
-// };
+const initSocketService = () => {
+    updateLocationLoop();
+};
+const updateLocationLoop = () => {
+    storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
+        const driver_id = trip_value.driver_id;
+        if (driver_id === undefined)
+            return;
+        // let socketDriver = GetSocketByDriverId(driver_id)
+        const driver_info = (0, driverSocket_1.getCurrentDriverInfoById)(driver_id);
+        const stringifiedResponse = JSON.stringify(driver_info);
+        initServer_1.io.in(`/user/${trip_value.user_id}`).emit('location-update', stringifiedResponse);
+    });
+    setTimeout(() => updateLocationLoop(), 60000);
+};
 const handleDisconnect = (socket) => {
     socket.on('disconnect', () => {
         if (storage_1.UserMap.getMap().get(socket.id)) {

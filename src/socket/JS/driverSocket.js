@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BroadcastIdleDrivers = exports.GetSocketByDriverId = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
+exports.BroadcastIdleDrivers = exports.handleMessageFromUser = exports.broadcastScheduleTrip = exports.handleLocationUpdate = exports.getCurrentDriverInfoById = exports.setDriverResponseStatus = exports.setDriverStatus = exports.handleDriverResponseBooking = exports.getDriverCurrentTrip = exports.handleDriverLogin = void 0;
 const initServer_1 = require("../../services/initServer");
 const storage_1 = require("./storage");
 const tripService_1 = __importStar(require("../../services/tripService"));
@@ -119,9 +119,6 @@ const handleDriverResponseBooking = (socket) => {
             return;
         if (data.status == "Accept") {
             const trip = storage_1.TripMap.getMap().get(data.trip.trip_id);
-            console.log('eeeeeeeeeeeeeeeeeee con ');
-            console.log(trip);
-            console.log(trip === null || trip === void 0 ? void 0 : trip.driver_id);
             if (trip !== undefined && trip.driver_id === undefined) {
                 trip.driver_id = driver.user_id;
                 trip.status = 'Confirmed';
@@ -134,8 +131,6 @@ const handleDriverResponseBooking = (socket) => {
                 storage_1.TripMap.getMap().set(trip.trip_id, trip);
                 storage_1.DriverMap.getMap().set(socket.id, driver);
                 senDriver(trip, driver, socket.id);
-                console.log(trip === null || trip === void 0 ? void 0 : trip.driver_id);
-                console.log('hhhhhhhssss');
                 //thông báo cho driver nhận chuyến ok
                 initServer_1.io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip");
                 //ádasdasdada
@@ -223,20 +218,7 @@ const getCurrentDriverInfoById = (id) => {
     //     }
     // })
     for (const [socket_id, socket_value] of storage_1.DriverMap.getMap()) {
-        console.log({
-            user_id: socket_value.user_id,
-            status: socket_value.status,
-            lat: socket_value.lat,
-            lng: socket_value.lng
-        });
-        if (socket_value.user_id === id) {
-            console.log("nè mày");
-            console.log({
-                user_id: socket_value.user_id,
-                status: socket_value.status,
-                lat: socket_value.lat,
-                lng: socket_value.lng
-            });
+        if (socket_value.user_id == id) {
             return {
                 user_id: socket_value.user_id,
                 status: socket_value.status,
@@ -283,14 +265,14 @@ const handleMessageFromUser = (socket) => {
 };
 exports.handleMessageFromUser = handleMessageFromUser;
 const GetSocketByDriverId = (driver_id) => {
-    for (const [socket_id, socket_value] of storage_1.DriverMap.getMap()) {
+    let socketArr = [];
+    storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.user_id == driver_id) {
-            return socket_value;
+            socketArr.push(socket_id);
         }
-    }
-    return null;
+    });
+    return socketArr;
 };
-exports.GetSocketByDriverId = GetSocketByDriverId;
 const BroadcastIdleDrivers = (event, data) => {
     storage_1.DriverMap.getMap().forEach((socket_value, socket_id) => {
         if (socket_value.status == "Idle") {

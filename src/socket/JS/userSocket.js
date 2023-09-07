@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AddDriverToBroadCast = exports.broadCastToClientById = exports.broadCastToDriverById = exports.broadCastToDriver = exports.handleTripUpdate = exports.handleMessageFromDriver = exports.handleUserCancelTrip = exports.handleUserFindTrip = exports.handleCallCenterLogin = exports.sendMessageToS3 = exports.sendMessageToS2 = exports.handleUserLogin = void 0;
 const initServer_1 = require("../../services/initServer");
+const userService_1 = __importDefault(require("../../services/userService"));
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
 const connectRedis_1 = __importDefault(require("../../config/connectRedis"));
@@ -21,8 +22,9 @@ let rd = (0, connectRedis_1.default)();
 // const users = new Map<string, User>()
 const handleUserLogin = (socket) => {
     socket.on('user-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        const { user_id, token_fcm } = data;
+        const { user_id } = data;
         socket.join(`/user/${user_id}`);
+        const { token_fcm } = yield userService_1.default.getBasicUserInfo(user_id);
         storage_1.UserMap.getMap().set(socket.id, {
             user_id: user_id,
             token_fcm: token_fcm

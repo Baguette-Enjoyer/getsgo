@@ -40,7 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     avatar: DataTypes.STRING,
     type: DataTypes.ENUM('Admin', 'User', 'User_Vip', 'Driver', 'CallCenterS1', 'CallCenterS2', 'CallCenterS3'),
     active: DataTypes.BOOLEAN,
-    accessToken: DataTypes.STRING
+    accessToken: DataTypes.STRING,
+    token_fcm: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'User',

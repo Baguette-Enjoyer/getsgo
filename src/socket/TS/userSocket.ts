@@ -45,9 +45,9 @@ interface TripValue {
 
 export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('user-login', async (data: User) => {
-        const { user_id, token_fcm } = data
+        const { user_id } = data
         socket.join(`/user/${user_id}`)
-
+        const {token_fcm} = await userService.getBasicUserInfo(user_id)
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
             token_fcm: token_fcm

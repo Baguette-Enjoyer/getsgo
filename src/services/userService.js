@@ -7,6 +7,13 @@ import initServer from './initServer';
 // import { test } from '../socket/socketServiceTS'
 const salt = bcrypt.genSaltSync(10);
 
+const getBasicUserInfo = async (user_id) => {
+  const data = await db.User.findOne({
+    where: { id: user_id },
+    attributes: ['name', 'phone', 'avatar', 'id', 'token_fcm', 'type'],
+  })
+  return data
+}
 
 const RegisterUser = async (data) => {
   const phone = data.phone
@@ -54,6 +61,7 @@ const RegisterUser = async (data) => {
 const LoginUser = async (data) => {
   const phone = data.phone
   const password = data.password
+  const token_fcm = data.token_fcm
   const user = await db.User.findOne({
     where: {
       phone: {
@@ -71,33 +79,26 @@ const LoginUser = async (data) => {
   let token = user.accessToken
   const verifyToken = await jwtService.VerifyToken(token)
   if (verifyToken.result == false || token == null) {
-    if (verifyToken.type != 'Driver') {
-      token = await jwtService.GenerateAccessToken(user.id, user.phone, user.type)
-      await db.User.update({
-        accessToken: token
-      },
-        {
-          where: {
-            id: user.id
-          }
-        })
-    }
-    else {
-      const v_type = db.Vehicle.findOne({
-        where: { driver_id: user.id }
+    token = await jwtService.GenerateAccessToken(user.id, user.phone, user.type)
+    await db.User.update({
+      accessToken: token,
+      token_fcm: token_fcm
+    },
+      {
+        where: {
+          id: user.id
+        }
       })
-      const v_type_id = v_type.vehicle_type_id
-      token = jwtService.GenerateAccessTokenForDriver(user.id, user.phone, user.type, v_type_id)
-      await db.User.update({
-        accessToken: token
-      },
-        {
-          where: {
-            id: user.id
-          }
-        })
-    }
-
+  }
+  else {
+    await db.User.update({
+      token_fcm: token_fcm
+    },
+      {
+        where: {
+          id: user.id
+        }
+      })
   }
   console.log(user);
   return {
@@ -225,4 +226,5 @@ export default {
   GetUserById,
   CreateUserIfNotExist,
   UpdatePassword,
+  getBasicUserInfo
 }

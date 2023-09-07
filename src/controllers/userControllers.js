@@ -152,11 +152,20 @@ let GetDriverAround3KM = async (req, res) => {
     }
     res.status(200).json({ drivers: result, random: randomGeometer })
 }
+
+const GetBasicUserInfo = async (req, res) => {
+    const data = await userService.getBasicUserInfo(req.params.user_id)
+    return res.status(200).json({
+        statusCode: 200,
+        user_info: data
+    })
+}
 export default {
     RegisterUser,
     LoginUser,
     UpdatePassword,
     GetUserByPhone,
     GetDriverAround3KM,
-    GetHistoryByPhone
+    GetHistoryByPhone,
+    GetBasicUserInfo
 }
