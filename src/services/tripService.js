@@ -778,30 +778,30 @@ export const GetRunningTripOfUser = async (user_id) => {
                 attributes: ['name', 'phone', 'avatar'],
                 required: true,
             },
-            {
-                model: db.User,
-                as: 'driver',
-                attributes: ['id', 'name', 'phone', 'email', 'avatar'],
-                include: [
-                    {
-                        model: db.Vehicle,
-                        as: "driver_vehicle",
-                        required: true,
-                        attributes: {
-                            exclude: ['createdAt', 'updatedAt', "driver_id", "vehicle_type_id"],
-                        },
-                        include: [
-                            {
-                                model: db.Vehicle_Type,
-                                as: "vehicle_type",
-                                attributes: {
-                                    exclude: ['createdAt', 'updatedAt', 'id'],
-                                },
-                            }
-                        ]
-                    },
-                ],
-            },
+            // {
+            //     model: db.User,
+            //     as: 'driver',
+            //     attributes: ['id', 'name', 'phone', 'email', 'avatar'],
+            //     include: [
+            //         {
+            //             model: db.Vehicle,
+            //             as: "driver_vehicle",
+            //             required: true,
+            //             attributes: {
+            //                 exclude: ['createdAt', 'updatedAt', "driver_id", "vehicle_type_id"],
+            //             },
+            //             include: [
+            //                 {
+            //                     model: db.Vehicle_Type,
+            //                     as: "vehicle_type",
+            //                     attributes: {
+            //                         exclude: ['createdAt', 'updatedAt', 'id'],
+            //                     },
+            //                 }
+            //             ]
+            //         },
+            //     ],
+            // },
         ],
         order: [
             ['schedule_time', 'ASC'],
@@ -812,6 +812,9 @@ export const GetRunningTripOfUser = async (user_id) => {
         for (const t of trip) {
             t.start = JSON.parse(t.start)
             t.end = JSON.parse(t.end)
+            const driverDat = await driverServices.GetDriverInfoById(t.driver_id)
+            // driverDat['location'] = location
+            t["driver_info"] = driverDat
             // t.schedule_time = new Date(t.schedule_time).toLocaleString()
         }
         return trip
