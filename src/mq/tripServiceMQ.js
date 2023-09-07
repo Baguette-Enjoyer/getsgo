@@ -16,11 +16,15 @@ export const ConsumerCallcenterTrip = async (message) => {
     const trip_id = data.trip_id
     const place1 = data.start
 
+    //bug k có 
     // TripMap.getMap().set(data.trip_id, data);
     let DataResponse = {
         user_info: data.phone,
         trip_info: data
     }
+
+    console.log(DataResponse);
+    console.log("This is data1")
     // let DataResponseStringified = JSON.stringify(DataResponse)
     if (data.is_scheduled) {
         console.log("mày đặt chuyến hẹn giờ")
@@ -38,7 +42,7 @@ export const ConsumerCallcenterTrip = async (message) => {
             console.log(t.driver_id)
             if (t.driver_id == null || t.driver_id == undefined) {
                 console.log("không có driver chuyển qua")
-                await handleFind(data, userData)
+                await handleFind(data, data.phone)
             }
             else {
                 //kiểm tra driver đang có trong chuyến khác
@@ -51,7 +55,7 @@ export const ConsumerCallcenterTrip = async (message) => {
                     console.log(curDat.user_id)
 
                     await tripService.UpdateTrip({ trip_id: trip_id, driver_id: null, status: "Pending" })
-                    await handleFind(data, userData)
+                    await handleFind(data, data.phone)
                 }
                 //không thì thông báo cho biết nó chuẩn bị
                 else {

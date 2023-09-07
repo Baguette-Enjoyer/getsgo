@@ -21,9 +21,9 @@ const driverServices_1 = __importDefault(require("../../services/driverServices"
 const handleDriverLogin = (socket) => {
     socket.on('driver-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
         const user_id = data.user_id;
-        const d = (0, exports.getCurrentDriverInfoById)(user_id);
+        const d = storage_1.DriverMap.getMap().get(user_id.toString());
         let driver_data;
-        if (d.status == "Reconnecting") {
+        if (d) {
             driver_data = {
                 user_id: user_id,
                 status: "Driving",
@@ -51,20 +51,29 @@ const handleDriverLogin = (socket) => {
             };
         }
         const currentTrip = yield (0, exports.getDriverCurrentTrip)(user_id);
+        console.log(currentTrip);
         socket.join(`/driver/${user_id}`);
-        initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip);
+        if (currentTrip != null)
+            initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip);
+        console.log(driver_data);
         storage_1.DriverMap.getMap().set(socket.id, driver_data);
         // console.log(data)
     }));
 };
 exports.handleDriverLogin = handleDriverLogin;
 const getDriverCurrentTrip = (driver_id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(storage_1.TripMap.getMap());
     for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
-        if (trip_value.driver_id == driver_id) {
+        console.log(trip_value);
+        console.log('xin chào');
+        if ((trip_value === null || trip_value === void 0 ? void 0 : trip_value.driver_id) != undefined && (trip_value === null || trip_value === void 0 ? void 0 : trip_value.driver_id) == driver_id) {
             const userInfo = yield userService_1.default.getBasicUserInfo(trip_value.user_id);
             const returnDat = trip_value;
             returnDat["user"] = userInfo;
-            return returnDat;
+            return {
+                'trip_info': trip_value,
+                'user_info': userInfo
+            };
         }
     }
     return null;

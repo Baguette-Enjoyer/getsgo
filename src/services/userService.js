@@ -10,7 +10,7 @@ const salt = bcrypt.genSaltSync(10);
 const getBasicUserInfo = async (user_id) => {
   const data = await db.User.findOne({
     where: { id: user_id },
-    attributes: ['name', 'phone', 'avatar', 'id', 'token_fcm', 'type'],
+    attributes: ['name', 'phone', 'avatar', 'id'],
   })
   return data
 }

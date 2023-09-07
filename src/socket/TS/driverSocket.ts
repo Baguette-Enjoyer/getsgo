@@ -58,10 +58,10 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
     socket.on('driver-login', async (data: Driver) => {
         const user_id = data.user_id
 
-        const d = getCurrentDriverInfoById(user_id)
-        
-        let driver_data:Driver
-        if (d.status == "Reconnecting"){
+        const d = DriverMap.getMap().get(user_id.toString())
+
+        let driver_data: Driver
+        if (d) {
             driver_data = {
                 user_id: user_id,
                 status: "Driving",
@@ -87,23 +87,31 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 client_id: undefined,
                 token_fcm: driver_info.token_fcm,
             }
-        }        
+        }
         const currentTrip = await getDriverCurrentTrip(user_id)
-       
+        console.log(currentTrip)
         socket.join(`/driver/${user_id}`)
-        io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip)
+        if (currentTrip != null)
+            io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip)
+        console.log(driver_data);
         DriverMap.getMap().set(socket.id, driver_data)
         // console.log(data)
     })
 }
 
 export const getDriverCurrentTrip = async (driver_id: number) => {
+    console.log(TripMap.getMap())
     for (const [trip_id, trip_value] of TripMap.getMap()) {
-        if (trip_value.driver_id == driver_id) {
+        console.log(trip_value)
+        console.log('xin chào')
+        if (trip_value?.driver_id != undefined && trip_value?.driver_id == driver_id) {
             const userInfo = await userService.getBasicUserInfo(trip_value.user_id)
             const returnDat = trip_value
             returnDat["user"] = userInfo
-            return returnDat
+            return {
+                'trip_info': trip_value,
+                'user_info': userInfo
+            }
         }
     }
     return null
@@ -247,7 +255,7 @@ export const getCurrentDriverInfoById = (id: number): Driver => {
             return socket_value
         }
     }
-    return { user_id: 0, status: "", lat: 0, lng: 0,heading:0,rating:0,token_fcm:"000",vehicle_type:"1" }
+    return { user_id: 0, status: "", lat: 0, lng: 0, heading: 0, rating: 0, token_fcm: "000", vehicle_type: "1" }
 }
 
 export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

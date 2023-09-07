@@ -279,9 +279,10 @@ const handleTripUpdate = (socket) => {
                 initServer_1.io.in(`/user/${trip.user_id}`).emit('trip-update', { status: data.status });
                 initServer_1.io.in("callcenter").emit('trip-update', { status: data.status, trip_id: data.trip_id });
             }
+            yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: "Done" });
             storage_1.TripMap.getMap().delete(data.trip_id);
             console.log("Đã xóa chuyển khỏi trip");
-            yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: "Done" });
+            console.log(storage_1.TripMap.getMap());
         }
         else if (data.status != null && trip != null) {
             console.log("1231231231");
