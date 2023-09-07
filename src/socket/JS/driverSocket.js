@@ -54,7 +54,7 @@ const handleDriverLogin = (socket) => {
         socket.join(`/driver/${user_id}`);
         initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip);
         storage_1.DriverMap.getMap().set(socket.id, driver_data);
-        // console.log(data)
+        console.log(data)
     }));
 };
 exports.handleDriverLogin = handleDriverLogin;

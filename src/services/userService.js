@@ -135,7 +135,9 @@ export const CreateUserIfNotExist = async (phone) => {
     // let phone = data.phone
     const existedUser = await db.User.findOne({
       where: {
-        phone: phone
+        phone: {
+          [Op.eq]: phone,
+        },
       }
     })
     if (existedUser != undefined) {
