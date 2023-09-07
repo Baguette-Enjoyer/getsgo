@@ -364,6 +364,8 @@ export const initTripCallCenterS1 = async (data) => {
     const user = await CreateUserIfNotExist(phone)
     console.log("cout<<userid")
     console.log(user.id)
+    console.log(phone)
+    console.log(data)
 
     const is_scheduled = data.is_scheduled
     const schedule_time = is_scheduled ? data.schedule_time : now;
@@ -395,6 +397,7 @@ export const initTripCallCenterS1 = async (data) => {
         schedule_time: schedule_time
     }
     console.log(trip)
+    console.log('newTrip1')
     let newTrip = await db.Trip.create(trip)
     console.log('newTrip')
     console.log(newTrip)

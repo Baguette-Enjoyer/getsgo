@@ -76,7 +76,7 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
 export const findCurrentTripOfUser = async (user_id: number) => {
     for (const [trip_id, trip_value] of TripMap.getMap()) {
         if (trip_value.user_id == user_id) {
-        const driverDat = await driverServices.GetDriverInfoById(trip_value.driver_id)
+            const driverDat = await driverServices.GetDriverInfoById(trip_value.driver_id)
             const location = GetSocketByDriverId(trip_value.driver_id)
             const returnDat = trip_value
             driverDat['location'] = location
