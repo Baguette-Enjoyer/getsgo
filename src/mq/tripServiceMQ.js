@@ -156,6 +156,8 @@ export const ConsumerNormalTrip = async (message) => {
         const scheduledTime = new Date(data.schedule_time)
         const notificationTime = new Date(scheduledTime - 1 * 60000)
         const delay = notificationTime - now
+        console.log("schedule time là ", scheduledTime)
+        console.log("tao cho delay là ", delay)
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
             console.log("kiểm tra lại")
@@ -205,6 +207,7 @@ export const ConsumerNormalTrip = async (message) => {
                 // broadCastToDriver()
             }
         }, delay)
+        console.log("return nha mày")
         return
     }
     else await handleFind(data, userData)
