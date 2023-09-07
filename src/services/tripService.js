@@ -566,6 +566,9 @@ export const GetAppointmentTrip = async () => {
         where: {
             is_scheduled: true,
             driver_id: null,
+            schedule_time: {
+                [Op.gt]: Sequelize.literal('NOW()')
+            },
         },
         include: {
             model: db.User,
@@ -574,7 +577,7 @@ export const GetAppointmentTrip = async () => {
             required: true,
         },
         order: [
-            ['createdAt', 'DESC'],
+            ['schedule_time', 'ASC'],
         ]
     }
     )
@@ -702,7 +705,13 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
                     status: {
                         [Op.ne]: "Cancelled"
                     },
+                },
+                {
+                    schedule_time: {
+                        [Op.gt]: Sequelize.literal('NOW()')
+                    },
                 }
+
             ]
 
         },
@@ -715,7 +724,7 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
             },
         ],
         order: [
-            ['createdAt', 'ASC'],
+            ['schedule_time', 'ASC'],
         ],
         nest: true,
         raw: true
@@ -795,7 +804,7 @@ export const GetRunningTripOfUser = async (user_id) => {
             },
         ],
         order: [
-            ['updatedAt', 'DESC'],
+            ['schedule_time', 'ASC'],
         ],
     })
 
@@ -835,7 +844,7 @@ export const GetRunningTripOfDriver = async (driver_id) => {
             },
         ],
         order: [
-            ['updatedAt', 'DESC'],
+            ['schedule_time', 'ASC'],
         ],
     })
     if (trip) return trip
