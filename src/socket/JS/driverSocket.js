@@ -47,7 +47,7 @@ const handleDriverLogin = (socket) => {
                 lng: data.lng,
                 status: data.status,
                 heading: data.heading,
-                vehicle_type: driver_info.driver_info.driver_vehicle.id,
+                vehicle_type: driver_info.driver_info.driver_vehicle.vehicle_type.id,
                 rating: driver_info.statics.starResult,
                 client_id: undefined,
                 token_fcm: driver_info.token_fcm,
