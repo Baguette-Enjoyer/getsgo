@@ -19,7 +19,7 @@ initializeApp({
   credential: applicationDefault(),
   projectId: 'taxi-getgo',
 });
-sendMessageFirebase()
+// sendMessageFirebase()
 initServer.getServer().listen(process.env.PORT || 3000, () => {
   console.log("server listening on 3000")
 })
