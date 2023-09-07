@@ -54,7 +54,7 @@ const findCurrentTripOfUser = (user_id) => __awaiter(void 0, void 0, void 0, fun
             const location = (0, driverSocket_1.GetSocketByDriverId)(trip_value.driver_id);
             const returnDat = trip_value;
             driverDat['location'] = location;
-            returnDat["driver"] = driverDat;
+            returnDat["driver_info"] = driverDat;
             return returnDat;
         }
     }
