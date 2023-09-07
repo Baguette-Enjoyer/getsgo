@@ -364,7 +364,7 @@ export const initTripCallCenterS1 = async (data) => {
     const user = await CreateUserIfNotExist(phone)
     console.log("cout<<userid")
     console.log(user.id)
-
+    const now = new Date()
     const is_scheduled = data.is_scheduled
     const schedule_time = is_scheduled ? data.schedule_time : now;
     const lat = data.start.lat
