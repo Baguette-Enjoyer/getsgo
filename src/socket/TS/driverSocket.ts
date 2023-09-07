@@ -86,7 +86,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 status: data.status,
                 heading: data.heading,
                 vehicle_type: driver_info.driver_info.driver_vehicle.vehicle_type.id,
-                rating: driver_info.statics.starResult,
+                rating: Math.round((driver_info.statics.starResult) * 100) / 100,
                 client_id: undefined,
                 token_fcm: driver_info.driver_info.token_fcm,
             }
