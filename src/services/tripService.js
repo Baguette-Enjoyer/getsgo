@@ -231,6 +231,7 @@ const AcceptTrip = async (data) => {
     // }
     const newTrip = await GetTripById(data.trip_id)
     const userInfo = await userService.GetUserById(newTrip.user_id)
+   
     sendMessageFirebase(userInfo.token_fcm, 'Chuyến đi hẹn giờ', "Đã có tài xế chấp nhận")
     return newTrip
 }

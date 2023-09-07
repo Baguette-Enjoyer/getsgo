@@ -54,7 +54,8 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
         })
         console.log('user đã đăng nhập')
 
-        const curTrips = await tripService.GetRunningTripOfUser(user_id)
+        const curTrips = await tripService.GetRunningTripOfUser(user_id) // chuyến hẹn giờ sau 10/31
+        // chuyến này đang trong tripMap
         curTrips.forEach((item: any) => {
             const driverInfo = GetDriverInfoById(item.driver_id)
             const driverDat = DriverMap.getMap().get(driverInfo!)
