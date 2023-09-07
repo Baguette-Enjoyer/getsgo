@@ -19,6 +19,7 @@ const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
 const connectRedis_1 = __importDefault(require("../../config/connectRedis"));
+const driverSocket_1 = require("./driverSocket");
 let rd = (0, connectRedis_1.default)();
 // const users = new Map<string, User>()
 const handleUserLogin = (socket) => {
@@ -33,6 +34,7 @@ const handleUserLogin = (socket) => {
         console.log('user đã đăng nhập');
         const curTrips = yield tripService_1.default.GetRunningTripOfUser(user_id); //hẹn giờ
         const curTrip2 = yield (0, exports.findCurrentTripOfUser)(user_id);
+        // curTrips.push(curTrip2);
         const ts = {
             active: curTrip2,
             schedule: curTrips
@@ -50,9 +52,11 @@ const findCurrentTripOfUser = (user_id) => __awaiter(void 0, void 0, void 0, fun
     for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
         if (trip_value.user_id === user_id) {
             const driverDat = yield driverServices_1.default.GetDriverInfoById(trip_value.driver_id);
+            const location = (0, driverSocket_1.GetSocketByDriverId)(trip_value.driver_id);
             const returnDat = trip_value;
-            // const location= GetSoc
+            driverDat['location'] = location;
             returnDat["driver"] = driverDat;
+            // returnDat= location
             return returnDat;
         }
     }

@@ -23,30 +23,30 @@ export interface TripValue {
     trip_id: number
     user_id: number
     driver_id?: number
-    driver?:any
-    user?:any
+    driver?: any
+    user?: any
     start: {
         lat: number
         lng: number
         place: string
     }
-    end: {
+    end?: {
         lat: number
         lng: number
         place: string
     }
-    status?: "Pending" | "Waiting" | "Confirmed" | "Driving" | "Arrived" | "Done" | "Cancelled" | string
-    price: number
-    is_paid: boolean
-    paymentMethod: string
+    status?: "Pending" | "Waiting" | "Confirmed" | "Arrived" | "Driving" | "Done" | "Cancelled" | string
+    price?: number
+    is_paid?: boolean
+    paymentMethod?: string
     is_scheduled: boolean
     createdAt: Date
     cancellable: boolean
     finished_date?: Date
     schedule_time?: Date
     is_callcenter: boolean
-    duration: string
-    distance: number
+    duration?: string
+    distance?: number
 }
 
 const users = new Map<string, User>()
