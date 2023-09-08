@@ -282,6 +282,7 @@ const handleTripUpdate = (socket) => {
             yield tripService_1.default.UpdateTrip({ trip_id: data.trip_id, status: "Done" });
             storage_1.TripMap.getMap().delete(data.trip_id);
             console.log("Đã xóa chuyển khỏi trip");
+            console.log("danh sách chuyến hiện tại");
             console.log(storage_1.TripMap.getMap());
         }
         else if (data.status != null && trip != null) {

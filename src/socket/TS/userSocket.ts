@@ -329,6 +329,7 @@ export const handleTripUpdate = (socket: Socket<DefaultEventsMap, DefaultEventsM
             await tripService.UpdateTrip({ trip_id: data.trip_id, status: "Done" })
             TripMap.getMap().delete(data.trip_id)
             console.log("Đã xóa chuyển khỏi trip")
+            console.log("danh sách chuyến hiện tại")
             console.log(TripMap.getMap());
 
         } else if (data.status != null && trip != null) {

@@ -40,7 +40,7 @@ const handleDriverLogin = (socket) => {
             storage_1.DriverMap.getMap().delete(user_id.toString());
         }
         else {
-            console.log('thèn có trip nhen');
+            console.log('thèn này k có trip nhen');
             const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
             console.log(driver_info);
             driver_data = {

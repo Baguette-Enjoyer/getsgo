@@ -4,7 +4,7 @@ import locationServices from '../services/locationService.js'
 import userService from '../services/userService.js'
 import { AddDriverToBroadCast, broadCastToDriver, broadCastToDriverById, broadCastToClientById } from '../socket/JS/userSocket.js'
 import { io } from '../services/initServer.js'
-import tripService, { DeleteTrip } from '../services/tripService.js'
+import tripService, { DeleteTrip, CancelTrip } from '../services/tripService.js'
 import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip, GetSocketByDriverId } from '../socket/JS/driverSocket.js'
 import { sendMessageFirebase } from '../firebase/firebaseApp.js'
 import driverServices from '../services/driverServices.js'
@@ -106,7 +106,7 @@ const handleFind = async (data, userData) => {
         if (!loopsBroken) {
             timesUp = true
             TripMap.getMap().delete(trip_id)
-            await DeleteTrip(trip_id)
+            await Can(trip_id)
             io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
         }
     }, 70000)

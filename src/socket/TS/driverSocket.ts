@@ -78,7 +78,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
             DriverMap.getMap().delete(user_id.toString())
         }
         else {
-            console.log('thèn có trip nhen')
+            console.log('thèn này k có trip nhen')
             const driver_info = await driverServices.GetDriverInfoById(user_id)
             console.log(driver_info)
             driver_data = {
