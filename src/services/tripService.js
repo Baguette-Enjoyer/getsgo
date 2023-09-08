@@ -464,6 +464,7 @@ export const initTripCallCenterS1 = async (data) => {
             is_scheduled: is_scheduled,
             schedule_time: schedule_time
         }
+        console.log("thằng s2 định vị nè ", trip2)
         sendMessageToS2(trip2)
     }
     console.log('heeelllllllllll')
