@@ -194,7 +194,7 @@ let GetTripById = async (trip_id) => {
     if (trips == null) throw new Error("Couldn't find trip")
     trips.start = JSON.parse(trips.start)
     trips.end = JSON.parse(trips.end)
-    return (trips)
+    return trips
 }
 
 const AcceptTrip = async (data) => {
@@ -297,7 +297,7 @@ export const UpdateTrip = async (data) => {
         updateObj.duration = data.duration
         tripDat.duration = data.duration
     }
-    TripMap.getMap().set(data.trip_id, tripDat)
+
     // console.log(updateObj)
     // console.log(data.trip_id)
     try {
@@ -312,6 +312,9 @@ export const UpdateTrip = async (data) => {
         //     "message": "success",
         // }
         let newTrip = await GetTripById(data.trip_id)
+        if (newTrip.is_scheduled) {
+            TripMap.getMap().set(data.trip_id, tripDat)
+        }
         return newTrip
     } catch (error) {
         throw error

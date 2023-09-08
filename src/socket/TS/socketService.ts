@@ -91,13 +91,16 @@ const handleDisconnect = (socket: Socket<DefaultEventsMap, DefaultEventsMap, Def
         }
         else {
             const driverDat = DriverMap.getMap().get(socket.id)
-            console.log('111111');
             console.log(driverDat?.client_id);
-            if (driverDat?.client_id != undefined) {
-                driverDat!.status = "Reconnecting"
-                DriverMap.getMap().set(driverDat.user_id.toString(), driverDat)
+            console.log('thằng này driver nè');
+            if (driverDat != undefined){
+                if (driverDat.client_id != undefined) {
+                    driverDat.status = "Reconnecting"
+                    DriverMap.getMap().set(driverDat.user_id.toString(), driverDat)
+                    DriverMap.getMap().delete(socket.id)
+                }
+                else DriverMap.getMap().delete(socket.id)
             }
-            else DriverMap.getMap().delete(socket.id)
         }
         // users.delete(socket.id)
         console.log("client disconnected " + socket.id)

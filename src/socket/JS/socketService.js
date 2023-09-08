@@ -90,14 +90,17 @@ const handleDisconnect = (socket) => {
         }
         else {
             const driverDat = storage_1.DriverMap.getMap().get(socket.id);
-            console.log('111111');
             console.log(driverDat === null || driverDat === void 0 ? void 0 : driverDat.client_id);
-            if ((driverDat === null || driverDat === void 0 ? void 0 : driverDat.client_id) != undefined) {
-                driverDat.status = "Reconnecting";
-                storage_1.DriverMap.getMap().set(driverDat.user_id.toString(), driverDat);
+            console.log('thằng này driver nè');
+            if (driverDat != undefined) {
+                if (driverDat.client_id != undefined) {
+                    driverDat.status = "Reconnecting";
+                    storage_1.DriverMap.getMap().set(driverDat.user_id.toString(), driverDat);
+                    storage_1.DriverMap.getMap().delete(socket.id);
+                }
+                else
+                    storage_1.DriverMap.getMap().delete(socket.id);
             }
-            else
-                storage_1.DriverMap.getMap().delete(socket.id);
         }
         // users.delete(socket.id)
         console.log("client disconnected " + socket.id);

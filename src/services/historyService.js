@@ -41,7 +41,6 @@ const GetHistoryOfUser = async (user_id) => {
         trip.start = JSON.parse(trip.start)
         trip.end = JSON.parse(trip.end)
     }
-
     return trips
 }
 

@@ -74,9 +74,11 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 lng: data.lng,
                 heading: data.heading,
             }
+            DriverMap.getMap().set(socket.id, driver_data)
+            DriverMap.getMap().delete(user_id.toString())
         }
         else {
-            console.log('thèn có trip nhen')
+            console.log('thèn này k có trip nhen')
             const driver_info = await driverServices.GetDriverInfoById(user_id)
             console.log(driver_info)
             driver_data = {
@@ -90,6 +92,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 client_id: undefined,
                 token_fcm: driver_info.driver_info.token_fcm,
             }
+            DriverMap.getMap().set(socket.id, driver_data)
         }
         const currentTrip = await getDriverCurrentTrip(user_id)
         console.log(currentTrip)
@@ -97,7 +100,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
         if (currentTrip != null)
             io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip)
         console.log(driver_data);
-        DriverMap.getMap().set(socket.id, driver_data)
+        
         // console.log(data)
     })
 }
@@ -162,7 +165,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 // const newTrip = trip
                 // trip.status = 'Confirmed'
                 // trip.driver_id = driver.user_id
-
+                console.log("chuyến hiện tại nè >< :")
                 console.log(trip)
                 TripMap.getMap().set(trip.trip_id, trip)
                 DriverMap.getMap().set(socket.id, driver)
@@ -171,7 +174,8 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
 
                 //thông báo cho driver nhận chuyến ok
                 io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
-
+                console.log("cập nhật chuyến đi thành confirmed do có driver nhận")
+                await tripService.UpdateTrip({trip_id: trip.trip_id,status:"Confirmed"})
                 //ádasdasdada
             }
             else {
@@ -182,6 +186,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
         else {
             driver.response = "Deny"
             DriverMap.getMap().set(socket.id, driver)
+            console.log("thằng này mới deny: ",DriverMap.getMap().get(socket.id))
         }
         // let driver_id = driver?.user_id
         // let trip_id = data.trip_id
@@ -284,10 +289,6 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
             io.in(`/user/${driver.client_id}`).emit('get-location-driver', data)
         }
     })
-}
-
-export const broadcastScheduleTrip = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-
 }
 
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

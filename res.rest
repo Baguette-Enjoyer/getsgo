@@ -150,7 +150,8 @@ Content-Type: application/json
     },
     "phone": "+84123123123",
     "carType":1,
-    "is_scheduled":false,
+    "is_scheduled":true,
+    "schedule_time": "2023-09-08 10:30:00",
     "price":50000,
     "is_paid":false,
     "payment_method":"Cash"
