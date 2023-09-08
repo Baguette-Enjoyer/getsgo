@@ -26,10 +26,10 @@ const handleUserLogin = (socket) => {
     socket.on('user-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
         const { user_id } = data;
         socket.join(`/user/${user_id}`);
-        const { token_fcm } = yield userService_1.default.getBasicUserInfo(user_id);
+        const userData = yield userService_1.default.GetUserById(user_id);
         storage_1.UserMap.getMap().set(socket.id, {
             user_id: user_id,
-            token_fcm: token_fcm
+            token_fcm: userData.token_fcm
         });
         const curTrips = yield tripService_1.default.GetRunningTripOfUser(user_id); //hẹn giờ
         const curTrip2 = yield (0, exports.findCurrentTripOfUser)(user_id);

@@ -8,6 +8,8 @@ import tripService, { DeleteTrip } from '../services/tripService.js'
 import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip, GetSocketByDriverId } from '../socket/JS/driverSocket.js'
 import { sendMessageFirebase } from '../firebase/firebaseApp.js'
 import driverServices from '../services/driverServices.js'
+const moment = require('moment-timezone');
+moment.tz.setDefault('Asia/Ho_Chi_Minh');
 export const ConsumerCallcenterTrip = async (message) => {
     // console.log(message)
     const data = JSON.parse(message.content.toString())
@@ -29,10 +31,13 @@ export const ConsumerCallcenterTrip = async (message) => {
     if (data.is_scheduled) {
         console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
-        const now = new Date()
-        const scheduledTime = new Date(data.schedule_time)
-        const notificationTime = new Date(scheduledTime - 1 * 60000)
-        const delay = notificationTime - now
+        const now = moment()
+
+        const scheduledTime = moment(data.schedule_time);
+        // const remainingMinutes = scheduledTime.diff(currentTime, 'minutes');
+        const delay = scheduledTime - now;
+        // const delay = notificationTime - now;
+        console.log("delay ", delay)
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
             console.log("kiểm tra lại")
@@ -63,9 +68,9 @@ export const ConsumerCallcenterTrip = async (message) => {
                     TripMap.getMap().set(data.trip_id, data);
 
                     // driver
-                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
-                    broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
                     const driverData = await driverServices.GetDriverInfoById(t.driver_id)
+                    sendMessageFirebase(driverData.driver_info.token_fcm, 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
+                    broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
                     const location = GetSocketByDriverId(t.driver_id)
                     const dataDriver = {
                         driver_info: driverData,
@@ -75,7 +80,7 @@ export const ConsumerCallcenterTrip = async (message) => {
                     console.log(dataDriver)
                     console.log('em ơi')
                     // client
-                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
+                    // sendMessageFirebase(userData.token_fcm, 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
                     broadCastToClientById(t.user_id, "schedule-start", dataDriver)
                 }
                 // broadCastToDriver()
@@ -152,10 +157,15 @@ export const ConsumerNormalTrip = async (message) => {
     if (data.is_scheduled) {
         console.log("mày đặt chuyến hẹn giờ")
         BroadcastIdleDrivers("new-scheduled-trip", DataResponse)
-        const now = new Date()
-        const scheduledTime = new Date(data.schedule_time)
-        const notificationTime = new Date(scheduledTime - 1 * 60000)
-        const delay = notificationTime - now
+
+        const now = moment()
+
+        const scheduledTime = moment(data.schedule_time);
+        // const remainingMinutes = scheduledTime.diff(currentTime, 'minutes');
+        const delay = scheduledTime - now;
+        // const delay = notificationTime - now;
+        console.log("delay ", delay)
+
         setTimeout(async () => {
             // kiểm tra lại chuyến đi
             console.log("kiểm tra lại")
@@ -186,9 +196,10 @@ export const ConsumerNormalTrip = async (message) => {
                     TripMap.getMap().set(data.trip_id, data);
 
                     // driver
-                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
-                    broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
+
                     const driverData = await driverServices.GetDriverInfoById(t.driver_id)
+                    sendMessageFirebase(driverData.driver_info.token_fcm, 'Chuyến đi hẹn giờ', "Tài xế chuẩn bị đi")
+                    broadCastToDriverById(t.driver_id, "schedule-notice", DataResponse)
                     const location = GetSocketByDriverId(t.driver_id)
                     const dataDriver = {
                         driver_info: driverData,
@@ -198,12 +209,13 @@ export const ConsumerNormalTrip = async (message) => {
                     console.log(dataDriver)
                     console.log('em ơi')
                     // client
-                    sendMessageFirebase('', 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
+                    sendMessageFirebase(userData.token_fcm, 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
                     broadCastToClientById(t.user_id, "schedule-start", dataDriver)
                 }
                 // broadCastToDriver()
             }
         }, delay)
+        console.log("return nha mày")
         return
     }
     else await handleFind(data, userData)

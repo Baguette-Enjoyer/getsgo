@@ -15,7 +15,7 @@ export interface Driver {
     heading: number
     rating: number | 0
     response?: 'Accept' | 'Deny' | string
-    client_id?:number | undefined
+    client_id?: number | undefined
     token_fcm: string
 }
 

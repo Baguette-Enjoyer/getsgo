@@ -50,10 +50,10 @@ export const handleUserLogin = (socket: Socket<DefaultEventsMap, DefaultEventsMa
     socket.on('user-login', async (data: User) => {
         const { user_id } = data
         socket.join(`/user/${user_id}`)
-        const { token_fcm } = await userService.getBasicUserInfo(user_id)
+        const userData = await userService.GetUserById(user_id)
         UserMap.getMap().set(socket.id, {
             user_id: user_id,
-            token_fcm: token_fcm
+            token_fcm: userData.token_fcm
         })
 
         const curTrips = await tripService.GetRunningTripOfUser(user_id)//hẹn giờ
@@ -295,7 +295,7 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on("driver-message", (data: { conversation_id: number, user_id: number, message: string }) => {
+    socket.on("driver-message", (data: { trip_id: number, user_id: number, message: string }) => {
         socket.to(`/user/${data.user_id}`).emit("message-to-user", data.message)
     })
 }

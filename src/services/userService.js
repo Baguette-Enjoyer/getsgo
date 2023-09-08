@@ -10,7 +10,7 @@ const salt = bcrypt.genSaltSync(10);
 const getBasicUserInfo = async (user_id) => {
   const data = await db.User.findOne({
     where: { id: user_id },
-    attributes: ['name', 'phone', 'avatar', 'id'],
+    attributes: ['name', 'phone', 'avatar', 'id', 'token_fcm'],
   })
   return data
 }
@@ -145,6 +145,7 @@ export const CreateUserIfNotExist = async (phone) => {
     }
     const user = await db.User.create({
       phone: phone,
+      name: "Tổng đài",
       active: true,
       type: "User"
     })
@@ -194,8 +195,8 @@ const GetUserById = async (user_id) => {
     nest: true,
     raw: true
   })
-  if (user.id == null) {
-    throw new Error('user not found')
+  if (user == null) {
+    return null
   }
   return user
 }

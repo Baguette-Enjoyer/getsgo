@@ -24,6 +24,7 @@ const handleDriverLogin = (socket) => {
         const d = storage_1.DriverMap.getMap().get(user_id.toString());
         let driver_data;
         if (d) {
+            console.log('thèn có trip nhen');
             driver_data = {
                 user_id: user_id,
                 status: "Driving",
@@ -37,17 +38,19 @@ const handleDriverLogin = (socket) => {
             };
         }
         else {
+            console.log('thèn có trip nhen');
             const driver_info = yield driverServices_1.default.GetDriverInfoById(user_id);
+            console.log(driver_info);
             driver_data = {
                 user_id: user_id,
                 lat: data.lat,
                 lng: data.lng,
                 status: data.status,
                 heading: data.heading,
-                vehicle_type: driver_info.driver_info.driver_vehicle.id,
-                rating: driver_info.statics.starResult,
+                vehicle_type: driver_info.driver_info.driver_vehicle.vehicle_type.id,
+                rating: Math.round((driver_info.statics.starResult) * 100) / 100,
                 client_id: undefined,
-                token_fcm: driver_info.token_fcm,
+                token_fcm: driver_info.driver_info.token_fcm,
             };
         }
         const currentTrip = yield (0, exports.getDriverCurrentTrip)(user_id);

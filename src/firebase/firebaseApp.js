@@ -8,7 +8,7 @@ export const sendMessageFirebase = (receivedToken, title, body) => {
             title: title,
             body: body
         },
-        token: sendMessageFirebase,
+        token: receivedToken,
     };
 
     getMessaging()
