@@ -8,7 +8,7 @@ export const sendMessageFirebase = (receivedToken, title, body) => {
             title: title,
             body: body
         },
-        token: 'fj9Kb13NThm-4QqSAIu4rb:APA91bHOZm3Fja_OzP7tXdhV391geJ6ZIM_1W_KMOexa_VYF4OUL_M2K7QBrqJlxv1lRlTnJaOnHbDGyrgiP3niBJGoJ8x9y5RzLQn7SNhLbJA2mqgyxnoWENpeE6FTSIfy8dv7iatEB',
+        token: sendMessageFirebase,
     };
 
     getMessaging()
