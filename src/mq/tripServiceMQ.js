@@ -4,7 +4,7 @@ import locationServices from '../services/locationService.js'
 import userService from '../services/userService.js'
 import { AddDriverToBroadCast, broadCastToDriver, broadCastToDriverById, broadCastToClientById } from '../socket/JS/userSocket.js'
 import { io } from '../services/initServer.js'
-import tripService, { DeleteTrip, CancelTrip } from '../services/tripService.js'
+import tripService, { DeleteTrip } from '../services/tripService.js'
 import { BroadcastIdleDrivers, getCurrentDriverInfoById, getDriverCurrentTrip, GetSocketByDriverId } from '../socket/JS/driverSocket.js'
 import { sendMessageFirebase } from '../firebase/firebaseApp.js'
 import driverServices from '../services/driverServices.js'
@@ -90,7 +90,9 @@ export const ConsumerCallcenterTrip = async (message) => {
     }
     else await handleFind(data, data.phone)
 }
+
 const handleFind = async (data, userData) => {
+    console.log('tìm chuyến bình thường nha')
     const place1 = data.start
     const trip_id = data.trip_id
     TripMap.getMap().set(data.trip_id, data);
@@ -105,8 +107,9 @@ const handleFind = async (data, userData) => {
     setTimeout(async () => {
         if (!loopsBroken) {
             timesUp = true
+            console.log("không có thằng nào nhận tao xóa")
             TripMap.getMap().delete(trip_id)
-            await Can(trip_id)
+            await DeleteTrip(trip_id)
             io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
         }
     }, 70000)
@@ -123,8 +126,6 @@ const handleFind = async (data, userData) => {
             if (timesUp != true && loopsBroken == false) {
                 AddDriverToBroadCast(driver.user_id);
                 //
-
-
                 broadCastToDriver(driver.socketId, "user-trip", DataResponse);
             }
         }
@@ -171,7 +172,7 @@ export const ConsumerNormalTrip = async (message) => {
             console.log("kiểm tra lại")
             const t = await tripService.GetTripById(trip_id)
             //nếu chưa có driver
-            console.log('111111111')
+            console.log('kiểm tra có driver hay chưa nè')
             console.log(t.driver_id)
             if (t.driver_id == null || t.driver_id == undefined) {
                 console.log("không có driver chuyển qua")

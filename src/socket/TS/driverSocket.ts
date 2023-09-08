@@ -175,7 +175,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
                 //thông báo cho driver nhận chuyến ok
                 io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip")
                 console.log("cập nhật chuyến đi thành confirmed do có driver nhận")
-                await tripService.UpdateTrip({trip_id: trip.trip_id,status:"Confirmed"})
+                // await tripService.UpdateTrip({trip_id: trip.trip_id,status:"Confirmed"})
                 //ádasdasdada
             }
             else {
