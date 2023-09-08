@@ -157,11 +157,11 @@ const getAppointmentTrip2 = async () => {
                 ]
             }
         )
-        trips.forEach(trip => {
+        for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
             // trip.schedule_time = new Date(trip.schedule_time)
-        })
+        }
         return resolve({
             statusCode: 200,
             trips: trips

@@ -37,11 +37,11 @@ const GetHistoryOfUser = async (user_id) => {
         ],
         attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
     })
-    trips.forEach(trip => {
+    for (const trip of trips) {
         trip.start = JSON.parse(trip.start)
         trip.end = JSON.parse(trip.end)
-        prof += parseFloat(trip.price)
-    })
+    }
+
     return trips
 }
 
