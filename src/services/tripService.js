@@ -194,7 +194,7 @@ let GetTripById = async (trip_id) => {
     if (trips == null) throw new Error("Couldn't find trip")
     trips.start = JSON.parse(trips.start)
     trips.end = JSON.parse(trips.end)
-    return (trips)
+    return trips
 }
 
 const AcceptTrip = async (data) => {
