@@ -74,6 +74,8 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 lng: data.lng,
                 heading: data.heading,
             }
+            DriverMap.getMap().set(socket.id, driver_data)
+            DriverMap.getMap().delete(user_id.toString())
         }
         else {
             console.log('thèn có trip nhen')
@@ -90,6 +92,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
                 client_id: undefined,
                 token_fcm: driver_info.driver_info.token_fcm,
             }
+            DriverMap.getMap().set(socket.id, driver_data)
         }
         const currentTrip = await getDriverCurrentTrip(user_id)
         console.log(currentTrip)
@@ -97,7 +100,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
         if (currentTrip != null)
             io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip)
         console.log(driver_data);
-        DriverMap.getMap().set(socket.id, driver_data)
+        
         // console.log(data)
     })
 }

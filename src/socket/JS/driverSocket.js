@@ -36,6 +36,8 @@ const handleDriverLogin = (socket) => {
                 lng: data.lng,
                 heading: data.heading,
             };
+            storage_1.DriverMap.getMap().set(socket.id, driver_data);
+            storage_1.DriverMap.getMap().delete(user_id.toString());
         }
         else {
             console.log('thèn có trip nhen');
@@ -52,6 +54,7 @@ const handleDriverLogin = (socket) => {
                 client_id: undefined,
                 token_fcm: driver_info.driver_info.token_fcm,
             };
+            storage_1.DriverMap.getMap().set(socket.id, driver_data);
         }
         const currentTrip = yield (0, exports.getDriverCurrentTrip)(user_id);
         console.log(currentTrip);
@@ -59,7 +62,6 @@ const handleDriverLogin = (socket) => {
         if (currentTrip != null)
             initServer_1.io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip);
         console.log(driver_data);
-        storage_1.DriverMap.getMap().set(socket.id, driver_data);
         // console.log(data)
     }));
 };
