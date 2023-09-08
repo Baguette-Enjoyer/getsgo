@@ -464,6 +464,7 @@ export const initTripCallCenterS1 = async (data) => {
             is_scheduled: is_scheduled,
             schedule_time: schedule_time
         }
+        console.log("thằng s2 định vị nè ", trip2)
         sendMessageToS2(trip2)
     }
     console.log('heeelllllllllll')
@@ -472,7 +473,7 @@ export const initTripCallCenterS1 = async (data) => {
 
 export const initTripCallCenterS2 = async (data) => {
     const trip_id = data.trip_id
-    const user_id = data.user_id
+    // const user_id = data.user_id
     // const user = await CreateUserIfNotExist(phone)
     console.log("cout<<userid")
     const start = {
@@ -548,7 +549,7 @@ export const initTripCallCenterS2 = async (data) => {
         trip_id: result.id,
         phone: result.user.phone,
         start: result,
-        // user_id: user_id,
+        user_id: result.user_id,
         type: result.type,
         status: result.status,
         is_scheduled: result.is_scheduled,
