@@ -49,7 +49,7 @@ const handleUserLogin = (socket) => {
 exports.handleUserLogin = handleUserLogin;
 const findCurrentTripOfUser = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
-        if (trip_value.user_id == user_id) {
+        if (trip_value.user_id == user_id && trip_value.driver_id != undefined) {
             const driverDat = yield driverServices_1.default.GetDriverInfoById(trip_value.driver_id);
             const location = (0, driverSocket_1.GetSocketByDriverId)(trip_value.driver_id);
             const returnDat = trip_value;

@@ -814,9 +814,12 @@ export const GetRunningTripOfUser = async (user_id) => {
         for (const t of trip) {
             t.start = JSON.parse(t.start)
             t.end = JSON.parse(t.end)
-            const driverDat = await driverServices.GetDriverInfoById(t.driver_id)
-            // driverDat['location'] = location
-            t["driver_info"] = driverDat
+            if (t.driver_id) {
+                const driverDat = await driverServices.GetDriverInfoById(t.driver_id)
+                // driverDat['location'] = location
+                t["driver_info"] = driverDat
+            }
+            else t["driver_info"] = null
             // t.schedule_time = new Date(t.schedule_time).toLocaleString()
         }
         return trip
