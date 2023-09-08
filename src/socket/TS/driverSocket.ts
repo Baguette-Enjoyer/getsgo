@@ -100,7 +100,7 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
         if (currentTrip != null)
             io.in(`/driver/${user_id}`).emit("driver-reconnect", currentTrip)
         console.log(driver_data);
-        
+
         // console.log(data)
     })
 }
@@ -186,7 +186,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
         else {
             driver.response = "Deny"
             DriverMap.getMap().set(socket.id, driver)
-            console.log("thằng này mới deny: ",DriverMap.getMap().get(socket.id))
+            console.log("thằng này mới deny: ", DriverMap.getMap().get(socket.id))
         }
         // let driver_id = driver?.user_id
         // let trip_id = data.trip_id
@@ -293,7 +293,7 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
 
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on("user-message", (data: { trip_id: number, user_id: number, message: string }) => {
-        socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message)
+        socket.to(`/driver/${TripMap.getMap().get(data.trip_id)?.driver_id}`).emit("message-to-driver", data.message)
     })
 }
 

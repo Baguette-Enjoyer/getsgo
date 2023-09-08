@@ -313,6 +313,7 @@ export const UpdateTrip = async (data) => {
         // }
         let newTrip = await GetTripById(data.trip_id)
         if (newTrip.is_scheduled) {
+            console.log('tripservice is_schedule')
             TripMap.getMap().set(data.trip_id, tripDat)
         }
         return newTrip

@@ -135,7 +135,7 @@ const handleDriverResponseBooking = (socket) => {
                 //thông báo cho driver nhận chuyến ok
                 initServer_1.io.in(`/driver/${driver.user_id}`).emit("receive-trip-success", "successfully received trip");
                 console.log("cập nhật chuyến đi thành confirmed do có driver nhận");
-                yield tripService_1.default.UpdateTrip({ trip_id: trip.trip_id, status: "Confirmed" });
+                // await tripService.UpdateTrip({trip_id: trip.trip_id,status:"Confirmed"})
                 //ádasdasdada
             }
             else {
@@ -246,7 +246,8 @@ const handleLocationUpdate = (socket) => {
 exports.handleLocationUpdate = handleLocationUpdate;
 const handleMessageFromUser = (socket) => {
     socket.on("user-message", (data) => {
-        socket.to(`/driver/${data.user_id}`).emit("message-to-driver", data.message);
+        var _a;
+        socket.to(`/driver/${(_a = storage_1.TripMap.getMap().get(data.trip_id)) === null || _a === void 0 ? void 0 : _a.driver_id}`).emit("message-to-driver", data.message);
     });
 };
 exports.handleMessageFromUser = handleMessageFromUser;

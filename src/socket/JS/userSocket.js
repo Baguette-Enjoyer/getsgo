@@ -248,7 +248,8 @@ const handleUserCancelTrip = (socket) => {
 exports.handleUserCancelTrip = handleUserCancelTrip;
 const handleMessageFromDriver = (socket) => {
     socket.on("driver-message", (data) => {
-        socket.to(`/user/${data.user_id}`).emit("message-to-user", data.message);
+        var _a;
+        socket.to(`/user/${(_a = storage_1.TripMap.getMap().get(data.trip_id)) === null || _a === void 0 ? void 0 : _a.user_id}`).emit("message-to-user", data.message);
     });
 };
 exports.handleMessageFromDriver = handleMessageFromDriver;
