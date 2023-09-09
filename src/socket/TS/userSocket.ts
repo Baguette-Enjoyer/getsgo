@@ -8,6 +8,7 @@ import tripService from "../../services/tripService"
 import driverServices from "../../services/driverServices"
 import initRedis from "../../config/connectRedis"
 import { GetSocketByDriverId } from "./driverSocket"
+import { sendMessageFirebase } from '../../firebase/firebaseApp.js'
 let rd = initRedis()
 interface User {
     user_id: number
@@ -295,8 +296,12 @@ export const handleUserCancelTrip = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const handleMessageFromDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on("driver-message", (data: { trip_id: number, user_id: number, message: string }) => {
-        socket.to(`/user/${TripMap.getMap().get(data.trip_id)?.user_id}`).emit("message-to-user", data.message)
+    socket.on("driver-message", async (data: { trip_id: number, user_id: number, message: string }) => {
+        const userData = await await userService.GetUserById(data.user_id)
+        sendMessageFirebase(userData.token_fcm, 'Tài xế', data.message)
+        // console.log(' usser id ở driver-message')
+        // console.log(TripMap.getMap().get(data.trip_id)?.user_id)
+        io.in(`/user/${data.user_id}`).emit("message-to-user", data.message)
     })
 }
 // export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

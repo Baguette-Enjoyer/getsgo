@@ -20,6 +20,7 @@ const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
 const connectRedis_1 = __importDefault(require("../../config/connectRedis"));
 const driverSocket_1 = require("./driverSocket");
+const firebaseApp_js_1 = require("../../firebase/firebaseApp.js");
 let rd = (0, connectRedis_1.default)();
 // const users = new Map<string, User>()
 const handleUserLogin = (socket) => {
@@ -247,10 +248,13 @@ const handleUserCancelTrip = (socket) => {
 };
 exports.handleUserCancelTrip = handleUserCancelTrip;
 const handleMessageFromDriver = (socket) => {
-    socket.on("driver-message", (data) => {
-        var _a;
-        socket.to(`/user/${(_a = storage_1.TripMap.getMap().get(data.trip_id)) === null || _a === void 0 ? void 0 : _a.user_id}`).emit("message-to-user", data.message);
-    });
+    socket.on("driver-message", (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const userData = yield yield userService_1.default.GetUserById(data.user_id);
+        (0, firebaseApp_js_1.sendMessageFirebase)(userData.token_fcm, 'Tài xế', data.message);
+        // console.log(' usser id ở driver-message')
+        // console.log(TripMap.getMap().get(data.trip_id)?.user_id)
+        initServer_1.io.in(`/user/${data.user_id}`).emit("message-to-user", data.message);
+    }));
 };
 exports.handleMessageFromDriver = handleMessageFromDriver;
 // export const UserGetLocationDriver = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {

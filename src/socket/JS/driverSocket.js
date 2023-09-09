@@ -18,6 +18,7 @@ const userService_1 = __importDefault(require("../../services/userService"));
 const storage_1 = require("./storage");
 const tripService_1 = __importDefault(require("../../services/tripService"));
 const driverServices_1 = __importDefault(require("../../services/driverServices"));
+const firebaseApp_js_1 = require("../../firebase/firebaseApp.js");
 const handleDriverLogin = (socket) => {
     socket.on('driver-login', (data) => __awaiter(void 0, void 0, void 0, function* () {
         const user_id = data.user_id;
@@ -245,10 +246,13 @@ const handleLocationUpdate = (socket) => {
 };
 exports.handleLocationUpdate = handleLocationUpdate;
 const handleMessageFromUser = (socket) => {
-    socket.on("user-message", (data) => {
-        var _a;
-        socket.to(`/driver/${(_a = storage_1.TripMap.getMap().get(data.trip_id)) === null || _a === void 0 ? void 0 : _a.driver_id}`).emit("message-to-driver", data.message);
-    });
+    socket.on("user-message", (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const driverData = yield driverServices_1.default.GetDriverInfoById(data.user_id);
+        console.log('driver data nef');
+        console.log(driverData);
+        (0, firebaseApp_js_1.sendMessageFirebase)(driverData.driver_info.token_fcm, 'khách hàng', data.message);
+        initServer_1.io.in(`/driver/${data.user_id}`).emit("message-to-driver", data.message);
+    }));
 };
 exports.handleMessageFromUser = handleMessageFromUser;
 const GetSocketByDriverId = (driver_id) => {

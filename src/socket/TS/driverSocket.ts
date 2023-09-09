@@ -9,6 +9,7 @@ import tripService, { GetRunningTripOfDriver } from "../../services/tripService"
 import driverServices from "../../services/driverServices"
 import initRedis from "../../config/connectRedis"
 import { sendMessageToS3 } from "./userSocket"
+import { sendMessageFirebase } from '../../firebase/firebaseApp.js'
 
 interface Driver {
     user_id: number
@@ -292,8 +293,12 @@ export const handleLocationUpdate = (socket: Socket<DefaultEventsMap, DefaultEve
 }
 
 export const handleMessageFromUser = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
-    socket.on("user-message", (data: { trip_id: number, user_id: number, message: string }) => {
-        socket.to(`/driver/${TripMap.getMap().get(data.trip_id)?.driver_id}`).emit("message-to-driver", data.message)
+    socket.on("user-message", async (data: { trip_id: number, user_id: number, message: string }) => {
+        const driverData = await driverServices.GetDriverInfoById(data.user_id)
+        console.log('driver data nef');
+        console.log(driverData);
+        sendMessageFirebase(driverData.driver_info.token_fcm, 'khách hàng', data.message)
+        io.in(`/driver/${data.user_id}`).emit("message-to-driver", data.message)
     })
 }
 
