@@ -552,7 +552,7 @@ export const initTripCallCenterS2 = async (data) => {
         id: result.id,
         trip_id: result.id,
         phone: result.user.phone,
-        start: result.start,
+        start: start,
         user_id: result.user_id,
         type: result.type,
         status: result.status,
