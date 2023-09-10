@@ -451,9 +451,10 @@ export const initTripCallCenterS1 = async (data) => {
             nest: true,
         })
         const a = await historyService.GetHistoryOfDriver(result.driver_id);
-        console.log("cout<<data");
-        console.log(a);
+        console.log("cout<<data s1");
+        // console.log(a);
         result.driver_stats = historyService.GetDriverStatics(a);
+        console.log(trip)
         SendMessageToQueue("callcenter-trip-queue", JSON.stringify(trip))
         sendMessageToS3(result)
     }
