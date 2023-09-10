@@ -143,6 +143,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
     console.log(responseData.driver_info);
     console.log(responseData.driver_info.User);
     console.log(responseData);
+    console.log("gửi user đã tìm thấy tài xế",trip.user_id)
     io.in(`/user/${trip.user_id}`).emit('found-driver', responseData)
     io.in("callcenter").emit('found-driver', responseData)
     // khi driver chấp nhận thì set lại client_id cho tài xế đó
@@ -153,7 +154,7 @@ const senDriver = async (trip: TripValue, driver: Driver, socket_id: any) => {
 export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
     socket.on('driver-response-booking', async (data: { trip: TripValue, status: 'Accept' | 'Deny' }) => {
         // console.log(data)
-        console.log('nè mâfafasf')
+        console.log('driver response nè')
         const driver = DriverMap.getMap().get(socket.id)
         if (driver == undefined) return
         if (data.status == "Accept") {
@@ -181,6 +182,7 @@ export const handleDriverResponseBooking = (socket: Socket<DefaultEventsMap, Def
             }
             else {
                 //thông báo driver user đã có chuyến
+                console.log("nhận chuyến fail nè")
                 io.in(`/driver/${driver.user_id}`).emit("received-trip-fail", "user in another trip")
             }
         }
