@@ -110,6 +110,7 @@ const handleFind = async (data, userData) => {
             // timesUp = true
             const trip = TripMap.getMap().get(data.trip_id)
             if (r == "ok") {
+                console.log("trip hiện tại", trip)
                 console.log("đã có driver nhận ", trip.driver_id)
                 return
             } else if (r == "cancelled") {
@@ -171,6 +172,8 @@ const handleFind = async (data, userData) => {
             if (i == 17) {
                 loopsBroken = true
                 r = "timesup"
+                console.log("break break break")
+                break;
             }
             i++
         }
@@ -180,6 +183,7 @@ const checkTrip = async (trip_id) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const trip = TripMap.getMap().get(trip_id);
     console.log('11111111111')
+    console.log(trip)
     if (trip !== undefined && trip.driver_id !== undefined) {
         return "ok"
     }
