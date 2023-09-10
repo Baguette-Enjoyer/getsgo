@@ -592,6 +592,8 @@ export const GetAppointmentTrip = async () => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
+            trip.is_scheduled = trip.is_scheduled == 0 ? false : true
+            trip.is_callcenter = trip.is_callcenter == 0 ? false : true
             // trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         return trips;
@@ -737,6 +739,9 @@ export const GetAcceptedScheduledTrip = async (driver_id) => {
         for (const trip of trips) {
             trip.start = JSON.parse(trip.start)
             trip.end = JSON.parse(trip.end)
+            trip.is_scheduled = trip.is_scheduled == 0 ? false : true
+            trip.is_callcenter = trip.is_callcenter == 0 ? false : true
+
             // trip.schedule_time = new Date(trip.schedule_time).toLocaleString()
         }
         return trips;
@@ -816,6 +821,8 @@ export const GetRunningTripOfUser = async (user_id) => {
         for (const t of trip) {
             t.start = JSON.parse(t.start)
             t.end = JSON.parse(t.end)
+            t.is_scheduled = t.is_scheduled == 0 ? false : true
+            t.is_callcenter = t.is_callcenter == 0 ? false : true
             if (t.driver_id) {
                 const driverDat = await driverServices.GetDriverInfoById(t.driver_id)
                 // driverDat['location'] = location
