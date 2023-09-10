@@ -109,15 +109,15 @@ const handleFind = async (data, userData) => {
         if (loopsBroken == true) {
             // timesUp = true
             const trip = TripMap.getMap().get(data.trip_id)
-            if (res == "ok") {
+            if (r == "ok") {
                 console.log("đã có driver nhận ", trip.driver_id)
                 return
-            } else if (res == "cancelled") {
+            } else if (r == "cancelled") {
                 console.log("hủy do user")
                 TripMap.getMap().delete(trip_id)
                 await DeleteTrip(trip_id)
 
-            } else if (res == "timesup") {
+            } else if (r == "timesup") {
                 console.log("hủy do không có thằng nào nhận")
                 TripMap.getMap().delete(trip_id)
                 await DeleteTrip(trip_id)
@@ -149,9 +149,6 @@ const handleFind = async (data, userData) => {
         // console.log(trip)
         // if (trip !== undefined && trip.driver_id !== undefined && trip.status !== "Cancelled") {
         //     loopsBroken = true
-        //     if (trip.status === "Cancelled") {
-        //         console.log("break cuz cancelled")
-        //     }
         //     console.log("break break break")
         //     break;
         // }
