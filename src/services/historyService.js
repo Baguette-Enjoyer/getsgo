@@ -35,7 +35,7 @@ const GetHistoryOfUser = async (user_id) => {
                 ]
             }
         ],
-        attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status']
+        attributes: ['id', 'start', 'end', 'price', 'createdAt', 'status', 'distance', 'duration']
     })
     for (const trip of trips) {
         trip.start = JSON.parse(trip.start)
