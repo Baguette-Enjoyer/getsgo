@@ -108,10 +108,13 @@ const handleFind = async (data, userData) => {
     setTimeout(async () => {
         if (loopsBroken == true) {
             // timesUp = true
-            const trip = TripMap.getMap().get(data.trip_id)
             if (r == "ok") {
-                console.log("trip hiện tại", trip)
-                console.log("đã có driver nhận ", trip.driver_id)
+                const trip = TripMap.getMap().get(data.trip_id)
+                if (trip) {
+                    console.log("trip hiện tại", trip)
+                    console.log("đã có driver nhận ", trip.driver_id)
+                }
+                else console.log("chuyến đã hoàn thành hoặc đã được xóa")
                 return
             } else if (r == "cancelled") {
                 console.log("hủy do user")
