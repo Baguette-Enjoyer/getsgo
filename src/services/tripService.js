@@ -395,7 +395,7 @@ export const initTripCallCenterS1 = async (data) => {
         type: carType,
         status,
         is_callcenter: true,
-        is_scheduled: is_scheduled,
+        is_scheduled: is_scheduled == 0 ? false : true,
         schedule_time: schedule_time
     }
     console.log(trip)
@@ -466,8 +466,9 @@ export const initTripCallCenterS1 = async (data) => {
             type: carType,
             trip_id: trip.trip_id,
             status: status,
-            is_scheduled: is_scheduled,
-            schedule_time: schedule_time
+            is_scheduled: is_scheduled == 0 ? false : true,
+            schedule_time: schedule_time,
+            is_callcenter: true
         }
         console.log("thằng s2 định vị nè ", trip2)
         sendMessageToS2(trip2)
@@ -557,8 +558,9 @@ export const initTripCallCenterS2 = async (data) => {
         user_id: result.user_id,
         type: result.type,
         status: result.status,
-        is_scheduled: result.is_scheduled,
-        schedule_time: result.schedule_time
+        is_scheduled: result.is_scheduled == 0 ? false : true,
+        schedule_time: result.schedule_time,
+        is_callcenter: true
     }
     result.trip_id = result.id
     sendMessageToS3(result)
