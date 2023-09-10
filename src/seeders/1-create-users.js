@@ -18,35 +18,35 @@ module.exports = {
         phone: "+84111111111",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "Admin",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
       {
         name: "Driver",
         phone: "+84222222222",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "Driver",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
       {
         name: "Driver",
         phone: "+84333333333",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "Driver",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
       {
         name: "User_vip",
         phone: "+84444444444",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "User_Vip",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
       {
         name: "User",
         phone: "+84555555555",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "User",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
 
       },
       {
@@ -54,21 +54,21 @@ module.exports = {
         phone: "+84666666666",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "CallCenterS1",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
       {
         name: "CallCenterS2",
         phone: "+84777777777",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "CallCenterS2",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
       {
         name: "CallCenterS3",
         phone: "+84888888888",
         password: "$2a$10$Ficn2IbPjW2xSwbjIkkC0u6LmJNGCJmEAqT4Iuw0srI/GfXL/Aeee",
         type: "CallCenterS3",
-        avatar: "https://picsum.photos/200/300"
+        avatar: "https://inkythuatso.com/uploads/thumbnails/800/2022/03/anh-dai-dien-facebook-dep-cho-nam-53-28-16-28-17.jpg"
       },
     ]
     items.forEach(item => {
