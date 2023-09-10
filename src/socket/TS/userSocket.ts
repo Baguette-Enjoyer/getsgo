@@ -422,11 +422,12 @@ export const AddDriverToBroadCast = (driver_id: number) => {
 
 const UserCancelTrip = (id: number) => {
     // if (status == undefined) return
-    TripMap.getMap().forEach((trip_value, trip_id) => {
+    for (const [trip_id,trip_value] of TripMap.getMap()){
         if (trip_id == id) {
             trip_value.status = "Cancelled"
+            TripMap.getMap().set(trip_id,trip_value)
             return
         }
-    })
+    }
 }
 

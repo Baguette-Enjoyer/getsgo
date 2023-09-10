@@ -374,10 +374,11 @@ const AddDriverToBroadCast = (driver_id) => {
 exports.AddDriverToBroadCast = AddDriverToBroadCast;
 const UserCancelTrip = (id) => {
     // if (status == undefined) return
-    storage_1.TripMap.getMap().forEach((trip_value, trip_id) => {
+    for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
         if (trip_id == id) {
             trip_value.status = "Cancelled";
+            storage_1.TripMap.getMap().set(trip_id, trip_value);
             return;
         }
-    });
+    }
 };
