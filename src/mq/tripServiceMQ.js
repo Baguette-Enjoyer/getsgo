@@ -103,19 +103,26 @@ const handleFind = async (data, userData) => {
     }
     // let DataResponseStringified = JSON.stringify(DataResponse)
     let timesUp = false
+    let r = ""
     let loopsBroken = false
     setTimeout(async () => {
         if (loopsBroken == true) {
             // timesUp = true
             const trip = TripMap.getMap().get(data.trip_id)
-            console.log("chuyến này bị hủy", trip)
-            if (trip.status == "Cancelled") {
-                console.log("do bị hủy")
+            if (res == "ok") {
+                console.log("đã có driver nhận ", trip.driver_id)
+                return
+            } else if (res == "cancelled") {
+                console.log("hủy do user")
+                TripMap.getMap().delete(trip_id)
+                await DeleteTrip(trip_id)
+
+            } else if (res == "timesup") {
+                console.log("hủy do không có thằng nào nhận")
+                TripMap.getMap().delete(trip_id)
+                await DeleteTrip(trip_id)
+                io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
             }
-            else console.log("do không có thằng nào nhận")
-            TripMap.getMap().delete(trip_id)
-            await DeleteTrip(trip_id)
-            io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
         }
     }, 70000)
     while (loopsBroken == false) {
@@ -152,12 +159,23 @@ const handleFind = async (data, userData) => {
         while (i < 18) {
             console.log("kiểm tra each sec")
             const res = await checkTrip(trip_id)
-            if (res == true || i == 17) {
+            if (res == "ok") {
                 loopsBroken = true
+                r = res
                 console.log("break break break")
                 break
             }
-            else i++
+            else if (res == "cancelled") {
+                loopsBroken = true
+                r = res
+                console.log("break break break")
+                break
+            }
+            if (i == 17) {
+                loopsBroken = true
+                r = "timesup"
+            }
+            i++
         }
     }
 }
@@ -165,13 +183,13 @@ const checkTrip = async (trip_id) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const trip = TripMap.getMap().get(trip_id);
     console.log('11111111111')
-    if (trip !== undefined && trip.driver_id !== undefined && trip.status !== "Cancelled") {
-        if (trip.status === "Cancelled") {
-            console.log("break cuz cancelled")
-        }
-        return true
+    if (trip !== undefined && trip.driver_id !== undefined) {
+        return "ok"
     }
-    return false
+    else if (trip.status === "Cancelled") {
+        console.log("break cuz cancelled")
+        return "cancelled"
+    } else return "else"
 }
 export const ConsumerNormalTrip = async (message) => {
     // console.log(message)
