@@ -14,7 +14,7 @@ POST http://174.138.19.215:3000/v1/users/login
 Content-Type: application/json
 
 {
-    "phone":"+84444444444",
+    "phone":"+84955555555",
     "password":"000000"
 }
 

@@ -100,7 +100,7 @@ const requestRide = (drivers, targetLocation, driversInBroadcast) => {
             user_id,
             status,
             distance: getDistance(lat, lng, targetLat, targetLng),
-        })).filter(driver => driver.status == 'Idle' && driversInBroadcast.includes(driver.user_id) == false);
+        })).filter(driver => driver.status == 'Idle' && driversInBroadcast.includes(driver.user_id) == false && distance <= 3.5);
 
     // idleDriversWithDistance.sort((a, b) => a.distance - b.distance);
     // // console.log(idleDriversWithDistance);

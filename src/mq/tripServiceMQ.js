@@ -117,7 +117,7 @@ const handleFind = async (data, userData) => {
                 else console.log("chuyến đã hoàn thành hoặc đã được xóa")
                 return
             } else if (r == "cancelled") {
-                console.log("hủy do user")
+                console.log(`chuyến ${trip_id} bị hủy do user`)
                 TripMap.getMap().delete(trip_id)
                 await DeleteTrip(trip_id)
 
