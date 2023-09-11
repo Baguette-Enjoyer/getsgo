@@ -90,8 +90,8 @@ const NoCancellationStrategy = (drivers, firstIndex, number) => {
 const requestRide = (drivers, targetLocation, driversInBroadcast) => {
     console.log("target là")
     console.log(targetLocation)
-    const targetLat = parseInt(targetLocation.lat)
-    const targetLng = parseInt(targetLocation.lng)
+    const targetLat = parseFloat(targetLocation.lat)
+    const targetLng = parseFloat(targetLocation.lng)
 
     let idleDriversWithDistance = Array.from(drivers.entries()).map(([socketId,
         { lat, lng, user_id, status }]) => ({
