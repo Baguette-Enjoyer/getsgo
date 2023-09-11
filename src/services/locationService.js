@@ -88,6 +88,7 @@ const NoCancellationStrategy = (drivers, firstIndex, number) => {
 
 
 const requestRide = (drivers, targetLocation, driversInBroadcast) => {
+    console.log("target là")
     console.log(targetLocation)
     const targetLat = parseInt(targetLocation.lat)
     const targetLng = parseInt(targetLocation.lng)
@@ -100,7 +101,7 @@ const requestRide = (drivers, targetLocation, driversInBroadcast) => {
             user_id,
             status,
             distance: getDistance(lat, lng, targetLat, targetLng),
-        })).filter(driver => driver.status == 'Idle' && driversInBroadcast.includes(driver.user_id) == false && distance <= 3.5);
+        })).filter(driver => driver.status == 'Idle' && driversInBroadcast.includes(driver.user_id) == false && driver.distance <= 3.5);
 
     // idleDriversWithDistance.sort((a, b) => a.distance - b.distance);
     // // console.log(idleDriversWithDistance);
