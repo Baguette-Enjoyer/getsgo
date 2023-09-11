@@ -69,9 +69,9 @@ const handleDriverLogin = (socket) => {
 exports.handleDriverLogin = handleDriverLogin;
 const getDriverCurrentTrip = (driver_id) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(storage_1.TripMap.getMap());
+    console.log('xin chào');
     for (const [trip_id, trip_value] of storage_1.TripMap.getMap()) {
-        console.log(trip_value);
-        console.log('xin chào');
+        // console.log(trip_value)
         if ((trip_value === null || trip_value === void 0 ? void 0 : trip_value.driver_id) != undefined && (trip_value === null || trip_value === void 0 ? void 0 : trip_value.driver_id) == driver_id) {
             const userInfo = yield userService_1.default.getBasicUserInfo(trip_value.user_id);
             const returnDat = trip_value;

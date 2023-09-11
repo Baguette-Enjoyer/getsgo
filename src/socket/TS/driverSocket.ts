@@ -108,9 +108,9 @@ export const handleDriverLogin = (socket: Socket<DefaultEventsMap, DefaultEvents
 
 export const getDriverCurrentTrip = async (driver_id: number) => {
     console.log(TripMap.getMap())
+    console.log('xin chào')
     for (const [trip_id, trip_value] of TripMap.getMap()) {
-        console.log(trip_value)
-        console.log('xin chào')
+        // console.log(trip_value)
         if (trip_value?.driver_id != undefined && trip_value?.driver_id == driver_id) {
             const userInfo = await userService.getBasicUserInfo(trip_value.user_id)
             const returnDat = trip_value
