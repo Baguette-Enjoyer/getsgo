@@ -128,7 +128,7 @@ const handleFind = async (data, userData) => {
                 io.in(`/user/${data.user_id}`).emit("no-driver-found", "no drivers have been found")
             }
         }
-    }, 70000)
+    }, 73000)
     let count = 0
     while (loopsBroken == false) {
         console.log("mảng driver hiện tại")
@@ -182,7 +182,7 @@ const handleFind = async (data, userData) => {
             }
             i++
         }
-        if (count == 5) {
+        if (count == 4) {
             loopsBroken = true
         }
         count++;
