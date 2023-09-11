@@ -66,7 +66,14 @@ export const ConsumerCallcenterTrip = async (message) => {
                 else {
                     console.log('em ơi1')
                     TripMap.getMap().set(data.trip_id, data);
-
+                    for (const [driver_s, driver_dat] of DriverMap.getMap()) {
+                        if (driver_dat.user_id === t.driver_id) {
+                            driver_dat.client_id = data.user_id
+                            DriverMap.getMap().set(driver_s, driver_dat)
+                            console.log("data driver sau update nè")
+                            console.log(DriverMap.getMap().get(driver_s))
+                        }
+                    }
                     // driver
                     const driverData = await driverServices.GetDriverInfoById(t.driver_id)
                     sendMessageFirebase(driverData.driver_info.token_fcm, 'Chuyến đi hẹn giờ', "Tài xế đang đến chỗ bạn")
