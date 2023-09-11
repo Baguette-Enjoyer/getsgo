@@ -121,7 +121,7 @@ const handleFind = async (data, userData) => {
                 TripMap.getMap().delete(trip_id)
                 await DeleteTrip(trip_id)
 
-            } else if (r == "timesup") {
+            } else {
                 console.log("hủy do không có thằng nào nhận")
                 TripMap.getMap().delete(trip_id)
                 await DeleteTrip(trip_id)
@@ -170,12 +170,13 @@ const handleFind = async (data, userData) => {
                 loopsBroken = true
                 r = res
                 console.log("break break break")
+                console.log("broadcast lại lần nữa nè")
                 break
             }
             if (i == 17) {
-                loopsBroken = true
-                r = "timesup"
-                console.log("break break break")
+                // loopsBroken = true
+                // r = "timesup"
+                // console.log("break break break")
                 break;
             }
             i++
