@@ -65,6 +65,7 @@ export const ConsumerCallcenterTrip = async (message) => {
                 //không thì thông báo cho biết nó chuẩn bị
                 else {
                     console.log('em ơi1')
+                    data.status = "Confirmed"
                     data.driver_id = t.driver_id
                     TripMap.getMap().set(data.trip_id, data);
                     for (const [driver_s, driver_dat] of DriverMap.getMap()) {
@@ -264,6 +265,7 @@ export const ConsumerNormalTrip = async (message) => {
                 else {
                     console.log('em ơi1')
                     data.driver_id = t.driver_id
+                    data.status = "Confirmed"
                     TripMap.getMap().set(data.trip_id, data);
                     for (const [driver_s, driver_dat] of DriverMap.getMap()) {
                         if (driver_dat.user_id === t.driver_id) {
