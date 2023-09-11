@@ -129,6 +129,7 @@ const handleFind = async (data, userData) => {
             }
         }
     }, 70000)
+    let count = 0
     while (loopsBroken == false) {
         console.log("mảng driver hiện tại")
         console.log(DriverMap.getMap());
@@ -181,6 +182,10 @@ const handleFind = async (data, userData) => {
             }
             i++
         }
+        if (count == 5) {
+            loopsBroken = true
+        }
+        count++;
     }
 }
 const checkTrip = async (trip_id) => {
