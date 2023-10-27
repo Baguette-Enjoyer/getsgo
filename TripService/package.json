@@ -1,0 +1,39 @@
+{
+  "main": "workspace/index.js",
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "babel-cli": "^6.26.0"
+  },
+  "scripts": {
+    "start": "nodemon --exec babel-node src/socket/index.js --ext *",
+    "buildJS": "cd src/socket/ts && tsc.cmd --outDir ../JS && npm run dev",
+    "build": "babel src -d workspace",
+    "postbuild": "cp src/config/config.json workspace/config/",
+    "dev": "nodemon --exec babel-node src/index.js --ext *"
+  },
+  "dependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "amqplib": "^0.10.3",
+    "axios": "^1.4.0",
+    "babel-cli": "^6.26.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "delay": "^6.0.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-list-endpoints": "^6.0.0",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.1",
+    "moment-timezone": "^0.5.43",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.5.0",
+    "nodemon": "^2.0.22",
+    "sequelize": "^6.32.1",
+    "uuid": "^9.0.0"
+  }
+}

@@ -1,0 +1,171 @@
+###
+POST http://localhost:3001/v1/users/signup
+Content-Type: application/json
+
+{
+    "phone":"+84321123321",
+    "password":"123456"
+}
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwOTYzNDM1LCJleHAiOjE2OTIwNDM0MzV9.sM7gAkx0Gl7043NJu3r97BqbvQD9tWdG3ZOoT2ZK-AE
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTA5NjM0NzksImV4cCI6MTY5MjA0MzQ3OX0.o0kfUy4iiG5kyYoB3ea8URXpISHenDkopQdlKvwtNeU
+
+###
+POST http://localhost:3001/v1/users/login
+Content-Type: application/json
+
+{
+    "phone":"+84444444444",
+    "password":"000000"
+}
+
+###
+POST http://localhost:3001/v1/booking/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicGhvbmUiOiIrODQ0NDQ0NDQ0NDQiLCJ0eXBlIjoiVXNlcl9WaXAiLCJpYXQiOjE2OTIxODM1NzUsImV4cCI6MTY5MzI2MzU3NX0.5uonl_EPt52dMZRKNxvrJ9aUFHedzl-vT2Nb29p_TKw
+Content-Type: application/json
+
+{
+    "start":{
+        "lat":10.1,
+        "lng":10.2,
+        "place":"random places"
+    },
+    "end":{
+        "lat":10.3,
+        "lng":10.4,
+        "place":"2nd random places"
+    },
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+###
+POST http://localhost:3001/v1/booking/callcenter
+Content-Type: application/json
+
+{
+    "start":"random places 1",
+    "end": "random places 2",  
+    "phone": "+84123123123",
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+
+###
+GET http://localhost:3001/v1/drivers/trips
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwOTYzNDM1LCJleHAiOjE2OTIwNDM0MzV9.sM7gAkx0Gl7043NJu3r97BqbvQD9tWdG3ZOoT2ZK-AE
+
+###
+GET http://localhost:3001/v1/trips/7
+###
+DELETE http://localhost:3001/v1/trips/25
+
+###
+PUT http://localhost:3001/v1/trips/7
+Content-Type: application/json
+
+{
+    "status":"Waiting"
+}
+###
+PUT http://localhost:3001/v1/trips/cancel/8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiIrODQyMjIyMjIyMjIiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjg5NzM1OTU5LCJleHAiOjE2OTA4MTU5NTl9.nfOtyA_7v1NgoFM5lTRurblnfP5n20QMTD-frVpUKG4
+###
+PUT http://localhost:3001/v1/trips/accept/7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywicGhvbmUiOiIrODQzMzMzMzMzMzMiLCJ0eXBlIjoiRHJpdmVyIiwiaWF0IjoxNjkwNTQ3OTUwLCJleHAiOjE2OTE2Mjc5NTB9.ejAONA79hsVKG2SJw_UWVlquHFYiMyvQ2AS7BLIVsbY
+
+###
+GET http://188.166.250.160:8080/v1/phone?phone=+84111111111
+###
+GET http://localhost:3001/v1/phone?phone=+84111111111
+
+###
+GET http://localhost:3001/v1/history/phone?phone=+84555555555
+
+###
+GET http://localhost:3001/v1/driver/2
+
+###
+GET http://localhost:3001/v1/history/user/4
+
+###
+GET http://localhost:3001/v1/history/driver/3?type=Month
+
+###
+PUT http://localhost:3001/v1/users/updatepassword
+Content-Type: application/json
+
+{
+    "user_id": 7,
+    "phone": "+84123456788",
+    "type": "User",
+    "password": "123123"
+}
+
+###
+POST http://localhost:3001/v1/location/localdriver
+Content-Type: application/json
+
+{
+    "lat":10.1,
+    "lng":10.2
+}
+
+###
+GET http://localhost:3001/getallusers
+###
+GET http://localhost:3001/getalltrips
+###
+GET http://localhost:3001/getallvehicles
+
+###
+POST http://localhost:3001/v1/booking/callcenter
+Content-Type: application/json
+
+{
+    "start":{
+        "place": "random place",
+        "lat": 10.1,
+        "lng":10.2
+    },
+    "phone": "+84123123123",
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+###
+POST http://localhost:3001/v1/booking/callcenters1
+Content-Type: application/json
+
+{
+    "start":{
+        "place": "random place"
+    },
+    "phone": "+84123123123",
+    "carType":1,
+    "is_scheduled":false,
+    "price":50000,
+    "is_paid":false,
+    "payment_method":"Cash"
+}
+###
+POST http://localhost:3001/v1/booking/callcenters2
+Content-Type: application/json
+
+{
+    "trip_id": 27,
+    "start": {
+        "place": "random place",
+        "lat":10.2,
+        "lng":10.3
+    }
+}
+###
+POST http://localhost:3001/v1/booking/callcenters1
+###
+GET http://localhost:3001/v1/booking/callcenters3

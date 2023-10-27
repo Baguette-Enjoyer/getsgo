@@ -1,0 +1,31 @@
+{
+  "main": "workspace/index.js",
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "babel-cli": "^6.26.0"
+  },
+  "scripts": {
+    "start": "nodemon --exec babel-node src/socket/index.js --ext *",
+    "buildJS": "cd src/socket/ts && tsc.cmd --outDir ../JS && npm run dev",
+    "build": "babel src -d workspace",
+    "postbuild": "cp src/config/config.json workspace/config/",
+    "dev": "nodemon --exec babel-node src/index.js --ext *"
+  },
+  "dependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "amqplib": "^0.10.3",
+    "babel-cli": "^6.26.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.10.1",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.1",
+    "nodemon": "^2.0.22"
+  }
+}

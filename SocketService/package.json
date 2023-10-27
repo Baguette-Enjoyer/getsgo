@@ -1,0 +1,35 @@
+{
+  "main": "workspace/index.js",
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "babel-cli": "^6.26.0"
+  },
+  "scripts": {
+    "start": "nodemon --exec babel-node src/socket/index.js --ext *",
+    "buildJS": "cd src/socket/ts && tsc.cmd --outDir ../JS && npm run dev",
+    "build": "babel src -d workspace",
+    "postbuild": "cp src/config/config.json workspace/config/",
+    "dev": "nodemon --exec babel-node src/index.js --ext *"
+  },
+  "dependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "amqplib": "^0.10.3",
+    "axios": "^1.4.0",
+    "babel-cli": "^6.26.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "events": "^3.3.0",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "mongodb": "^5.7.0",
+    "nodemon": "^2.0.22",
+    "socket.io": "^4.7.2",
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
+  }
+}
